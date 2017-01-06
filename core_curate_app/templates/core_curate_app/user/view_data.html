@@ -1,0 +1,28 @@
+<h1>View Data</h1>
+
+<div class="btn-group pull-right">
+	<button class="btn download-xml"><i class="icon-arrow-down"></i> Download XML</button>
+	<button class="btn save-to-repo"><i class="icon-star"></i> Save to Repository</button>
+</div>
+
+<div class="clearer">&nbsp;</div>
+
+<div id="XMLHolder">
+    {{data.xml_tree|safe}}
+</div>
+
+
+<div id="dialog-save-confirm-message" title="Save Document" style="display:none;">
+  Are you sure you want to save this document ({{data.data_structure.name}}) in database?
+</div>
+
+<div id="dialog-saved-success-message" title="Document Saved" style="display:none;">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 10px 0;"></span>
+    Save to repository successful.
+  </p>
+</div>
+<div id="dialog-saved-error-message" title="Error" style="display:none;">
+  <div id="saveErrorMessage"></div>
+</div>
+<div id="curate_data_structure_id" style="display: none;">{{ data.data_structure.id }}</div>

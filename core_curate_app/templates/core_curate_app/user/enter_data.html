@@ -1,0 +1,88 @@
+<h1>Data Entry</h1>
+
+Here you can fill in the {{CUSTOM_DATA}} form. Once it is completed, you can Validate the form.
+You won't be able to reach the review page before the document is valid according to the selected template. From the review page, you will be able to curate the data.
+The 'Save Form' button allows you to save partial data that you may want to edit later. This will only save a temporary document and won't actually curate data.
+All grayed elements are optional. Thus, all elements written in black are required. The document may still be valid with empty elements.
+There are no validation on empty fields if no such constraint is defined in the template.
+Thus, an empty string of characters may not raise a validation error, but an empty number will.
+
+<div class="toolbar">
+	<div class="btn-group pull-right">
+		<button class="btn clear-fields"><i class="fa fa-eraser"></i> Clear Fields </button>
+        <button class="btn cancel-changes"><i class="fa fa-refresh"></i> Cancel Changes </button>
+        <button class="btn cancel-form"><i class="fa fa-times"></i> Cancel Form </button>
+        {% if not data.edit %}
+    	<button class="btn save-form"><i class="fa fa-floppy-o"></i> Save and Quit </button>
+        {% endif %}
+    	<button class="btn download"><i class="fa fa-download"></i> Download </button>
+        <button class="btn validate"><i style="color:green;" class="fa fa-check-square"></i> Validate </button>
+	</div>
+    <br/><br/>
+
+    <span>Title: {{data.data_structure.name}}</span>
+
+    <div id="xsdForm">
+        {{data.xsd_form|safe}}
+    </div>
+</div>
+
+
+
+<div id="dialog-cleared-message" title="Clear Fields" style="display:none;">
+    Are you sure you want to reset the form? All your changes will be lost.
+</div>
+
+<div id="dialog-cancel-message" title="Cancel Changes" style="display:none;">
+    Are you sure you want to cancel your changes? All your changes since the last save will be lost.
+</div>
+
+<div id="dialog-cancel-form-message" title="Clear Form" style="display:none;">
+    Are you sure you want to cancel the form? All your changes will be lost and the form will be deleted.
+</div>
+
+<div id="dialog-save-form-message" title="Save Form" style="display:none;">
+  Are you sure you want to save the form?
+</div>
+
+<div id="dialog-saved-message" title="Form Saved" style="display:none;">
+<p></p>
+    <p>
+        <i class="fa fa-check-circle"></i>
+        Form saved with success.
+    </p>
+</div>
+
+<div id="dialog-download-options" title="Download Options" style="display:none;">
+<p>
+  <span class="btn-group">
+    <button class="btn download_xsd"><i class="icon-arrow-down"></i> Download Schema</button>
+  </span>
+</p>
+<p>
+  <span class="btn-group">
+    <button class="btn download_xml"><i class="icon-arrow-down"></i> Download Document</button>
+  </span>
+</p>
+
+</div>
+
+<div id="dialog-xml-error-message" title="Validation Error" style="display:none;">
+  <div id="xmlErrorMessage">
+  </div>
+</div>
+
+<div id="dialog-xml-valid-message" title="Validation Successful" style="display:none;">
+  The form is valid. You can now proceed to the Review page.
+</div>
+
+<div id="dialog-use-message" title="Validation Warning" style="display:none;">
+<p>
+Some <span style="color:red;">required</span> or <span style="color:blue;">recommended</span> fields are present but empty:
+</p>
+  <div id="useErrorMessage">
+  </div>
+ <p>Edit the form or proceed to review page.</p> 
+</div>
+
+<div id="curate_data_structure_id" style="display: none;">{{ data.data_structure.id }}</div>

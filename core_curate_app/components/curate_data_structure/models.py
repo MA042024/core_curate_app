@@ -1,11 +1,13 @@
-""" Curate data structure
-"""
+from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
+from django_mongoengine import fields
 
 
 class CurateDataStructure(DataStructure):
-    """Data structure of Curate app"""
-    # TODO: add id of existing data from core main app ?
+    """ Curate data structure
+    """
+    form_string = fields.StringField(blank=True)
+    data = fields.ReferenceField(Data, blank=True)
 
     @staticmethod
     def get_all():

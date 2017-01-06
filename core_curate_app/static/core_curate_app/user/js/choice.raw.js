@@ -1,0 +1,1 @@
+var generateChoiceUrl = "{% url 'core_curate_generate_choice' %}";
