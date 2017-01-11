@@ -1,12 +1,19 @@
 """AJAX views for the Curate app
 """
 import json
+
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.template import RequestContext, loader
+import core_curate_app.common.exceptions as exceptions
+import core_curate_app.views.user.forms as users_forms
+import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
 from core_curate_app.views.user.views import generate_form, render_form, update_data_structure_root, render_xml
 from core_main_app.components.data.models import Data
-from core_main_app.utils.xml import validate_xml_data
+from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.utils.parser import get_parser
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
@@ -18,6 +25,24 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
 # TODO: permissions
+
+
+def start_curate(request):
+    """ Load forms to start curation
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        if request.method == 'POST':
+            return _start_curate_post(request)
+        else:
+            return _start_curate_get(request)
+    except Exception as e:
+        return HttpResponseBadRequest(e.message)
 
 
 def generate_choice(request):
@@ -319,3 +344,67 @@ def save_data(request):
         return HttpResponseBadRequest(json.dumps(response_dict), content_type='application/javascript')
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+
+
+def _start_curate_post(request):
+    try:
+        template_id = request.POST['hidden_value']
+        selected_option = request.POST['curate_form']
+        user_id = request.user.id
+        if selected_option == "new" or selected_option == "upload":
+            if selected_option == "new":
+                new_form = users_forms.NewForm(request.POST)
+                if new_form.is_valid():
+                    name = new_form.data['document_name']
+                else:
+                    raise exceptions.CurateAjaxError('Error occurred during the validation form')
+            else:
+                try:  # check XML data or not?
+                    upload_form = users_forms.UploadForm(request.POST, request.FILES)
+                    if upload_form.is_valid():
+                        xml_file = request.FILES['file']
+                        xml_file.seek(0)  # put the cursor at the beginning of the file
+                        xml_data = xml_file.read()  # read the content of the file
+                        well_formed = is_well_formed_xml(xml_data)
+                        name = xml_file.name
+                        if not well_formed:
+                            raise exceptions.CurateAjaxError('Uploaded File is not well formed XML')
+                    else:
+                        raise exceptions.CurateAjaxError('Error occurred during the validation form')
+                except Exception as e:
+                    raise exceptions.CurateAjaxError('Error during file uploading')
+            curate_data_structure = CurateDataStructure(user=str(user_id),
+                                                        template=str(template_id),
+                                                        name=name)
+            curate_data_structure_api.upsert(curate_data_structure)
+        else:
+            open_form = users_forms.OpenForm(request.POST)
+            curate_data_structure = curate_data_structure_api.get_by_id(open_form.data['forms'])
+        url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
+        return HttpResponse(url)
+    except Exception as e:
+        raise exceptions.CurateAjaxError(e.message)
+
+
+def _start_curate_get(request):
+    try:
+        context_params = dict()
+        template_id = request.GET['template_id']
+        template = loader.get_template('core_curate_app/user/curate_full_start.html')
+
+        open_form = users_forms.OpenForm(forms=curate_data_structure_api.get_by_user_id_and_template_id(
+            str(request.user.id),
+            template_id))
+        new_form = users_forms.NewForm()
+        upload_form = users_forms.UploadForm()
+        hidden_form = users_forms.HiddenFieldsForm(hidden_value=template_id)
+        context_params['new_form'] = new_form
+        context_params['open_form'] = open_form
+        context_params['upload_form'] = upload_form
+        context_params['hidden_form'] = hidden_form
+        context = RequestContext(request, context_params)
+        return HttpResponse(json.dumps({'template': template.render(context)}),
+                            content_type='application/javascript')
+    except Exception as e:
+        raise exceptions.CurateAjaxError('Error occurred during the form display')
+

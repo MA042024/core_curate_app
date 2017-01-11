@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<div class="title-page">Select Template</div>
+
+Select a template from the following table. Once you make your selection, start a new document or open an existing form or start from an uploaded document.  It will
+automatically load the appropriate form and display it on the next page.
+
+<div id="template_selection">
+    <div class="center-text"><h1 class="title-text">Global Templates</h1></div>
+<table class="table table-bordered">
+    <tr>
+        <th class="title-table">Template name</th>
+        <th class="title-table" style="width: 150px;">Actions</th>
+    </tr>
+    {% for template in data.templates_version_manager %}
+        <tr>
+            <td templateID='{{template.current}}'>{{ template.title }}</td>
+            <td>
+                <button class="btn set-template"><i class="icon-plus-sign"></i> Set as current template</button>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% if user.is_authenticated %}
+    <div class="center-text"><h3 class="title-text">User Defined Templates</h3></div>
+    {% if data.userTemplates %}
+        <table class="table table-bordered">
+            <tr>
+                <th>Template name</th>
+                <th class="th-actions">Actions</th>
+            </tr>
+            {% for template in data.userTemplates %}
+                {% cycle 'even' '' as rowcolors silent %}
+                <tr class="{{ rowcolors }}">
+                    <td templateID='{{template.id}}'>{{ template.title }}</td>
+                    <td>
+                        <button class="btn set-template" >
+                            <i class="icon-plus-sign"></i> Set as current template
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="unavailable">
+            Upload or create your own templates, they will then show here.
+        </div>
+    {% endif %}
+{% endif %}
+</div>
+<div id="dialog-message" title="Template Loaded" style="display:none;">
+    <div id="form_start_content"></div>
+</div>

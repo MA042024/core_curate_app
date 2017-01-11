@@ -1,0 +1,175 @@
+$(document).ready(function(){
+    loadTemplateSelectionControllers();
+    initBanner();
+});
+
+
+/**
+ * Load controllers for template selection
+ */
+loadTemplateSelectionControllers = function()
+{
+    $('.btn.set-template').on('click', setCurrentTemplate);
+}
+
+
+initBanner = function()
+{
+    $("[data-hide]").on("click", function(){
+        $(this).closest("." + $(this).attr("data-hide")).hide(200);
+    });
+}
+
+/**
+ * Set the current template
+ * @returns {Boolean}
+ */
+setCurrentTemplate = function()
+{
+    var templateID = $(this).parent().parent().children(':first').attr('templateID');
+    var tdElement = $(this).parent();
+    tdElement.html('<img src=loaderAjaxGif alt="Loading..."/>');
+    $('.btn.set-template').off('click');
+    set_current_template(templateID);
+    return false;
+}
+
+/**
+ * AJAX call, sets the current template
+ * @param templateFilename name of the selected template
+ * @param templateID id of the selected template
+ */
+set_current_template = function(templateID){
+    $('#template_selection').load(document.URL +  ' #template_selection', function() {
+        loadTemplateSelectionControllers();
+        displayTemplateSelectedDialog();
+    });
+    load_start_form(templateID);
+}
+
+/**
+ * Show a dialog when a template is selected
+ */
+displayTemplateSelectedDialog = function()
+{
+    $(function() {
+        $( "#dialog-message" ).dialog({
+            modal: true
+        });
+    });
+
+    $('#btn-display-popup').on('click', displayTemplateProcess);
+}
+
+
+/**
+ * AJAX call, loads the start curate form
+ */
+load_start_form = function(templateID){
+    $.ajax({
+        url : startCurate,
+        type : "GET",
+        dataType: "json",
+        data : {
+            'template_id': templateID
+        },
+        success: function(data){
+            $("#banner_errors").hide()
+            $("#form_start_content").html(data.template);
+            enterKeyPressSubscription();
+            syncRadioButtons();
+        },
+        error:function(data){
+            if (data.responseText != ""){
+                $("#form_start_errors").html(data.responseText);
+                $("#banner_errors").show(500)
+                return (false);
+            }else{
+                return (true);
+            }
+        },
+    });
+}
+
+displayTemplateProcess = function ()
+{
+    if (validateStartCurate()){
+       var formData = new FormData($( "#form_start" )[0]);
+       $.ajax({
+            url: startCurate,
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                window.location = data;
+            },
+            error: function(data){
+                if (data.responseText != ""){
+                    $("#form_start_errors").html(data.responseText);
+                    $("#banner_errors").show(500);
+                }
+            },
+        });
+   }
+}
+
+/**
+ * Validate fields of the start curate form
+ */
+validateStartCurate = function(){
+    var errors = "";
+
+	$("#banner_errors").hide()
+	// check if an option has been selected
+	selected_option = $( "#form_start" ).find("input:radio[name='curate_form']:checked").val()
+	if (selected_option == undefined){
+		errors = "No option selected. Please check one radio button."
+		$("#form_start_errors").html(errors);
+		$("#banner_errors").show(500)
+		return (false);
+	}else{
+		if (selected_option == "new"){
+			if ($( "#id_document_name" ).val().trim() == ""){
+				errors = "You selected the option 'Create a new document'. Please provide a name for the document."
+			}
+		}else if (selected_option == "open"){
+			if ($( "#id_forms" ).val() == ""){
+				errors = "You selected the option 'Open a Form'. Please select a form from the list."
+			}
+		}else if (selected_option == "upload"){
+			if ($( "#id_file" ).val() == ""){
+				errors = "You selected the option 'Upload a File'. Please select an XML file."
+			}
+		}
+	}
+	if (errors != ""){
+		$("#form_start_errors").html(errors);
+		$("#banner_errors").show(500)
+		return (false);
+	}else{
+		return (true)
+	}
+}
+
+/**
+ *
+ */
+enterKeyPressSubscription = function ()
+{
+    $('#dialog-message').keypress(function(event) {
+        if(event.which == $.ui.keyCode.ENTER) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+}
+
+syncRadioButtons =function()
+{
+	// auto set radio buttons value according to what option the user is choosing
+	$("#id_document_name").on("click", function(){$("input:radio[name=curate_form][value='new']").prop("checked", true)});
+	$("#id_forms").on("change", function(){$("input:radio[name=curate_form][value='open']").prop("checked", true)});
+	$("#id_file").on("change", function(){$("input:radio[name=curate_form][value='upload']").prop("checked", true)});
+}

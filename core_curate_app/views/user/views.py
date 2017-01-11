@@ -3,8 +3,10 @@
 from django.http.response import HttpResponse
 from django.core.servers.basehttp import FileWrapper
 
-from core_curate_app import settings
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from django.contrib.staticfiles import finders
+from cStringIO import StringIO
+from os.path import join
+
 from core_curate_app.utils.parser import get_parser
 from core_main_app.utils.rendering import render
 from core_main_app.utils.xml import xsl_transform
@@ -12,11 +14,49 @@ from core_parser_app.components.data_structure import api as data_structure_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-from cStringIO import StringIO
-from os.path import join
-from django.contrib.staticfiles import finders
+# Do not delete the line below because get_by_id needs it
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+import core_main_app.components.template_version_manager.api as template_api
 
 # TODO: permissions
+# TODO: Add a view for the registery. Ajax code need to be refactored
+
+
+def index(request):
+    """ Page that allows to select a template to start curating
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    assets = {
+        "js": [
+            {
+                "path": 'core_curate_app/user/js/select_template.js',
+                "is_raw": False
+            },
+            {
+                "path": 'core_curate_app/user/js/select_template.raw.js',
+                "is_raw": True
+            },
+        ],
+        "css": ['core_curate_app/user/css/style.css']
+    }
+
+    global_active_template_list = template_api.get_active_global_version_manager()
+    user_active_template_list = template_api.get_active_version_manager_by_user_id(request.user.id)
+
+    context = {
+        'templates_version_manager': global_active_template_list,
+        'userTemplates': user_active_template_list,
+    }
+
+    return render(request,
+                  'core_curate_app/user/curate.html',
+                  assets=assets,
+                  context=context)
 
 
 def enter_data(request, curate_data_structure_id):

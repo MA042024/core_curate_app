@@ -10,6 +10,15 @@ class CurateDataStructure(DataStructure):
     data = fields.ReferenceField(Data, blank=True)
 
     @staticmethod
+    def get_none():
+        """ Returns None object, used by forms
+
+        Returns:
+
+        """
+        return CurateDataStructure.objects().none()
+
+    @staticmethod
     def get_all():
         """ Returns all curate data structure api
 

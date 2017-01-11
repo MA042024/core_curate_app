@@ -1,0 +1,20 @@
+{% load staticfiles %}
+
+<h1>Data Entry</h1>
+
+<div class="alert alert-danger" id="banner_errors" style="display: none;">
+        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+     	<h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
+        <div id="form_start_errors">
+</div>
+</div>
+<div class="pop_curate_instruction">Please choose one of the following options to start curating data:</div>
+<div class="clearer">&nbsp;</div>
+<div id="dialog-message" title="Template Loaded">
+    <form id="form_start">
+        {% csrf_token %}
+		{% include 'core_curate_app/user/curate_start.html' %}
+	</form>
+	<div class="clearer">&nbsp;</div>
+	<button id="btn-display-popup" class="btn btn-default">Start</button>
+</div>

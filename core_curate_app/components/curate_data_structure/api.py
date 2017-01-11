@@ -3,6 +3,27 @@
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 
+def upsert(curate_data_structure):
+    """ Save or update the Curate Data Structure
+
+    Args:
+        curate_data_structure:
+
+    Returns:
+
+    """
+    return curate_data_structure.save()
+
+
+def get_none():
+    """ Returns None object, used by forms
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_none()
+
+
 def get_all():
     """ Returns all curate data structure api
 
@@ -10,6 +31,18 @@ def get_all():
 
     """
     return CurateDataStructure.get_all()
+
+
+def get_by_id(curate_data_structure_id):
+    """ Returns the curate data structure with the given id
+
+    Args:
+        curate_data_structure_id:
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_by_id(curate_data_structure_id)
 
 
 def get_by_user_id_and_template_id(user_id, template_id):

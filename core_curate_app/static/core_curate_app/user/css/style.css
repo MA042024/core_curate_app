@@ -1,0 +1,133 @@
+ul.tabbed {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+ul.tabbed li {
+	float: left;
+	list-style: none;
+}
+ul.tabbed a {text-decoration: none;}
+
+li.current_page_item a {color: #333;}
+
+.l-img {
+    float: left;
+    height: 40px;
+}
+
+.title-page{
+	font-size: 2.0em;
+	line-height: 1.6em;
+	font-weight: bold;
+}
+
+.title-table{
+	font-weight: bold;
+	font-size: smaller;
+}
+
+.title-text{
+    font-size: 18px;
+    margin-bottom: 0.5em;
+}
+
+.center-text{
+	text-align: center;
+}
+
+/*************/
+/* Pop Up    */
+/*************/
+
+.pop_curate_label{
+	font-size: smaller;
+	font-weight: bold;
+}
+
+.pop_curate_instruction{
+	font-size: 0.8em;
+}
+
+/*************/
+/* Left list */
+/*************/
+
+ul.nice-list {
+	background: #FCFCFC;
+	border-top: 1px solid #F0F0F0;
+	margin-left: 0;
+	margin-right: 0;
+}
+ul.nice-list li {
+	border-bottom: 1px solid #F0F0F0;
+	list-style: none;
+	padding: 0px 0px;
+	height: 50px;
+}
+ul.nice-list li a {text-decoration: none;font-size:14px;}
+ul.nice-list li a:hover {text-decoration: underline;}
+ul.nice-list span {color: #666;}
+
+#sidebar ul.nice-list li,#sidebar ul.nice-list {border-color: #E0E0E0;}
+
+
+.r-txt {
+    height: 40px;
+    padding-top: 6px;
+    padding-left: 50px;
+}
+
+.r-txt-selected {
+    font-weight: bold;
+    height: 40px;
+    padding-top: 6px;
+    padding-left: 50px;
+}
+
+
+/*************/
+/* 		Box  */
+/*************/
+
+.box {
+	padding: 16px 20px 0;
+}
+.box a {color: #951;}
+.box a:hover {color: #310;}
+.box-title {
+	color: #665;
+	font: normal 1.6em sans-serif;
+}
+.box-content {padding: 8px 0;}
+
+
+/*************/
+/*   Postes  */
+/*************/
+
+.post {margin-bottom: 0px;}
+
+.post a {text-decoration: none;}
+.post a:hover, .post-body a {text-decoration: underline;}
+
+.post-title {border-bottom: 1px solid #E5E5E5;}
+
+.post-date {
+	color: #777;
+	font-size: 0.9em;
+	padding: 8px 0 0;
+}
+.post-date a {color: #444;}
+
+.post-body {padding-top: 12px;}
+
+.post-meta {
+	background: #FCFCFC;
+	border: 1px solid #ECECEC;
+	color: #777;
+	font-size: 0.9em;
+	padding: 6px 10px;
+}
+.post-meta a {color: #345; }
+.post-meta a:hover {color: #001;}
