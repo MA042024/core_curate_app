@@ -77,7 +77,7 @@ def enter_data(request, curate_data_structure_id):
                     "is_raw": True
                 },
                 {
-                    "path": "core_parser_app/common/js/XMLTree.js",
+                    "path": 'core_main_app/common/js/XMLTree.js',
                     "is_raw": False
                 },
                 {
@@ -105,7 +105,7 @@ def enter_data(request, curate_data_structure_id):
                     "is_raw": True
                 },
             ],
-            "css": ['core_parser_app/common/css/XMLTree.css']
+            "css": ['core_main_app/common/css/XMLTree.css']
         }
 
         # Set the context
@@ -162,11 +162,11 @@ def view_data(request, curate_data_structure_id):
                     "is_raw": True
                 },
                 {
-                    "path": "core_parser_app/common/js/XMLTree.js",
+                    "path": "core_main_app/common/js/XMLTree.js",
                     "is_raw": False
                 },
             ],
-            "css": ['core_parser_app/common/css/XMLTree.css']
+            "css": ['core_main_app/common/css/XMLTree.css']
         }
 
         # Set the context
