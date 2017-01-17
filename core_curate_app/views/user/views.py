@@ -8,6 +8,7 @@ from cStringIO import StringIO
 from os.path import join
 
 from core_curate_app.utils.parser import get_parser
+from core_main_app.commons.exceptions import CoreError
 from core_main_app.utils.rendering import render
 from core_main_app.utils.xml import xsl_transform
 from core_parser_app.components.data_structure import api as data_structure_api
@@ -72,6 +73,8 @@ def enter_data(request, curate_data_structure_id):
     try:
         # get data structure
         curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        # check ownership
+        _check_owner(request, accessed_object=curate_data_structure)
 
         # curate data structure is not generated
         if curate_data_structure.data_structure_element_root is None:
@@ -179,6 +182,8 @@ def view_data(request, curate_data_structure_id):
     try:
         # get data structure
         curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        # check ownership
+        _check_owner(request, accessed_object=curate_data_structure)
 
         # generate xml string
         xml_string = render_xml(curate_data_structure.data_structure_element_root)
@@ -239,6 +244,8 @@ def download_current_xml(request, curate_data_structure_id):
     """
     # get curate data structure
     curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+    # check ownership
+    _check_owner(request, accessed_object=curate_data_structure)
 
     # generate xml string
     xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -264,6 +271,8 @@ def download_xsd(request, curate_data_structure_id):
     """
     # get curate data structure
     curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+    # check ownership
+    _check_owner(request, accessed_object=curate_data_structure)
 
     # get the template
     template = curate_data_structure.template
@@ -365,3 +374,21 @@ def _read_file_content(file_path):
     with open(file_path) as _file:
         file_content = _file.read()
         return file_content
+
+
+# FIXME: make this check more general
+def _check_owner(request, accessed_object):
+    """Check if the object can be accessed by the user
+
+    Args:
+        request:
+        accessed_object:
+
+    Returns:
+
+    """
+    # Super user can access everything
+    if not request.user.is_superuser:
+        # If not the owner of the accessed object
+        if str(request.user.id) != accessed_object.user:
+            raise CoreError("You are not the owner of the resource that you are trying to access")
