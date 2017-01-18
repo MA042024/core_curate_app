@@ -2,10 +2,13 @@
 """
 from django.http.response import HttpResponse
 from django.core.servers.basehttp import FileWrapper
-
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.staticfiles import finders
 from cStringIO import StringIO
 from os.path import join
+
+import core_main_app.utils.decorators as decorators
+import core_curate_app.permissions.rights as rights
 
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError
@@ -19,10 +22,11 @@ from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 import core_main_app.components.template_version_manager.api as template_api
 
-# TODO: permissions
-# TODO: Add a view for the registery. Ajax code need to be refactored
+# TODO: Add a view for the registry. Ajax code need to be refactored
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def index(request):
     """ Page that allows to select a template to start curating
 
@@ -60,6 +64,8 @@ def index(request):
                   context=context)
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def enter_data(request, curate_data_structure_id):
     """Loads view to enter data
 
@@ -169,6 +175,8 @@ def enter_data(request, curate_data_structure_id):
                       context={'errors': e.message})
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def view_data(request, curate_data_structure_id):
     """Load the view to review data
 
@@ -232,6 +240,8 @@ def view_data(request, curate_data_structure_id):
                       context={'errors': e.message})
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def download_current_xml(request, curate_data_structure_id):
     """Makes the current XML document available for download.
 
@@ -259,6 +269,8 @@ def download_current_xml(request, curate_data_structure_id):
     return response
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def download_xsd(request, curate_data_structure_id):
     """Makes the current XSD available for download.
 
@@ -287,6 +299,8 @@ def download_xsd(request, curate_data_structure_id):
     return response
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def generate_form(request, xsd_string, xml_string=None):
     """Generates the form using the parser, returns the root element
 
@@ -308,6 +322,8 @@ def generate_form(request, xsd_string, xml_string=None):
     return root_element
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def render_form(request, root_element):
     """Renders the form
 
@@ -326,6 +342,8 @@ def render_form(request, root_element):
     return xsd_form
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def render_xml(root_element):
     """Renders the XML
 
