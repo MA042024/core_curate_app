@@ -42,9 +42,9 @@ setCurrentTemplate = function()
 set_current_template = function(templateID){
     $('#template_selection').load(document.URL +  ' #template_selection', function() {
         loadTemplateSelectionControllers();
-        displayTemplateSelectedDialog();
     });
     load_start_form(templateID);
+    displayTemplateSelectedDialog();
 }
 
 /**
@@ -52,13 +52,8 @@ set_current_template = function(templateID){
  */
 displayTemplateSelectedDialog = function()
 {
-    $(function() {
-        $( "#dialog-message" ).dialog({
-            modal: true
-        });
-    });
-
-    $('#btn-display-popup').on('click', displayTemplateProcess);
+    $("#select-template-modal").modal("show");
+    $('#btn-display-data').on('click', displayTemplateProcess);
 }
 
 
@@ -76,7 +71,6 @@ load_start_form = function(templateID){
         success: function(data){
             $("#banner_errors").hide()
             $("#form_start_content").html(data.template);
-            enterKeyPressSubscription();
             syncRadioButtons();
         },
         error:function(data){
@@ -94,7 +88,7 @@ load_start_form = function(templateID){
 displayTemplateProcess = function ()
 {
     if (validateStartCurate()){
-       var formData = new FormData($( "#form_start" )[0]);
+       var formData = new FormData($( "#form_select_template" )[0]);
        $.ajax({
             url: startCurate,
             type: 'POST',
@@ -123,7 +117,7 @@ validateStartCurate = function(){
 
 	$("#banner_errors").hide()
 	// check if an option has been selected
-	selected_option = $( "#form_start" ).find("input:radio[name='curate_form']:checked").val()
+	selected_option = $( "#form_start_content" ).find("input:radio[name='curate_form']:checked").val()
 	if (selected_option == undefined){
 		errors = "No option selected. Please check one radio button."
 		$("#form_start_errors").html(errors);
@@ -151,19 +145,6 @@ validateStartCurate = function(){
 	}else{
 		return (true)
 	}
-}
-
-/**
- *
- */
-enterKeyPressSubscription = function ()
-{
-    $('#dialog-message').keypress(function(event) {
-        if(event.which == $.ui.keyCode.ENTER) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    });
 }
 
 syncRadioButtons =function()

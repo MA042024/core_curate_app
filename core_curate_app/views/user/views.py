@@ -60,6 +60,7 @@ def index(request):
 
     return render(request,
                   'core_curate_app/user/curate.html',
+                  # modals=modals,
                   assets=assets,
                   context=context)
 
