@@ -155,7 +155,7 @@ def enter_data(request, curate_data_structure_id):
                     "is_raw": True
                 },
             ],
-            "css": ['core_main_app/common/css/XMLTree.css']
+            "css": ['core_curate_app/user/css/xsd_form.css']
         }
 
         # Set the context

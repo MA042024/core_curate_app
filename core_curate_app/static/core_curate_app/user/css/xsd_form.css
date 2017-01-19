@@ -1,0 +1,30 @@
+.xsdForm ul{
+	padding-left: 30px;
+}
+
+.xsdForm input{
+	width: 300px;
+}
+
+/*FIXME: REFACTOR COMMON WITH XML TREE*/
+.collapse{
+	cursor: pointer;
+	width: 14px;
+	height: 12px;
+	margin-left: 2px;
+	margin-right: 2px;
+    background-image: url("../img/collapse.png");
+	background-repeat: no-repeat;
+	display: inline-block;
+}
+
+.expand{
+	cursor: pointer;
+	width: 14px;
+	height: 12px;
+	margin-left: 2px;
+	margin-right: 2px;
+	background-image: url("../img/expand.png");
+	background-repeat: no-repeat;
+	display: inline-block;
+}
