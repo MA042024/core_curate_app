@@ -300,8 +300,6 @@ def download_xsd(request, curate_data_structure_id):
     return response
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def generate_form(request, xsd_string, xml_string=None):
     """Generates the form using the parser, returns the root element
 
@@ -323,8 +321,6 @@ def generate_form(request, xsd_string, xml_string=None):
     return root_element
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def render_form(request, root_element):
     """Renders the form
 
@@ -343,8 +339,6 @@ def render_form(request, root_element):
     return xsd_form
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def render_xml(root_element):
     """Renders the XML
 
