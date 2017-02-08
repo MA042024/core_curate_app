@@ -198,7 +198,7 @@ def view_data(request, curate_data_structure_id):
         xml_string = render_xml(curate_data_structure.data_structure_element_root)
 
         # loads XSLT
-        xslt_path = finders.find(join('core_curate_app', 'user', 'xsl', 'xml2html.xsl'))
+        xslt_path = finders.find(join('core_main_app', 'common', 'xsl', 'xml2html.xsl'))
         # reads XSLT
         xslt_string = _read_file_content(xslt_path)
         # transform XML to HTML
