@@ -45,7 +45,7 @@ def get_by_id(curate_data_structure_id):
     return CurateDataStructure.get_by_id(curate_data_structure_id)
 
 
-def get_by_user_id_and_template_id(user_id, template_id):
+def get_all_by_user_id_and_template_id(user_id, template_id):
     """ Returns object with the given user id and template id
 
     Args:
@@ -55,4 +55,4 @@ def get_by_user_id_and_template_id(user_id, template_id):
     Returns:
 
     """
-    return CurateDataStructure.get_by_user_id_and_template_id(user_id, template_id)
+    return CurateDataStructure.get_all_by_user_id_and_template_id(user_id, template_id)

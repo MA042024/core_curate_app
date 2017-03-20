@@ -14,12 +14,10 @@ from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError
 from core_main_app.utils.rendering import render
 from core_main_app.utils.xml import xsl_transform
-from core_parser_app.components.data_structure import api as data_structure_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-# Do not delete the line below because get_by_id needs it
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 import core_main_app.components.template_version_manager.api as template_api
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
@@ -79,7 +77,7 @@ def enter_data(request, curate_data_structure_id):
     """
     try:
         # get data structure
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         # check ownership
         _check_owner(request, accessed_object=curate_data_structure)
 
@@ -190,7 +188,7 @@ def view_data(request, curate_data_structure_id):
     """
     try:
         # get data structure
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         # check ownership
         _check_owner(request, accessed_object=curate_data_structure)
 
@@ -254,7 +252,7 @@ def download_current_xml(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
     # check ownership
     _check_owner(request, accessed_object=curate_data_structure)
 
@@ -283,7 +281,7 @@ def download_xsd(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
     # check ownership
     _check_owner(request, accessed_object=curate_data_structure)
 
@@ -372,7 +370,7 @@ def update_data_structure_root(curate_data_structure, root_element):
     # reset form string
     curate_data_structure.form_string = None
     # save the data structure
-    data_structure_api.upsert(curate_data_structure)
+    curate_data_structure_api.upsert(curate_data_structure)
 
 
 def _read_file_content(file_path):

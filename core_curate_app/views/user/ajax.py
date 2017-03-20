@@ -18,7 +18,6 @@ from core_curate_app.utils.parser import get_parser
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.parser import delete_branch_from_db
-from core_parser_app.components.data_structure import api as data_structure_api
 from core_main_app.components.data import api as data_api
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
@@ -143,7 +142,7 @@ def clear_fields(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # delete existing elements
         if curate_data_structure.data_structure_element_root is not None:
@@ -175,7 +174,7 @@ def cancel_changes(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # delete existing elements
         if curate_data_structure.data_structure_element_root is not None:
@@ -217,7 +216,7 @@ def cancel_form(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # TODO: delete cascade curate data structure elements
         # delete existing elements
@@ -243,7 +242,7 @@ def save_form(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # generate xml data
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -258,7 +257,7 @@ def save_form(request):
             curate_data_structure.data_structure_element_root = None
 
         # save data structure
-        data_structure_api.upsert(curate_data_structure)
+        curate_data_structure_api.upsert(curate_data_structure)
 
         return HttpResponse(json.dumps({}), content_type='application/json')
     except:
@@ -278,7 +277,7 @@ def validate_form(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # generate the XML
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -314,7 +313,7 @@ def save_data(request):
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
-        curate_data_structure = data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # generate the XML
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -392,7 +391,7 @@ def _start_curate_get(request):
         template_id = request.GET['template_id']
         template = loader.get_template('core_curate_app/user/curate_start.html')
 
-        open_form = users_forms.OpenForm(forms=curate_data_structure_api.get_by_user_id_and_template_id(
+        open_form = users_forms.OpenForm(forms=curate_data_structure_api.get_all_by_user_id_and_template_id(
             str(request.user.id),
             template_id))
         new_form = users_forms.NewForm()

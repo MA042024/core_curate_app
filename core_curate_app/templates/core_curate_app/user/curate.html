@@ -32,7 +32,7 @@ automatically load the appropriate form and display it on the next page.
             {% for template in data.userTemplates %}
                 {% cycle 'even' '' as rowcolors silent %}
                 <tr class="{{ rowcolors }}">
-                    <td templateID='{{template.id}}'>{{ template.title }}</td>
+                    <td templateID='{{template.current}}'>{{ template.title }}</td>
                     <td>
                         <button class="btn set-template" >
                             <i class="icon-plus-sign"></i> Set as current template
