@@ -76,6 +76,33 @@ class TestCurateDataStructureGetByUserIdAndTemplateId(TestCase):
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
 
 
+class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
+
+    @patch.object(CurateDataStructure, 'get_by_user_id_and_template_id_and_name')
+    def test_curate_data_structure_get_by_user_and_template_and_name_return_curate_data_structure(self,
+                                                                                                    mock_get):
+        # Arrange
+        mock_data_1 = CurateDataStructure(user='1', template=_get_template(), name='name_title_1')
+        mock_get.return_value = mock_data_1
+        # Act
+        result = curate_data_structure_api.get_by_user_id_and_template_id_and_name(1, 1, 'name_title_1')
+        # Assert
+        self.assertIsInstance(result, CurateDataStructure)
+
+    @patch.object(CurateDataStructure, 'get_by_user_id_and_template_id_and_name')
+    def test_curate_data_structure_get_by_user_and_template_and_name_raises_does_not_exist_error_if_not_found(self, mock_get):
+        # Arrange
+        mock_get.side_effect = exceptions.DoesNotExist('')
+        # Act # Assert
+        with self.assertRaises(exceptions.DoesNotExist):
+            curate_data_structure_api.get_by_user_id_and_template_id_and_name(1, 1, 'name_title_1')
+
+    def test_data_structure_get_by_user_and_template_and_name_raises_model_error_if_not_found(self):
+        # Act # Assert
+        with self.assertRaises(exceptions.ModelError):
+            curate_data_structure_api.get_by_user_id_and_template_id_and_name(1, 1, 'name_title_1')
+
+
 def _get_template():
     template = Template()
     template.id_field = 1

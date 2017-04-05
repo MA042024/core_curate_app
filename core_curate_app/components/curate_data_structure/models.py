@@ -55,3 +55,17 @@ class CurateDataStructure(DataStructure):
 
         """
         return CurateDataStructure.objects(user=str(user_id), template=str(template_id)).all()
+
+    @staticmethod
+    def get_by_user_id_and_template_id_and_name(user_id, template_id, name):
+        """Returns the curate data structure with user, template id and name
+
+        Returns:
+
+        """
+        try:
+            return CurateDataStructure.objects.get(user=str(user_id), template=str(template_id), name=name)
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(e.message)
+        except Exception as ex:
+            raise exceptions.ModelError(ex.message)
