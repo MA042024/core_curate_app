@@ -1,6 +1,7 @@
 """ Curate data Structure api
 """
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_parser_app.tools.parser import parser
 
 
 def upsert(curate_data_structure):
@@ -70,3 +71,17 @@ def get_by_user_id_and_template_id_and_name(user_id, template_id, name):
 
     """
     return CurateDataStructure.get_by_user_id_and_template_id_and_name(user_id, template_id, name)
+
+
+def delete(curate_data_structure):
+    """ Delete the curate data structure and the element associated
+
+    Args:
+        curate_data_structure:
+    """
+
+    # Delete data element structure
+    if curate_data_structure.data_structure_element_root is not None:
+        parser.delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
+    # Delete curate data structure
+    CurateDataStructure.delete(curate_data_structure)

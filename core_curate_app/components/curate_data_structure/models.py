@@ -69,3 +69,11 @@ class CurateDataStructure(DataStructure):
             raise exceptions.DoesNotExist(e.message)
         except Exception as ex:
             raise exceptions.ModelError(ex.message)
+        return CurateDataStructure.objects.get(user=str(user_id), template=str(template_id), name=name)
+
+    @staticmethod
+    def delete(curate_data_structure):
+        """Delete a curate data structure
+
+        """
+        curate_data_structure.delete()
