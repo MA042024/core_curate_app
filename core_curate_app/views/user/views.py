@@ -117,11 +117,11 @@ def enter_data(request, curate_data_structure_id):
                     "is_raw": True
                 },
                 {
-                    "path": "core_curate_app/user/js/modules.js",
+                    "path": "core_parser_app/js/modules.js",
                     "is_raw": False
                 },
                 {
-                    "path": "core_curate_app/user/js/modules.raw.js",
+                    "path": "core_parser_app/js/modules.raw.js",
                     "is_raw": True
                 },
                 {

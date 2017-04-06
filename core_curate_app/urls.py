@@ -1,6 +1,6 @@
 """ Url router for the curate application
 """
-from django.conf.urls import url, include
+from django.conf.urls import url
 import core_curate_app.views.user.views as user_views
 import core_curate_app.views.user.ajax as user_ajax
 
@@ -36,5 +36,4 @@ urlpatterns = [
         name='core_curate_save_data'),
     url(r'^validate-form$', user_ajax.validate_form,
         name='core_curate_validate_form'),
-    url(r'', include('core_parser_app.urls')),
 ]
