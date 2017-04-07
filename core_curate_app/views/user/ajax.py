@@ -218,12 +218,7 @@ def cancel_form(request):
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
-        # TODO: delete cascade curate data structure elements
-        # delete existing elements
-        if curate_data_structure.data_structure_element_root is not None:
-            delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
-        # FIXME: use delete api
-        curate_data_structure.delete()
+        curate_data_structure_api.delete(curate_data_structure)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except:
@@ -333,10 +328,7 @@ def save_data(request):
         # save data
         data_api.upsert(data)
 
-        # TODO: delete cascade curate data structure elements
-        delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
-        # FIXME: use delete api
-        curate_data_structure.delete()
+        curate_data_structure_api.delete(curate_data_structure)
     except Exception, e:
         message = e.message.replace('"', '\'')
         response_dict['errors'] = message

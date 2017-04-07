@@ -1,35 +1,23 @@
-//Load controllers for view data
+/**
+ * Load controllers for view data
+ */
 $(document).ready(function() {
-    $('.btn.download-xml').on('click', downloadXML);
     $('.btn.save-to-repo').on('click', saveToRepository);
 });
 
-//Download the current XML document
-var downloadXML = function()
-{
-    window.location = downloadXMLUrl;
-};
 
-//Save Form to repository
+/**
+ * Save Form to repository
+ */
 var saveToRepository = function()
 {
-    $(function() {
-        $( "#dialog-save-confirm-message" ).dialog({
-          modal: true,
-          buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                Save: function() {
-                    saveToRepositoryProcess();
-                    $( this ).dialog( "close" );
-                }
-            }
-        });
-      });
+    $("#save-modal").modal("show");
+    $("#btn-save").on("click", saveToRepositoryProcess);
 };
 
-// AJAX, to start form save
+/**
+ * AJAX, to start form save
+ */
 var saveToRepositoryProcess = function()
 {
    var objectID = $("#curate_data_structure_id").html();
@@ -41,45 +29,39 @@ var saveToRepositoryProcess = function()
         },
         dataType: 'json',
         success : function(data) {
+            console.log("test");
+            $("#save-modal").modal("hide");
             XMLDataSavedSuccess();
         },
-        error:function(data){
-            console.log(data);
+        error: function(data){
+            console.log("error");
+            $("#save-modal").modal("hide");
             XMLDataSavedError(data.responseJSON.errors);
         }
     });
 };
 
-//Saved XML data to DB success message.
+/**
+ * Saved XML data to DB success message
+ */
 var XMLDataSavedSuccess = function()
 {
-    $(function() {
-        $( "#dialog-saved-success-message" ).dialog({
-            modal: true,
-            close: function(){
-                window.location = "/curate"
-            },
-            buttons: {
-                Ok: function() {
-                    $( this ).dialog( "close" );
-                }
-            }
-        });
+    var $saved_success_modal = $("#save-success-modal");
+    $saved_success_modal.modal("show");
+    $saved_success_modal.on("hidden.bs.modal", function () {
+        window.location = curateIndexUrl;
     });
 };
 
-//Saved XML data to DB error message.
+/**
+ * Saved XML data to DB error message.
+ * @param errors
+ */
 var XMLDataSavedError = function(errors)
 {
-    $("#saveErrorMessage").html(errors);
-    $(function() {
-        $( "#dialog-saved-error-message" ).dialog({
-            modal: true,
-            buttons: {
-                Ok: function() {
-                    $( this ).dialog( "close" );
-                }
-            }
-        });
+    var $saved_error_modal = $("#save-error-modal");
+    $saved_error_modal.modal("show");
+    $saved_error_modal.on("hidden.bs.modal", function () {
+        window.location = curateIndexUrl;
     });
 };

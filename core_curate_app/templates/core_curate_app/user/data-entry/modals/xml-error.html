@@ -1,0 +1,12 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}xml-error-modal{% endblock %}
+{% block modal_title %}Validation Error{% endblock %}
+
+{% block modal_body %}
+<div id="xmlErrorMessage"></div>
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default" data-dismiss="modal" href="#">Ok</a>
+{% endblock %}

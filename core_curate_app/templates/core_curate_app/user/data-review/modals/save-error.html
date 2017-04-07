@@ -1,0 +1,12 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}save-error-modal{% endblock %}
+{% block modal_title %}Error{% endblock %}
+
+{% block modal_body %}
+<div id="saveErrorMessage"></div>
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default" data-dismiss="modal" href="#">Ok</a>
+{% endblock %}

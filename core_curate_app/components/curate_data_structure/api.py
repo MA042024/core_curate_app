@@ -74,7 +74,7 @@ def get_by_user_id_and_template_id_and_name(user_id, template_id, name):
 
 
 def delete(curate_data_structure):
-    """ Delete the curate data structure and the element associated
+    """ Deletes the curate data structure and the element associated
 
     Args:
         curate_data_structure:
@@ -84,4 +84,4 @@ def delete(curate_data_structure):
     if curate_data_structure.data_structure_element_root is not None:
         parser.delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
     # Delete curate data structure
-    CurateDataStructure.delete(curate_data_structure)
+    curate_data_structure.delete()

@@ -156,6 +156,19 @@ def enter_data(request, curate_data_structure_id):
             "css": ['core_curate_app/user/css/xsd_form.css']
         }
 
+        modals = [
+            'core_curate_app/user/data-entry/modals/cancel-changes.html',
+            'core_curate_app/user/data-entry/modals/cancel-form.html',
+            'core_curate_app/user/data-entry/modals/canceled-form.html',
+            'core_curate_app/user/data-entry/modals/clear-fields.html',
+            'core_curate_app/user/data-entry/modals/download-options.html',
+            'core_curate_app/user/data-entry/modals/save-form.html',
+            'core_curate_app/user/data-entry/modals/saved-form.html',
+            'core_curate_app/user/data-entry/modals/use-validation.html',
+            'core_curate_app/user/data-entry/modals/xml-error.html',
+            'core_curate_app/user/data-entry/modals/xml-valid.html',
+        ]
+
         # Set the context
         context = {
             "edit": True if curate_data_structure.data is not None else False,
@@ -164,9 +177,10 @@ def enter_data(request, curate_data_structure_id):
         }
 
         return render(request,
-                      'core_curate_app/user/enter_data.html',
+                      'core_curate_app/user/data-entry/enter_data.html',
                       assets=assets,
-                      context=context)
+                      context=context,
+                      modals=modals)
     except Exception, e:
         return render(request,
                       'core_curate_app/user/errors.html',
@@ -228,10 +242,17 @@ def view_data(request, curate_data_structure_id):
             "data_structure": curate_data_structure,
         }
 
+        modals = [
+            'core_curate_app/user/data-review/modals/save.html',
+            'core_curate_app/user/data-review/modals/save-error.html',
+            'core_curate_app/user/data-review/modals/save-success.html',
+        ]
+
         return render(request,
-                      'core_curate_app/user/view_data.html',
+                      'core_curate_app/user/data-review/view_data.html',
                       assets=assets,
-                      context=context)
+                      context=context,
+                      modals=modals)
     except Exception, e:
         return render(request,
                       'core_curate_app/user/errors.html',

@@ -1,0 +1,13 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}cancel-changes-modal{% endblock %}
+{% block modal_title %}Cancel Changes{% endblock %}
+
+{% block modal_body %}
+Are you sure you want to cancel your changes? All your changes since the last save will be lost.
+{% endblock %}
+
+{% block modal_footer %}
+<a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+<a id="btn-cancel-changes" class="btn btn-default">Confirm</a>
+{% endblock %}
