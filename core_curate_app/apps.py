@@ -15,4 +15,4 @@ class CurateAppConfig(AppConfig):
         Returns:
 
         """
-        discover.init_rules()
+        discover.init_permissions()

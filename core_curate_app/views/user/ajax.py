@@ -9,6 +9,9 @@ import core_curate_app.common.exceptions as exceptions
 import core_curate_app.views.user.forms as users_forms
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
+import core_main_app.utils.decorators as decorators
+import core_curate_app.permissions.rights as rights
+
 from core_curate_app.views.user.views import generate_form, render_form, update_data_structure_root, render_xml
 from core_main_app.components.data.models import Data
 from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
@@ -23,11 +26,12 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
-# TODO: permissions
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def start_curate(request):
-    """ Load forms to start curation
+    """ Load forms to start curating
 
     Args:
         request:
@@ -44,6 +48,8 @@ def start_curate(request):
         return HttpResponseBadRequest(e.message)
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def generate_choice(request):
     """Generates a choice branch absent from the form
 
@@ -63,6 +69,8 @@ def generate_choice(request):
     return HttpResponse(html_form)
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def generate_element(request):
     """Generates an element absent from the form
 
@@ -83,6 +91,8 @@ def generate_element(request):
 
 
 # TODO: need to be reworked
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def remove_element(request):
     """Removes an element from the form
 
@@ -130,6 +140,8 @@ def remove_element(request):
         return HttpResponse(json.dumps(response))
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def clear_fields(request):
     """Clear fields of the current form
 
@@ -162,6 +174,8 @@ def clear_fields(request):
         return HttpResponseBadRequest()
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def cancel_changes(request):
     """Cancel changes of the current form
 
@@ -204,6 +218,8 @@ def cancel_changes(request):
         return HttpResponseBadRequest()
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def cancel_form(request):
     """Cancel current form
 
@@ -225,6 +241,8 @@ def cancel_form(request):
         return HttpResponseBadRequest()
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def save_form(request):
     """Saves the current form in data base. Converts it to XML format first.
 
@@ -259,6 +277,8 @@ def save_form(request):
         return HttpResponseBadRequest()
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def validate_form(request):
     """Validate data present in the form via XML validation
 
@@ -295,6 +315,8 @@ def validate_form(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, raise_exception=True)
 def save_data(request):
     """Saves data - deletes curate data structure
 
