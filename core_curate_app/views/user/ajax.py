@@ -353,8 +353,7 @@ def save_data(request):
         curate_data_structure_api.delete(curate_data_structure)
     except Exception, e:
         message = e.message.replace('"', '\'')
-        response_dict['errors'] = message
-        return HttpResponseBadRequest(json.dumps(response_dict), content_type='application/javascript')
+        return HttpResponseBadRequest(message, content_type='application/javascript')
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 

@@ -34,9 +34,8 @@ var saveToRepositoryProcess = function()
             XMLDataSavedSuccess();
         },
         error: function(data){
-            console.log("error");
             $("#save-modal").modal("hide");
-            XMLDataSavedError(data.responseJSON.errors);
+            XMLDataSavedError(data.responseText);
         }
     });
 };
@@ -60,8 +59,6 @@ var XMLDataSavedSuccess = function()
 var XMLDataSavedError = function(errors)
 {
     var $saved_error_modal = $("#save-error-modal");
+    $("#saveErrorMessage").html(errors);
     $saved_error_modal.modal("show");
-    $saved_error_modal.on("hidden.bs.modal", function () {
-        window.location = curateIndexUrl;
-    });
 };
