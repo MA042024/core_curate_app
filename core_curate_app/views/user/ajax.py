@@ -196,7 +196,7 @@ def cancel_changes(request):
 
         if curate_data_structure.data is not None:
             # data already saved, reload from data
-            xml_data = curate_data_structure.data.xml_file
+            xml_data = curate_data_structure.data.xml_content
         elif curate_data_structure.form_string is not None:
             # form already saved, reload from saved form
             xml_data = curate_data_structure.form_string
@@ -346,7 +346,7 @@ def save_data(request):
             data.user_id = str(request.user.id)
 
         # set content
-        data.xml_file = xml_data
+        data.xml_content = xml_data
         # save data
         data_api.upsert(data)
 
