@@ -1,0 +1,14 @@
+{% load xsl_transform_tag %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <h2>{{ data.data_structure.name }}</h2>
+            {{ data.data_structure.form_string|xsl_transform|safe}}
+        </div>
+        <div class="col-md-6">
+            <button id="btn-previous-page" type="button" style="margin-top: 1em;" class="btn btn-danger pull-right">
+                Back to previous
+            </button>
+        </div>
+    </div>
+</div>

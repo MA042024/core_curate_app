@@ -36,4 +36,6 @@ urlpatterns = [
         name='core_curate_save_data'),
     url(r'^validate-form$', user_ajax.validate_form,
         name='core_curate_validate_form'),
+    url(r'^view-form/(?P<curate_data_structure_id>\w+)$', user_views.view_form,
+        name='core_curate_view_form')
 ]

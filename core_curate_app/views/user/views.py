@@ -414,3 +414,51 @@ def _check_owner(request, accessed_object):
         # If not the owner of the accessed object
         if str(request.user.id) != accessed_object.user:
             raise CoreError("You are not the owner of the resource that you are trying to access")
+
+
+def view_form(request, curate_data_structure_id):
+    """
+        Loads the form and renders it.
+
+    Args: request:
+    Args: curate_data_structure_id:
+    Returns:
+    """
+    try:
+        # get data structure
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+        # check ownership
+        _check_owner(request, accessed_object=curate_data_structure)
+
+        # generate xml string
+        curate_data_structure.form_string = render_xml(curate_data_structure.data_structure_element_root)
+
+        # Set the assets
+        assets = {
+            "js": [
+                {
+                    "path": "core_main_app/common/js/XMLTree.js",
+                    "is_raw": False
+                },
+                {
+                    "path": 'core_main_app/user/js/data/detail.js',
+                    "is_raw": False
+                }
+            ],
+            "css": ['core_main_app/common/css/XMLTree.css']
+        }
+
+        # Set the context
+        context = {
+            "data_structure": curate_data_structure,
+        }
+
+        return render(request,
+                      'core_curate_app/user/detail.html',
+                      assets=assets,
+                      context=context)
+    except Exception, e:
+        return render(request,
+                      'core_curate_app/user/errors.html',
+                      assets={},
+                      context={'errors': e.message})
