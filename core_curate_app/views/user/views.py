@@ -3,9 +3,7 @@
 from django.http.response import HttpResponse
 from django.core.servers.basehttp import FileWrapper
 from django.core.urlresolvers import reverse_lazy
-from django.contrib.staticfiles import finders
 from cStringIO import StringIO
-from os.path import join
 
 import core_main_app.utils.decorators as decorators
 import core_curate_app.permissions.rights as rights
@@ -13,7 +11,6 @@ import core_curate_app.permissions.rights as rights
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError
 from core_main_app.utils.rendering import render
-from core_main_app.utils.xml import xsl_transform
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
@@ -209,13 +206,6 @@ def view_data(request, curate_data_structure_id):
         # generate xml string
         xml_string = render_xml(curate_data_structure.data_structure_element_root)
 
-        # loads XSLT
-        xslt_path = finders.find(join('core_main_app', 'common', 'xsl', 'xml2html.xsl'))
-        # reads XSLT
-        xslt_string = _read_file_content(xslt_path)
-        # transform XML to HTML
-        xml_to_html_string = xsl_transform(xml_string, xslt_string)
-
         # Set the assets
         assets = {
             "js": [
@@ -238,7 +228,7 @@ def view_data(request, curate_data_structure_id):
         # Set the context
         context = {
             "edit": True if curate_data_structure.data is not None else False,
-            "xml_tree": xml_to_html_string,
+            "xml_string": xml_string,
             "data_structure": curate_data_structure,
         }
 

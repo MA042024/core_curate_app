@@ -1,3 +1,4 @@
+{% load xsl_transform_tag %}
 <h1>View Data</h1>
 
 <div class="btn-group pull-right">
@@ -10,7 +11,7 @@
 <span>Title: {{data.data_structure.name}}</span>
 
 <div id="XMLHolder">
-{{data.xml_tree|safe}}
+{{data.xml_string|xsl_transform|safe}}
 </div>
 
 <div id="curate_data_structure_id" style="display: none;">{{ data.data_structure.id }}</div>
