@@ -11,7 +11,7 @@ $(document).ready(function() {
  */
 var saveToRepository = function()
 {
-    $("#save-modal").modal("show");
+    $("#save-modal").modal({backdrop: 'static', keyboard: false}, 'show');
     $("#btn-save").on("click", saveToRepositoryProcess);
 };
 
@@ -21,6 +21,10 @@ var saveToRepository = function()
 var saveToRepositoryProcess = function()
 {
    var objectID = $("#curate_data_structure_id").html();
+   // disable save button
+   var $save_button = $("#btn-save");
+   $save_button.attr('disabled','disabled')
+
    $.ajax({
         url : saveDataUrl,
         type: 'POST',
@@ -29,7 +33,6 @@ var saveToRepositoryProcess = function()
         },
         dataType: 'json',
         success : function(data) {
-            console.log("test");
             $("#save-modal").modal("hide");
             XMLDataSavedSuccess();
         },
