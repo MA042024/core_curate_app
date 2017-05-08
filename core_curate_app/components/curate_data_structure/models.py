@@ -69,3 +69,23 @@ class CurateDataStructure(DataStructure):
             raise exceptions.DoesNotExist(e.message)
         except Exception as ex:
             raise exceptions.ModelError(ex.message)
+
+    @staticmethod
+    def get_all_by_user_id_with_no_data(user_id):
+        """
+        Returns all the curate date structure of the user, with no data.
+
+        Args: user_id:
+        Return:
+        """
+        return CurateDataStructure.objects(user=str(user_id), data__exists=False).all()
+
+    @staticmethod
+    def get_all_except_user_id_with_no_data(user_id):
+        """
+        Returns all the curate date structure except the one of the user, with no data.
+
+        Args: user_id:
+        Return:
+        """
+        return CurateDataStructure.objects(user__ne=str(user_id), data__exists=False).all()

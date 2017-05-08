@@ -85,3 +85,21 @@ def delete(curate_data_structure):
         parser.delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
     # Delete curate data structure
     curate_data_structure.delete()
+
+
+def get_all_by_user_id_with_no_data(user_id):
+    """ Returns all the curate date structure of the user, with no data.
+
+    Args: user_id:
+    Returns:
+    """
+    return CurateDataStructure.get_all_by_user_id_with_no_data(user_id)
+
+
+def get_all_except_user_id_with_no_data(user_id):
+    """ Returns all the curate date structure except the one of the user, with no data.
+
+    Args: user_id:
+    Returns:
+    """
+    return CurateDataStructure.get_all_except_user_id_with_no_data(user_id)
