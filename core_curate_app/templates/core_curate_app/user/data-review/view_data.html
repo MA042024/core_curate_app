@@ -11,7 +11,8 @@
 <span>Title: {{data.data_structure.name}}</span>
 
 <div id="XMLHolder">
-{{data.xml_string|xsl_transform|safe}}
+{% xsl_transform_detail xml_content=data.xml_string as xml_representation %}
+{{ xml_representation|safe}}
 </div>
 
 <div id="curate_data_structure_id" style="display: none;">{{ data.data_structure.id }}</div>

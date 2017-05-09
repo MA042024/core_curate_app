@@ -198,10 +198,7 @@ def view_data(request, curate_data_structure_id):
 
     """
     try:
-        # get data structure
-        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-        # check ownership
-        _check_owner(request, accessed_object=curate_data_structure)
+        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
         # generate xml string
         xml_string = render_xml(curate_data_structure.data_structure_element_root)
@@ -416,6 +413,8 @@ def _check_owner(request, accessed_object):
             raise CoreError("You are not the owner of the resource that you are trying to access")
 
 
+@decorators.permission_required(content_type=rights.curate_content_type,
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
 def view_form(request, curate_data_structure_id):
     """
         Loads the form and renders it.
@@ -426,12 +425,11 @@ def view_form(request, curate_data_structure_id):
     """
     try:
         # get data structure
-        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-        # check ownership
-        _check_owner(request, accessed_object=curate_data_structure)
+        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
-        # generate xml string
-        curate_data_structure.form_string = render_xml(curate_data_structure.data_structure_element_root)
+        if curate_data_structure.data_structure_element_root is not None:
+            # generate xml string
+            curate_data_structure.form_string = render_xml(curate_data_structure.data_structure_element_root)
 
         # Set the assets
         assets = {
@@ -462,3 +460,19 @@ def view_form(request, curate_data_structure_id):
                       'core_curate_app/user/errors.html',
                       assets={},
                       context={'errors': e.message})
+
+
+def _get_curate_data_structure_by_id(curate_data_structure_id, request):
+    """ Gets the curate data structure by its id
+
+    Args: curate_data_structure_id:
+          request:
+    Returns:
+    """
+
+    # get data structure
+    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+    # check ownership
+    _check_owner(request, accessed_object=curate_data_structure)
+
+    return curate_data_structure
