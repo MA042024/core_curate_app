@@ -21,7 +21,7 @@ import core_main_app.components.template_version_manager.api as template_api
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def index(request):
     """ Page that allows to select a template to start curating
 
@@ -61,7 +61,7 @@ def index(request):
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def enter_data(request, curate_data_structure_id):
     """Loads view to enter data
 
@@ -186,7 +186,7 @@ def enter_data(request, curate_data_structure_id):
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def view_data(request, curate_data_structure_id):
     """Load the view to review data
 
@@ -248,7 +248,7 @@ def view_data(request, curate_data_structure_id):
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def download_current_xml(request, curate_data_structure_id):
     """Makes the current XML document available for download.
 
@@ -277,7 +277,7 @@ def download_current_xml(request, curate_data_structure_id):
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def download_xsd(request, curate_data_structure_id):
     """Makes the current XSD available for download.
 
@@ -414,7 +414,7 @@ def _check_owner(request, accessed_object):
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_website_login"))
+                                permission=rights.curate_access, login_url=reverse_lazy("core_website_app_login"))
 def view_form(request, curate_data_structure_id):
     """
         Loads the form and renders it.
