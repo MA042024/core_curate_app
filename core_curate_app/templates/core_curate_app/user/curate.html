@@ -16,7 +16,7 @@ automatically load the appropriate form and display it on the next page.
         <tr>
             <td templateID='{{template.current}}'>{{ template.title }}</td>
             <td>
-                <button class="btn btn-default set-template"><i class="icon-plus-sign"></i> Set as current template</button>
+                <button class="btn btn-primary set-template"><i class="icon-plus-sign"></i> Set as current template</button>
             </td>
         </tr>
     {% endfor %}
@@ -26,15 +26,14 @@ automatically load the appropriate form and display it on the next page.
     {% if data.userTemplates %}
         <table class="table table-bordered">
             <tr>
-                <th>Template name</th>
-                <th class="th-actions">Actions</th>
+                <th class="title-table">Template name</th>
+                <th class="title-table" style="width: 150px;">Actions</th>
             </tr>
             {% for template in data.userTemplates %}
-                {% cycle 'even' '' as rowcolors silent %}
-                <tr class="{{ rowcolors }}">
+                <tr>
                     <td templateID='{{template.current}}'>{{ template.title }}</td>
                     <td>
-                        <button class="btn btn-default set-template" >
+                        <button class="btn btn-primary set-template" >
                             <i class="icon-plus-sign"></i> Set as current template
                         </button>
                     </td>
