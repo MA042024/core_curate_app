@@ -381,20 +381,6 @@ def update_data_structure_root(curate_data_structure, root_element):
     curate_data_structure_api.upsert(curate_data_structure)
 
 
-def _read_file_content(file_path):
-    """Reads the content of a file
-
-    Args:
-        file_path:
-
-    Returns:
-
-    """
-    with open(file_path) as _file:
-        file_content = _file.read()
-        return file_content
-
-
 # FIXME: make this check more general
 def _check_owner(request, accessed_object):
     """Check if the object can be accessed by the user
