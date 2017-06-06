@@ -20,7 +20,6 @@ from core_curate_app.components.curate_data_structure.models import CurateDataSt
 from core_curate_app.utils.parser import get_parser
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
-from core_parser_app.tools.parser.parser import delete_branch_from_db
 from core_main_app.components.data import api as data_api
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
@@ -156,10 +155,6 @@ def clear_fields(request):
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
-        # delete existing elements
-        if curate_data_structure.data_structure_element_root is not None:
-            delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
-
         # generate form
         root_element = generate_form(request, curate_data_structure.template.content)
 
@@ -189,10 +184,6 @@ def cancel_changes(request):
         # get curate data structure
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-
-        # delete existing elements
-        if curate_data_structure.data_structure_element_root is not None:
-            delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
 
         if curate_data_structure.data is not None:
             # data already saved, reload from data
@@ -262,12 +253,6 @@ def save_form(request):
 
         # update curate data structure data
         curate_data_structure.form_string = xml_data
-
-        # TODO: delete cascade curate data structure elements
-        # delete existing elements
-        if curate_data_structure.data_structure_element_root is not None:
-            delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
-            curate_data_structure.data_structure_element_root = None
 
         # save data structure
         curate_data_structure_api.upsert(curate_data_structure)

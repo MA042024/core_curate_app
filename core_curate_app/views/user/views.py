@@ -17,6 +17,7 @@ from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 import core_main_app.components.template_version_manager.api as template_api
+from core_parser_app.tools.parser import parser
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -79,29 +80,20 @@ def enter_data(request, curate_data_structure_id):
         # check ownership
         _check_owner(request, accessed_object=curate_data_structure)
 
-        # curate data structure is not generated
-        if curate_data_structure.data_structure_element_root is None:
-            # get xsd string from the template
-            xsd_string = curate_data_structure.template.content
+        # get xsd string from the template
+        xsd_string = curate_data_structure.template.content
 
-            # if form string provided, use it to generate the form
-            if curate_data_structure.form_string is not None:
-                # a form is being edited
-                xml_string = curate_data_structure.form_string
-            else:
-                xml_string = None
+        # if form string provided, use it to generate the form
+        xml_string = curate_data_structure.form_string
 
-            # get the root element
-            root_element = generate_form(request, xsd_string, xml_string)
+        # get the root element
+        root_element = generate_form(request, xsd_string, xml_string)
 
-            # save the root element in the data structure
-            update_data_structure_root(curate_data_structure, root_element)
+        # save the root element in the data structure
+        update_data_structure_root(curate_data_structure, root_element)
 
-            # renders the form
-            xsd_form = render_form(request, root_element)
-        else:
-            # renders the form
-            xsd_form = render_form(request, curate_data_structure.data_structure_element_root)
+        # renders the form
+        xsd_form = render_form(request, root_element)
 
         # Set the assets
         assets = {
@@ -372,10 +364,12 @@ def update_data_structure_root(curate_data_structure, root_element):
     Returns:
 
     """
+    # FIXME: do the delete branch asynchronously
+    # Delete data structure elements
+    if curate_data_structure.data_structure_element_root is not None:
+        parser.delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
     # set the root element in the data structure
     curate_data_structure.data_structure_element_root = root_element
-    # reset form string
-    curate_data_structure.form_string = None
     # save the data structure
     curate_data_structure_api.upsert(curate_data_structure)
 

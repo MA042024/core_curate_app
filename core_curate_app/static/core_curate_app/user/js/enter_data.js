@@ -153,9 +153,6 @@ var sendSaveRequest = function() {
         success: function() {
             var $saved_form_modal = $("#saved-form-modal");
             $saved_form_modal.modal("show");
-            $saved_form_modal.on("hidden.bs.modal", function () {
-                window.location = curateIndexUrl;
-            });
         },
         error: function() {
 
