@@ -1,8 +1,14 @@
-from core_main_app.components.data.models import Data
-from core_parser_app.components.data_structure.models import DataStructure
+"""Curate Data Structure models
+"""
+
 from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
+
+from core_main_app.components.data.models import Data
 from core_main_app.commons import exceptions
+from core_parser_app.components.data_structure.models import DataStructure
+
+from mongoengine import errors as mongoengine_errors
+from mongoengine.errors import NotUniqueError
 
 
 class CurateDataStructure(DataStructure):
@@ -10,6 +16,19 @@ class CurateDataStructure(DataStructure):
     """
     form_string = fields.StringField(blank=True)
     data = fields.ReferenceField(Data, blank=True)
+
+    def save_object(self):
+        """Custom save
+
+        Returns:
+
+        """
+        try:
+            self.save()
+        except NotUniqueError:
+            raise exceptions.ModelError("Unable to create the document: not unique.")
+        except Exception as ex:
+            raise exceptions.ModelError(ex.message)
 
     @staticmethod
     def get_by_id(data_structure_id):

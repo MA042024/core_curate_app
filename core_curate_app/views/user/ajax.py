@@ -5,6 +5,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import RequestContext, loader
+
 import core_curate_app.common.exceptions as exceptions
 import core_curate_app.views.user.forms as users_forms
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
@@ -344,6 +345,14 @@ def save_data(request):
 
 
 def _start_curate_post(request):
+    """Start curate POST request
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     try:
         template_id = str(request.POST['hidden_value'])
         selected_option = request.POST['curate_form']

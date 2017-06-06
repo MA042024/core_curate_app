@@ -36,7 +36,7 @@ class TestCurateDataStructureGetById(TestCase):
 
 class TestCurateDataStructureUpsert(TestCase):
 
-    @patch.object(CurateDataStructure, 'save')
+    @patch.object(CurateDataStructure, 'save_object')
     def test_curate_data_structure_upsert_return_data_structure_element(self, mock_save):
         # Arrange
         mock_data_structure = CurateDataStructure("1", Template(), "name")

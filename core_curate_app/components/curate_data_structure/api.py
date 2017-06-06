@@ -13,7 +13,7 @@ def upsert(curate_data_structure):
     Returns:
 
     """
-    return curate_data_structure.save()
+    return curate_data_structure.save_object()
 
 
 def get_none():
