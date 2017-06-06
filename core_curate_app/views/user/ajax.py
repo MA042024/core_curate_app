@@ -345,14 +345,17 @@ def save_data(request):
 
 def _start_curate_post(request):
     try:
-        template_id = request.POST['hidden_value']
+        template_id = str(request.POST['hidden_value'])
         selected_option = request.POST['curate_form']
-        user_id = request.user.id
+        user_id = str(request.user.id)
         if selected_option == "new" or selected_option == "upload":
             if selected_option == "new":
                 new_form = users_forms.NewForm(request.POST)
                 if new_form.is_valid():
                     name = new_form.data['document_name']
+                    curate_data_structure = CurateDataStructure(user=user_id,
+                                                                template=template_id,
+                                                                name=name)
                 else:
                     raise exceptions.CurateAjaxError('Error occurred during the validation form')
             else:
@@ -366,13 +369,16 @@ def _start_curate_post(request):
                         name = xml_file.name
                         if not well_formed:
                             raise exceptions.CurateAjaxError('Uploaded File is not well formed XML')
+                        else:
+                            curate_data_structure = CurateDataStructure(user=user_id,
+                                                                        template=template_id,
+                                                                        name=name,
+                                                                        form_string=xml_data)
                     else:
                         raise exceptions.CurateAjaxError('Error occurred during the validation form')
                 except Exception as e:
                     raise exceptions.CurateAjaxError('Error during file uploading')
-            curate_data_structure = CurateDataStructure(user=str(user_id),
-                                                        template=str(template_id),
-                                                        name=name)
+
             curate_data_structure_api.upsert(curate_data_structure)
         else:
             open_form = users_forms.OpenForm(request.POST)
