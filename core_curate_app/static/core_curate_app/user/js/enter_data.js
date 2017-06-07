@@ -3,13 +3,6 @@
  */
 $(document).ready(function() {
     initModules();
-
-    $('.btn.clear-fields').on('click', clearFields);
-    $('.btn.cancel-changes').on('click', cancelChanges);
-    $('.btn.cancel-form').on('click', cancelForm);
-    $('.btn.save-form').on('click', saveForm);
-    $('.btn.download').on('click', downloadOptions);
-    $('.btn.validate').on('click', validateXML);
 });
 
 /**
@@ -18,7 +11,6 @@ $(document).ready(function() {
 var clearFields = function()
 {
     $("#clear-fields-modal").modal("show");
-    $("#btn-clear-fields").on("click", clear_fields);
 };
 
 /**
@@ -57,7 +49,6 @@ var clear_fields = function(){
 var cancelChanges = function()
 {
     $("#cancel-changes-modal").modal("show");
-    $("#btn-cancel-changes").on("click", cancel_changes);
 };
 
 
@@ -97,7 +88,6 @@ var cancel_changes = function(){
 var cancelForm = function()
 {
     $("#cancel-form-modal").modal("show");
-    $("#btn-cancel-form").on("click", cancel_form);
 };
 
 
@@ -134,7 +124,6 @@ var cancel_form = function(){
 var saveForm = function()
 {
     $("#save-form-modal").modal("show");
-    $("#btn-save-form").on("click", sendSaveRequest);
 };
 
 /**
@@ -261,3 +250,16 @@ var reviewDataDialog = function()
 {
     $("#xml-valid-modal").modal("show");
 };
+
+
+$(document).on('click', '.btn.clear-fields', clearFields);
+$(document).on('click', '.btn.cancel-changes', cancelChanges);
+$(document).on('click', '.btn.cancel-form', cancelForm);
+$(document).on('click', '.btn.save-form', saveForm);
+$(document).on('click', '.btn.download', downloadOptions);
+$(document).on('click', '.btn.validate', validateXML);
+
+$(document).on('click', '#btn-cancel-changes', cancel_changes);
+$(document).on('click', '#btn-clear-fields', clear_fields);
+$(document).on('click', '#btn-cancel-form', cancel_form);
+$(document).on('click', '#btn-save-form', sendSaveRequest);
