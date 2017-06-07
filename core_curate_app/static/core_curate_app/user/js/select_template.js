@@ -27,8 +27,6 @@ initBanner = function()
 setCurrentTemplate = function()
 {
     var templateID = $(this).parent().parent().children(':first').attr('templateID');
-    var tdElement = $(this).parent();
-    tdElement.html('<img src=loaderAjaxGif alt="Loading..."/>');
     $('.btn.set-template').off('click');
     set_current_template(templateID);
     return false;
