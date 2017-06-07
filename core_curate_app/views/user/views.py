@@ -10,6 +10,7 @@ import core_curate_app.permissions.rights as rights
 
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError
+from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.renderer.list import ListRenderer
@@ -266,14 +267,12 @@ def download_current_xml(request, curate_data_structure_id):
 
     # generate xml string
     xml_data = render_xml(curate_data_structure.data_structure_element_root)
-    # build a file
-    # TODO: test encoding
-    xml_data_file = StringIO(xml_data.encode('utf-8'))
 
     # build response with file
-    response = HttpResponse(FileWrapper(xml_data_file), content_type='application/xml')
-    response['Content-Disposition'] = 'attachment; filename=' + curate_data_structure.name
-    return response
+    return get_file_http_response(file_content=xml_data,
+                                  file_name=curate_data_structure.name,
+                                  content_type='application/xml',
+                                  extension='xml')
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
