@@ -17,9 +17,11 @@ def init_permissions():
 
         # Get curate permissions
         curate_access_perm = Permission.objects.get(codename=curate_rights.curate_access)
+        curate_view_data_save_repo_perm = Permission.objects.get(codename=curate_rights.curate_view_data_save_repo)
 
         # Add permissions to default group
-        default_group.permissions.add(curate_access_perm)
+        default_group.permissions.add(curate_access_perm,
+                                      curate_view_data_save_repo_perm)
 
     except Exception, e:
         print('ERROR : Impossible to init the permissions : ' + e.message)
