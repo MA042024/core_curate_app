@@ -286,15 +286,11 @@ def download_xsd(request, curate_data_structure_id):
 
     # get the template
     template = curate_data_structure.template
-    # build a file
-    # TODO: test encoding
-    template_file = StringIO(template.content.encode('utf-8'))
-
-    # build response with file
-    response = HttpResponse(FileWrapper(template_file), content_type='application/xsd')
-    response['Content-Disposition'] = 'attachment; filename=' + template.filename
-
-    return response
+    # return the file
+    return get_file_http_response(file_content=template.content,
+                                  file_name=template.filename,
+                                  content_type='application/xsd',
+                                  extension='.xsd')
 
 
 def generate_form(request, xsd_string, xml_string=None):
