@@ -1,9 +1,6 @@
 """Curate app user views
 """
-from django.http.response import HttpResponse
-from django.core.servers.basehttp import FileWrapper
 from django.core.urlresolvers import reverse_lazy
-from cStringIO import StringIO
 
 import core_main_app.utils.decorators as decorators
 import core_curate_app.permissions.rights as rights
@@ -25,7 +22,7 @@ from core_parser_app.tools.parser import parser
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def index(request):
-    """ Page that allows to select a template to start curating
+    """ Page that allows to select a template to start curating.
 
     Args:
         request:
@@ -65,7 +62,7 @@ def index(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def enter_data(request, curate_data_structure_id):
-    """Loads view to enter data
+    """Load view to enter data.
 
     Args:
         request:
@@ -181,7 +178,7 @@ def enter_data(request, curate_data_structure_id):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def view_data(request, curate_data_structure_id):
-    """Load the view to review data
+    """Load the view to review data.
 
     Args:
         request:
@@ -243,7 +240,7 @@ def view_data(request, curate_data_structure_id):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def download_current_xml(request, curate_data_structure_id):
-    """Makes the current XML document available for download.
+    """Make the current XML document available for download.
 
     Args:
         request:
@@ -270,7 +267,7 @@ def download_current_xml(request, curate_data_structure_id):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def download_xsd(request, curate_data_structure_id):
-    """Makes the current XSD available for download.
+    """Make the current XSD available for download.
 
     Args:
         request:
@@ -294,7 +291,7 @@ def download_xsd(request, curate_data_structure_id):
 
 
 def generate_form(request, xsd_string, xml_string=None):
-    """Generates the form using the parser, returns the root element
+    """Generate the form using the parser, returns the root element.
 
     Args:
         request:
@@ -315,7 +312,7 @@ def generate_form(request, xsd_string, xml_string=None):
 
 
 def render_form(request, root_element):
-    """Renders the form
+    """Render the form.
 
     Args:
         request:
@@ -333,7 +330,7 @@ def render_form(request, root_element):
 
 
 def render_xml(root_element):
-    """Renders the XML
+    """Render the XML.
 
     Args:
         root_element:
@@ -351,7 +348,7 @@ def render_xml(root_element):
 
 
 def update_data_structure_root(curate_data_structure, root_element):
-    """Updates the data structure with a root element
+    """Update the data structure with a root element.
 
     Args:
         curate_data_structure:
@@ -372,7 +369,7 @@ def update_data_structure_root(curate_data_structure, root_element):
 
 # FIXME: make this check more general
 def _check_owner(request, accessed_object):
-    """Check if the object can be accessed by the user
+    """Check if the object can be accessed by the user.
 
     Args:
         request:
@@ -392,7 +389,7 @@ def _check_owner(request, accessed_object):
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
 def view_form(request, curate_data_structure_id):
     """
-        Loads the form and renders it.
+        Load. the form and renders it.
 
     Args: request:
     Args: curate_data_structure_id:
@@ -438,7 +435,7 @@ def view_form(request, curate_data_structure_id):
 
 
 def _get_curate_data_structure_by_id(curate_data_structure_id, request):
-    """ Gets the curate data structure by its id
+    """ Get the curate data structure by its id.
 
     Args: curate_data_structure_id:
           request:

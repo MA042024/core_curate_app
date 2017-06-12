@@ -31,7 +31,7 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def start_curate(request):
-    """ Load forms to start curating
+    """ Load forms to start curating.
 
     Args:
         request:
@@ -51,7 +51,7 @@ def start_curate(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def generate_choice(request):
-    """Generates a choice branch absent from the form
+    """Generate a choice branch absent from the form.
 
     Args:
         request:
@@ -72,7 +72,7 @@ def generate_choice(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def generate_element(request):
-    """Generates an element absent from the form
+    """Generate an element absent from the form.
 
     Args:
         request:
@@ -94,7 +94,7 @@ def generate_element(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def remove_element(request):
-    """Removes an element from the form
+    """Remove an element from the form.
 
     Args:
         request:
@@ -143,7 +143,7 @@ def remove_element(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def clear_fields(request):
-    """Clear fields of the current form
+    """Clear fields of the current form.
 
     Args:
         request:
@@ -173,7 +173,7 @@ def clear_fields(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def cancel_changes(request):
-    """Cancel changes of the current form
+    """Cancel changes of the current form.
 
     Args:
         request:
@@ -213,7 +213,7 @@ def cancel_changes(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def cancel_form(request):
-    """Cancel current form
+    """Cancel current form.
 
     Args:
         request:
@@ -236,7 +236,7 @@ def cancel_form(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def save_form(request):
-    """Saves the current form in data base. Converts it to XML format first.
+    """Save the current form in data base. Converts it to XML format first.
 
     Args:
         request:
@@ -266,7 +266,7 @@ def save_form(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def validate_form(request):
-    """Validate data present in the form via XML validation
+    """Validate data present in the form via XML validation.
 
     Args:
         request:
@@ -304,7 +304,7 @@ def validate_form(request):
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
 def save_data(request):
-    """Saves data - deletes curate data structure
+    """Save data - delete curate data structure.
 
     Args:
         request:
@@ -345,7 +345,7 @@ def save_data(request):
 
 
 def _start_curate_post(request):
-    """Start curate POST request
+    """Start curate POST request.
 
     Args:
         request:
@@ -399,6 +399,14 @@ def _start_curate_post(request):
 
 
 def _start_curate_get(request):
+    """Start curate GET request.
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     try:
         context_params = dict()
         template_id = request.GET['template_id']
@@ -419,4 +427,3 @@ def _start_curate_get(request):
                             content_type='application/javascript')
     except Exception as e:
         raise exceptions.CurateAjaxError('Error occurred during the form display')
-

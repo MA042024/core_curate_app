@@ -5,17 +5,17 @@ import core_curate_app.components.curate_data_structure.api as curate_data_struc
 
 
 class NewForm(forms.Form):
-    """ Form to start curating from an empty form
+    """ Form to start curating from an empty form.
     """
     document_name = forms.CharField(label='', max_length=100, required=True,
                                     widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
 class FormDataModelChoiceField(forms.ModelChoiceField):
-    """ Choice Field to select an existing form
+    """ Choice Field to select an existing form.
     """
     def label_from_instance(self, obj):
-        """
+        """Return label.
 
         Args:
             obj:
@@ -27,7 +27,7 @@ class FormDataModelChoiceField(forms.ModelChoiceField):
 
 
 class OpenForm(forms.Form):
-    """ Form to open an existing form
+    """ Form to open an existing form.
     """
     forms = FormDataModelChoiceField(label='', queryset=curate_data_structure_api.get_none(),
                                      widget=forms.Select(attrs={ "class": "form-control"}))
@@ -42,13 +42,13 @@ class OpenForm(forms.Form):
 
 
 class UploadForm(forms.Form):
-    """ Form to start curating from a file
+    """ Form to start curating from a file.
     """
     file = forms.FileField(label='', widget=forms.FileInput(attrs={ "class": "form-control"}))
 
 
 class CancelChangesForm(forms.Form):
-    """ Cancel changes
+    """ Cancel changes form.
     """
     CANCEL_CHOICES = [('revert', 'Revert to my previously Saved Form'),
                       ('return', 'Return to Add Resources')]
@@ -57,7 +57,7 @@ class CancelChangesForm(forms.Form):
 
 
 class HiddenFieldsForm(forms.Form):
-    """ Form for hidden fields
+    """ Form for hidden fields.
     """
     hidden_value = forms.CharField(widget=forms.HiddenInput(), required=True)
 

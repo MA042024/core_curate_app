@@ -1,4 +1,4 @@
-""" discover rules for core main app
+""" Initialize permissions for core curate app
 """
 from django.contrib.auth.models import Group, Permission
 import core_main_app.permissions.rights as main_rights
@@ -6,7 +6,7 @@ import core_curate_app.permissions.rights as curate_rights
 
 
 def init_permissions():
-    """ Initialization of groups and permissions
+    """ Initialization of groups and permissions.
 
     Returns:
 

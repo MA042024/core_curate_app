@@ -7,9 +7,10 @@ from core_parser_app.tools.parser.parser import XSDParser
 
 
 def get_parser():
-    """
-    Load configuration for the parser
-    :return:
+    """Load configuration for the parser.
+
+    Returns:
+
     """
 
     return XSDParser(min_tree=PARSER_MIN_TREE,
