@@ -11,4 +11,5 @@ class Curate(models.Model):
         default_permissions = ()
         permissions = (
             (rights.curate_access, get_formatted_name(rights.curate_access)),
+            (rights.curate_view_data_save_repo, get_formatted_name(rights.curate_view_data_save_repo)),
         )
