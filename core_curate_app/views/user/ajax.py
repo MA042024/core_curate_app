@@ -334,7 +334,7 @@ def save_data(request):
         # set content
         data.xml_content = xml_data
         # save data
-        data_api.upsert(data)
+        data_api.upsert(data, request.user)
 
         curate_data_structure_api.delete(curate_data_structure)
     except Exception, e:
