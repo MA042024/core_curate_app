@@ -7,21 +7,20 @@ from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import RequestContext, loader
 
 import core_curate_app.common.exceptions as exceptions
-import core_curate_app.views.user.forms as users_forms
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
-
-import core_main_app.utils.decorators as decorators
 import core_curate_app.permissions.rights as rights
-
-from core_curate_app.views.user.views import generate_form, render_form, update_data_structure_root, render_xml
-from core_main_app.components.data.models import Data
-from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+import core_curate_app.views.user.forms as users_forms
+import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.utils.parser import get_parser
+from core_curate_app.views.user.views import generate_form, render_form, update_data_structure_root, render_xml
+from core_main_app.components.data import api as data_api
+from core_main_app.components.data.models import Data
+from core_main_app.components.lock import api as lock_api
+from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
-from core_main_app.components.data import api as data_api
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 # FIXME: delete_branch not deleting all elements
@@ -225,7 +224,9 @@ def cancel_form(request):
         # get curate data structure
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-
+        # unlock from database
+        if curate_data_structure.data is not None:
+            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
         curate_data_structure_api.delete(curate_data_structure)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -248,6 +249,10 @@ def save_form(request):
         # get curate data structure
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+
+        # unlock from database
+        if curate_data_structure.data is not None:
+            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
 
         # generate xml data
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -317,6 +322,10 @@ def save_data(request):
         # get curate data structure
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+
+        # unlock from database
+        if curate_data_structure.data is not None:
+            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
 
         # generate the XML
         xml_data = render_xml(curate_data_structure.data_structure_element_root)

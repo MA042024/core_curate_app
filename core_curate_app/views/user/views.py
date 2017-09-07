@@ -2,19 +2,19 @@
 """
 from django.core.urlresolvers import reverse_lazy
 
-import core_main_app.utils.decorators as decorators
 import core_curate_app.permissions.rights as rights
-
+import core_main_app.components.template_version_manager.api as template_api
+import core_main_app.utils.decorators as decorators
+from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 from core_curate_app.utils.parser import get_parser
-from core_main_app.commons.exceptions import CoreError
+from core_main_app.commons.exceptions import CoreError, LockError
+from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_parser_app.tools.parser import parser
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
-import core_main_app.components.template_version_manager.api as template_api
-from core_parser_app.tools.parser import parser
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -74,6 +74,11 @@ def enter_data(request, curate_data_structure_id):
     try:
         # get data structure
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+
+        # lock from database
+        if curate_data_structure.data is not None:
+            lock_api.set_lock_object(curate_data_structure.data, request.user)
+
         # check ownership
         _check_owner(request, accessed_object=curate_data_structure)
 
@@ -168,7 +173,19 @@ def enter_data(request, curate_data_structure_id):
                       assets=assets,
                       context=context,
                       modals=modals)
+    except LockError, ler:
+        return render(request,
+                      'core_curate_app/user/errors.html',
+                      assets={},
+                      context={'errors': ler.message})
     except Exception, e:
+        try:
+            # unlock from database
+            if curate_data_structure is not None and curate_data_structure.data is not None:
+                lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+        except:
+            pass
+
         return render(request,
                       'core_curate_app/user/errors.html',
                       assets={},
