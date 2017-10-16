@@ -1,7 +1,6 @@
 """ Apps file for setting core package when app is ready
 """
 from django.apps import AppConfig
-import core_curate_app.permissions.discover as discover
 
 
 class CurateAppConfig(AppConfig):
@@ -15,4 +14,5 @@ class CurateAppConfig(AppConfig):
         Returns:
 
         """
+        import core_curate_app.permissions.discover as discover
         discover.init_permissions()

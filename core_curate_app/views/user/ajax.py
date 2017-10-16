@@ -4,7 +4,7 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
-from django.template import RequestContext, loader
+from django.template import loader
 
 import core_curate_app.common.exceptions as exceptions
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
@@ -431,7 +431,9 @@ def _start_curate_get(request):
         context_params['open_form'] = open_form
         context_params['upload_form'] = upload_form
         context_params['hidden_form'] = hidden_form
-        context = RequestContext(request, context_params)
+        context = {}
+        context.update(request)
+        context.update(context_params)
         return HttpResponse(json.dumps({'template': template.render(context)}),
                             content_type='application/javascript')
     except Exception as e:
