@@ -26,7 +26,7 @@ class CurateDataStructure(DataStructure):
         try:
             return self.save()
         except NotUniqueError:
-            raise exceptions.ModelError("Unable to create the document: not unique.")
+            raise exceptions.ModelError("Unable to save the document: not unique.")
         except Exception as ex:
             raise exceptions.ModelError(ex.message)
 
