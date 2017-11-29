@@ -1,5 +1,9 @@
 """Curate app user views
 """
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_parser_app.tools.parser import parser
+from core_parser_app.tools.parser.renderer.list import ListRenderer
+from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 from django.core.urlresolvers import reverse_lazy
 
 import core_curate_app.permissions.rights as rights
@@ -11,10 +15,6 @@ from core_main_app.commons.exceptions import CoreError, LockError
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_parser_app.tools.parser import parser
-from core_parser_app.tools.parser.renderer.list import ListRenderer
-from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -400,55 +400,6 @@ def _check_owner(request, accessed_object):
         # If not the owner of the accessed object
         if str(request.user.id) != accessed_object.user:
             raise CoreError("You are not the owner of the resource that you are trying to access")
-
-
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
-def view_form(request, curate_data_structure_id):
-    """
-        Load. the form and renders it.
-
-    Args: request:
-    Args: curate_data_structure_id:
-    Returns:
-    """
-    try:
-        # get data structure
-        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
-
-        if curate_data_structure.data_structure_element_root is not None:
-            # generate xml string
-            curate_data_structure.form_string = render_xml(curate_data_structure.data_structure_element_root)
-
-        # Set the assets
-        assets = {
-            "js": [
-                {
-                    "path": "core_main_app/common/js/XMLTree.js",
-                    "is_raw": False
-                },
-                {
-                    "path": 'core_main_app/user/js/data/detail.js',
-                    "is_raw": False
-                }
-            ],
-            "css": ['core_main_app/common/css/XMLTree.css']
-        }
-
-        # Set the context
-        context = {
-            "data_structure": curate_data_structure,
-        }
-
-        return render(request,
-                      'core_curate_app/user/detail.html',
-                      assets=assets,
-                      context=context)
-    except Exception, e:
-        return render(request,
-                      'core_curate_app/user/errors.html',
-                      assets={},
-                      context={'errors': e.message})
 
 
 def _get_curate_data_structure_by_id(curate_data_structure_id, request):

@@ -1,9 +1,13 @@
 """ Url router for the curate application
 """
 from django.conf.urls import url
-import core_curate_app.views.user.views as user_views
-import core_curate_app.views.user.ajax as user_ajax
+from django.core.urlresolvers import reverse_lazy
 
+import core_curate_app.permissions.rights as rights
+import core_curate_app.views.user.ajax as user_ajax
+import core_curate_app.views.user.views as user_views
+from core_curate_app.views.common import views as common_views
+from core_main_app.utils.decorators import permission_required
 
 urlpatterns = [
     url(r'^$', user_views.index,
@@ -36,6 +40,9 @@ urlpatterns = [
         name='core_curate_save_data'),
     url(r'^validate-form$', user_ajax.validate_form,
         name='core_curate_validate_form'),
-    url(r'^view-form/(?P<curate_data_structure_id>\w+)$', user_views.view_form,
+    url(r'^view-form/(?P<curate_data_structure_id>\w+)$',
+        permission_required(content_type=rights.curate_content_type,
+        permission=rights.curate_access,
+        login_url=reverse_lazy("core_main_app_login"))(common_views.FormView.as_view()),
         name='core_curate_view_form')
 ]
