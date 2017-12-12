@@ -59,14 +59,16 @@ def index(request):
                   context=context)
 
 
+# FIXME: allow reopening a form with unsaved changes (may be temporary until curate workflow redesign)
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
-def enter_data(request, curate_data_structure_id):
+def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
     """Load view to enter data.
 
     Args:
         request:
         curate_data_structure_id:
+        reload_unsaved_changes:
 
     Returns:
 
@@ -85,14 +87,18 @@ def enter_data(request, curate_data_structure_id):
         # get xsd string from the template
         xsd_string = curate_data_structure.template.content
 
-        # if form string provided, use it to generate the form
-        xml_string = curate_data_structure.form_string
+        if reload_unsaved_changes:
+            # get root element from the data structure
+            root_element = curate_data_structure.data_structure_element_root
+        else:
+            # if form string provided, use it to generate the form
+            xml_string = curate_data_structure.form_string
 
-        # get the root element
-        root_element = generate_form(request, xsd_string, xml_string)
+            # get the root element
+            root_element = generate_form(request, xsd_string, xml_string)
 
-        # save the root element in the data structure
-        update_data_structure_root(curate_data_structure, root_element)
+            # save the root element in the data structure
+            update_data_structure_root(curate_data_structure, root_element)
 
         # renders the form
         xsd_form = render_form(request, root_element)
