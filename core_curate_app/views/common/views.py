@@ -16,9 +16,9 @@ class FormView(CommonView):
             # get data structure
             curate_data_structure = _get_curate_data_structure_by_id(kwargs['curate_data_structure_id'], request)
 
-            if curate_data_structure.data_structure_element_root is not None:
-                # generate xml string
-                curate_data_structure.form_string = render_xml(curate_data_structure.data_structure_element_root)
+            # TODO: fix with the rework on the curate workflow
+            if curate_data_structure.form_string is None:
+                raise Exception("The form was not saved. We can't display the correct data.")
 
             # Set the assets
             assets = {
