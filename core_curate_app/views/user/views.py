@@ -95,7 +95,7 @@ def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
             xml_string = curate_data_structure.form_string
 
             # get the root element
-            root_element = generate_form(request, xsd_string, xml_string)
+            root_element = generate_form(xsd_string, xml_string)
 
             # save the root element in the data structure
             update_data_structure_root(curate_data_structure, root_element)
@@ -313,11 +313,10 @@ def download_xsd(request, curate_data_structure_id):
                                   extension='.xsd')
 
 
-def generate_form(request, xsd_string, xml_string=None):
+def generate_form(xsd_string, xml_string=None):
     """Generate the form using the parser, returns the root element.
 
     Args:
-        request:
         xsd_string:
         xml_string:
 
@@ -327,7 +326,7 @@ def generate_form(request, xsd_string, xml_string=None):
     # build parser
     parser = get_parser()
     # generate form
-    root_element_id = parser.generate_form(request, xsd_string, xml_string)
+    root_element_id = parser.generate_form(xsd_string, xml_string)
     # get the root element
     root_element = data_structure_element_api.get_by_id(root_element_id)
 

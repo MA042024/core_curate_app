@@ -1,1 +1,1 @@
-var generateChoiceUrl = "{% url 'core_curate_generate_choice' %}";
+var generateChoiceUrl = "{% url 'core_curate_generate_choice' data.data_structure.id %}";

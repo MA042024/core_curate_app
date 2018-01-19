@@ -22,6 +22,7 @@ from core_parser_app.components.data_structure_element import api as data_struct
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+from core_main_app.components.template import api as template_api
 
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
@@ -49,19 +50,21 @@ def start_curate(request):
 
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
-def generate_choice(request):
+def generate_choice(request, curate_data_structure_id):
     """Generate a choice branch absent from the form.
 
     Args:
         request:
+        curate_data_structure_id:
 
     Returns:
 
     """
     try:
         element_id = request.POST['id']
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         xsd_parser = get_parser()
-        html_form = xsd_parser.generate_choice_absent(request, element_id)
+        html_form = xsd_parser.generate_choice_absent(request, element_id, curate_data_structure.template.content)
     except Exception, e:
         return HttpResponseBadRequest()
 
@@ -70,19 +73,21 @@ def generate_choice(request):
 
 @decorators.permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access, raise_exception=True)
-def generate_element(request):
+def generate_element(request, curate_data_structure_id):
     """Generate an element absent from the form.
 
     Args:
         request:
+        curate_data_structure_id:
 
     Returns:
 
     """
     try:
         element_id = request.POST['id']
+        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         xsd_parser = get_parser()
-        html_form = xsd_parser.generate_element_absent(request, element_id)
+        html_form = xsd_parser.generate_element_absent(request, element_id, curate_data_structure.template.content)
     except Exception, e:
         return HttpResponseBadRequest()
 
@@ -156,7 +161,7 @@ def clear_fields(request):
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
         # generate form
-        root_element = generate_form(request, curate_data_structure.template.content)
+        root_element = generate_form(curate_data_structure.template.content)
 
         # save the root element in the data structure
         update_data_structure_root(curate_data_structure, root_element)
@@ -196,7 +201,7 @@ def cancel_changes(request):
             xml_data = None
 
         # generate form
-        root_element = generate_form(request, curate_data_structure.template.content, xml_data)
+        root_element = generate_form(curate_data_structure.template.content, xml_data)
 
         # save the root element in the data structure
         update_data_structure_root(curate_data_structure, root_element)
