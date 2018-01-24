@@ -151,7 +151,8 @@ def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
                     "is_raw": True
                 },
             ],
-            "css": ['core_curate_app/user/css/xsd_form.css']
+            "css": ['core_curate_app/user/css/xsd_form.css',
+                    'core_parser_app/css/use.css']
         }
 
         modals = [
