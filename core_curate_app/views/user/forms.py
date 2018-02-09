@@ -30,7 +30,7 @@ class OpenForm(forms.Form):
     """ Form to open an existing form.
     """
     forms = FormDataModelChoiceField(label='', queryset=curate_data_structure_api.get_none(),
-                                     widget=forms.Select(attrs={ "class": "form-control"}))
+                                     widget=forms.Select(attrs={"class": "form-control"}))
 
     def __init__(self, *args, **kwargs):
         if 'forms' in kwargs:
@@ -44,7 +44,7 @@ class OpenForm(forms.Form):
 class UploadForm(forms.Form):
     """ Form to start curating from a file.
     """
-    file = forms.FileField(label='', widget=forms.FileInput(attrs={ "class": "form-control"}))
+    file = forms.FileField(label='', widget=forms.FileInput(attrs={"class": "form-control"}))
 
 
 class CancelChangesForm(forms.Form):

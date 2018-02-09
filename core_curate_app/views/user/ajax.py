@@ -24,6 +24,7 @@ from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 from core_main_app.components.template import api as template_api
 
+
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
 
@@ -426,9 +427,10 @@ def _start_curate_get(request):
         template_id = request.GET['template_id']
         template = loader.get_template('core_curate_app/user/curate_start.html')
 
-        open_form = users_forms.OpenForm(forms=curate_data_structure_api.get_all_by_user_id_and_template_id(
-            str(request.user.id),
-            template_id))
+        open_form = users_forms.OpenForm(
+            forms=curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
+                str(request.user.id),
+                template_id))
         new_form = users_forms.NewForm()
         upload_form = users_forms.UploadForm()
         hidden_form = users_forms.HiddenFieldsForm(hidden_value=template_id)
