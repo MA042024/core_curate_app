@@ -136,6 +136,17 @@ class CurateDataStructure(DataStructure):
                                            template=str(template_id),
                                            data__exists=False).all()
 
+    @staticmethod
+    def get_all_with_no_data():
+        """ Returns all curate data structure api with no link to a data.
+
+        Args:
+
+        Returns:
+
+        """
+        return CurateDataStructure.objects(data__exists=False).all()
+
 
 # Connect signals
 connector.connect(CurateDataStructure.pre_delete, signals.pre_delete, CurateDataStructure)

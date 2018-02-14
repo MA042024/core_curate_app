@@ -110,3 +110,12 @@ def get_all_by_user_id_and_template_id_with_no_data(user_id, template_id):
 
     """
     return CurateDataStructure.get_all_by_user_id_and_template_id_with_no_data(user_id, template_id)
+
+
+def get_all_with_no_data():
+    """ Returns all curate data structure api with no link to a data.
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_all_with_no_data()
