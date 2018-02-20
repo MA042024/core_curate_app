@@ -1,4 +1,4 @@
-core-main-app==1.0.0-alpha6
-core-parser-app==1.0.0-alpha6
-xml-utils==1.0.0-alpha6
-signals_utils==1.0.0-beta3
+core-main-app==1.0.0-beta1
+core-parser-app==1.0.0-beta1
+xml-utils==1.0.0-beta1
+signals_utils==1.0.0-beta5
