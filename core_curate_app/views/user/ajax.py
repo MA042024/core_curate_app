@@ -2,6 +2,8 @@
 """
 import json
 
+from django.contrib import messages
+from django.contrib.messages.storage.base import Message
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
@@ -22,7 +24,6 @@ from core_parser_app.components.data_structure_element import api as data_struct
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-from core_main_app.components.template import api as template_api
 
 
 # FIXME: delete_branch not deleting all elements
@@ -235,6 +236,9 @@ def cancel_form(request):
             lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
         curate_data_structure_api.delete(curate_data_structure)
 
+        # add success message
+        messages.add_message(request, messages.SUCCESS, 'Form deleted with success.')
+
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except:
         return HttpResponseBadRequest()
@@ -269,7 +273,11 @@ def save_form(request):
         # save data structure
         curate_data_structure_api.upsert(curate_data_structure)
 
-        return HttpResponse(json.dumps({}), content_type='application/json')
+        # add success message
+        message = Message(messages.SUCCESS, 'Form saved with success.')
+
+        return HttpResponse(json.dumps({'message': message.message, 'tags': message.tags}),
+                            content_type='application/json')
     except:
         return HttpResponseBadRequest()
 
@@ -323,7 +331,6 @@ def save_data(request):
     Returns:
 
     """
-    response_dict = {}
     try:
         # get curate data structure
         curate_data_structure_id = request.POST['id']
@@ -352,11 +359,13 @@ def save_data(request):
         data_api.upsert(data, request.user)
 
         curate_data_structure_api.delete(curate_data_structure)
+
+        messages.add_message(request, messages.SUCCESS, 'Data saved with success.')
     except Exception, e:
         message = e.message.replace('"', '\'')
         return HttpResponseBadRequest(message, content_type='application/javascript')
 
-    return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+    return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
 def _start_curate_post(request):

@@ -105,11 +105,7 @@ var cancel_form = function(){
         },
         dataType: "json",
         success: function(data){
-            var $canceled_form_modal = $("#canceled-form-modal");
-            $canceled_form_modal.modal("show");
-            $canceled_form_modal.on("hidden.bs.modal", function () {
-                window.location = curateIndexUrl;
-            });
+            window.location = curateIndexUrl;
         },
         error: function () {
 
@@ -139,9 +135,8 @@ var sendSaveRequest = function() {
             'id': objectID
         },
         dataType: 'json',
-        success: function() {
-            var $saved_form_modal = $("#saved-form-modal");
-            $saved_form_modal.modal("show");
+        success: function(data) {
+            $.notify(data.message, {style: data.tags });
         },
         error: function() {
 
