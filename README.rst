@@ -1,4 +1,5 @@
-core_curate_app
+===============
+Core Curate App
 ===============
 
 Curation functionalities for the curator core project.

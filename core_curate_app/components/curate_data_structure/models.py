@@ -1,11 +1,9 @@
 """Curate Data Structure models
 """
-
 from django_mongoengine import fields
 from mongoengine import errors as mongoengine_errors
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.base import CASCADE
-
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
