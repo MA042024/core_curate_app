@@ -98,6 +98,8 @@ displayTemplateProcess = function ()
                 window.location = data;
             },
             error: function(data){
+                // FIXME: temp fix for safari support
+                $( "#id_file" ).prop('disabled', false);
                 if (data.responseText != ""){
                     $("#form_start_errors").html(data.responseText);
                     $("#banner_errors").show(500);
@@ -141,6 +143,10 @@ validateStartCurate = function(){
 		$("#banner_errors").show(500)
 		return (false);
 	}else{
+	    // FIXME: temp fix for safari support
+	    if (selected_option != "upload"){
+            $( "#id_file" ).prop('disabled', true);
+        }
 		return (true)
 	}
 }
