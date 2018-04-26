@@ -119,3 +119,15 @@ def get_all_with_no_data():
 
     """
     return CurateDataStructure.get_all_with_no_data()
+
+
+def get_by_data_id(data_id):
+    """ Return the curate data structure with the given data id
+
+    Args:
+        data_id:
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_by_data_id(data_id)

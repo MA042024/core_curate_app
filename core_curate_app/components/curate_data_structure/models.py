@@ -145,6 +145,23 @@ class CurateDataStructure(DataStructure):
         """
         return CurateDataStructure.objects(data__exists=False).all()
 
+    @staticmethod
+    def get_by_data_id(data_id):
+        """ Return the curate data structure with the given data id
+
+        Args:
+            data_id:
+
+        Returns:
+
+        """
+        try:
+            return CurateDataStructure.objects.get(data=str(data_id))
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(e.message)
+        except Exception as ex:
+            raise exceptions.ModelError(ex.message)
+
 
 # Connect signals
 connector.connect(CurateDataStructure.pre_delete, signals.pre_delete, CurateDataStructure)

@@ -12,9 +12,11 @@ import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError, LockError
+from core_main_app.components.data.access_control import check_can_write_data
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
+
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -75,14 +77,17 @@ def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
     """
     try:
         # get data structure
-        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
         # lock from database
         if curate_data_structure.data is not None:
             lock_api.set_lock_object(curate_data_structure.data, request.user)
 
-        # check ownership
-        _check_owner(request, accessed_object=curate_data_structure)
+        # Check if we need to change the user.
+        # Code executed only if the data is unlocked. set_lock_object() raises LockError.
+        if str(request.user.id) != curate_data_structure.user:
+            curate_data_structure.user = str(request.user.id)
+            curate_data_structure = curate_data_structure_api.upsert(curate_data_structure)
 
         # get xsd string from the template
         xsd_string = curate_data_structure.template.content
@@ -270,9 +275,7 @@ def download_current_xml(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-    # check ownership
-    _check_owner(request, accessed_object=curate_data_structure)
+    curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
     # generate xml string
     xml_data = render_xml(curate_data_structure.data_structure_element_root)
@@ -297,9 +300,7 @@ def download_xsd(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-    # check ownership
-    _check_owner(request, accessed_object=curate_data_structure)
+    curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
     # get the template
     template = curate_data_structure.template
@@ -386,7 +387,29 @@ def update_data_structure_root(curate_data_structure, root_element):
     curate_data_structure_api.upsert(curate_data_structure)
 
 
-# FIXME: make this check more general
+def _get_curate_data_structure_by_id(curate_data_structure_id, request):
+    """ Get the curate data structure by its id.
+
+    Args: curate_data_structure_id:
+          request:
+    Returns:
+    """
+
+    # get data structure
+    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+
+    # If not link to a data, only ownership check
+    if curate_data_structure.data is None:
+        # check ownership
+        _check_owner(request, accessed_object=curate_data_structure)
+    # Check based on the data
+    else:
+        # check can write data
+        _check_can_write_data(request, accessed_object=curate_data_structure)
+
+    return curate_data_structure
+
+
 def _check_owner(request, accessed_object):
     """Check if the object can be accessed by the user.
 
@@ -404,17 +427,19 @@ def _check_owner(request, accessed_object):
             raise CoreError("You are not the owner of the resource that you are trying to access")
 
 
-def _get_curate_data_structure_by_id(curate_data_structure_id, request):
-    """ Get the curate data structure by its id.
+def _check_can_write_data(request, accessed_object):
+    """Check if the object can be accessed by the user in write mode.
 
-    Args: curate_data_structure_id:
-          request:
+    Args:
+        request:
+        accessed_object:
+
     Returns:
+
     """
-
-    # get data structure
-    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
-    # check ownership
-    _check_owner(request, accessed_object=curate_data_structure)
-
-    return curate_data_structure
+    try:
+        # Super user can access everything
+        if not request.user.is_superuser:
+            check_can_write_data(accessed_object.data, request.user)
+    except Exception, e:
+        raise CoreError(e.message)
