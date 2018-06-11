@@ -1,10 +1,8 @@
 """Curate app user views
 """
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_parser_app.tools.parser import parser
-from core_parser_app.tools.parser.renderer.list import ListRenderer
-from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 from django.core.urlresolvers import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import View
 
 import core_curate_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_api
@@ -16,6 +14,10 @@ from core_main_app.components.data.access_control import check_can_write_data
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_parser_app.tools.parser import parser
+from core_parser_app.tools.parser.renderer.list import ListRenderer
+from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
@@ -62,54 +64,11 @@ def index(request):
 
 
 # FIXME: allow reopening a form with unsaved changes (may be temporary until curate workflow redesign)
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
-def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
-    """Load view to enter data.
+class EnterDataView(View):
 
-    Args:
-        request:
-        curate_data_structure_id:
-        reload_unsaved_changes:
-
-    Returns:
-
-    """
-    try:
-        # get data structure
-        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
-
-        # lock from database
-        if curate_data_structure.data is not None:
-            lock_api.set_lock_object(curate_data_structure.data, request.user)
-
-        # Check if we need to change the user.
-        # Code executed only if the data is unlocked. set_lock_object() raises LockError.
-        if str(request.user.id) != curate_data_structure.user:
-            curate_data_structure.user = str(request.user.id)
-            curate_data_structure = curate_data_structure_api.upsert(curate_data_structure)
-
-        # get xsd string from the template
-        xsd_string = curate_data_structure.template.content
-
-        if reload_unsaved_changes:
-            # get root element from the data structure
-            root_element = curate_data_structure.data_structure_element_root
-        else:
-            # if form string provided, use it to generate the form
-            xml_string = curate_data_structure.form_string
-
-            # get the root element
-            root_element = generate_form(xsd_string, xml_string)
-
-            # save the root element in the data structure
-            update_data_structure_root(curate_data_structure, root_element)
-
-        # renders the form
-        xsd_form = render_form(request, root_element)
-
-        # Set the assets
-        assets = {
+    def __init__(self):
+        super(EnterDataView, self).__init__()
+        self.assets = {
             "js": [
                 {
                     "path": "core_curate_app/user/js/enter_data.js",
@@ -159,8 +118,7 @@ def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
             "css": ['core_curate_app/user/css/xsd_form.css',
                     'core_parser_app/css/use.css']
         }
-
-        modals = [
+        self.modals = [
             'core_curate_app/user/data-entry/modals/cancel-changes.html',
             'core_curate_app/user/data-entry/modals/cancel-form.html',
             'core_curate_app/user/data-entry/modals/clear-fields.html',
@@ -171,35 +129,83 @@ def enter_data(request, curate_data_structure_id, reload_unsaved_changes=False):
             'core_curate_app/user/data-entry/modals/xml-valid.html',
         ]
 
-        # Set the context
-        context = {
-            "edit": True if curate_data_structure.data is not None else False,
-            "xsd_form": xsd_form,
-            "data_structure": curate_data_structure,
-        }
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.curate_content_type,
+                                          permission=rights.curate_access,
+                                          login_url=reverse_lazy("core_main_app_login")))
+    def get(self, request, curate_data_structure_id, reload_unsaved_changes=False):
+        """Load view to enter data.
 
-        return render(request,
-                      'core_curate_app/user/data-entry/enter_data.html',
-                      assets=assets,
-                      context=context,
-                      modals=modals)
-    except LockError, ler:
-        return render(request,
-                      'core_curate_app/user/errors.html',
-                      assets={},
-                      context={'errors': ler.message})
-    except Exception, e:
+        Args:
+            request:
+            curate_data_structure_id:
+            reload_unsaved_changes:
+
+        Returns:
+
+        """
         try:
-            # unlock from database
-            if curate_data_structure is not None and curate_data_structure.data is not None:
-                lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
-        except:
-            pass
+            # get data structure
+            curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
-        return render(request,
-                      'core_curate_app/user/errors.html',
-                      assets={},
-                      context={'errors': e.message})
+            # lock from database
+            if curate_data_structure.data is not None:
+                lock_api.set_lock_object(curate_data_structure.data, request.user)
+
+            # Check if we need to change the user.
+            # Code executed only if the data is unlocked. set_lock_object() raises LockError.
+            if str(request.user.id) != curate_data_structure.user:
+                curate_data_structure.user = str(request.user.id)
+                curate_data_structure = curate_data_structure_api.upsert(curate_data_structure)
+
+            # get xsd string from the template
+            xsd_string = curate_data_structure.template.content
+
+            if reload_unsaved_changes:
+                # get root element from the data structure
+                root_element = curate_data_structure.data_structure_element_root
+            else:
+                # if form string provided, use it to generate the form
+                xml_string = curate_data_structure.form_string
+
+                # get the root element
+                root_element = generate_form(xsd_string, xml_string)
+
+                # save the root element in the data structure
+                update_data_structure_root(curate_data_structure, root_element)
+
+            # renders the form
+            xsd_form = render_form(request, root_element)
+
+            # Set the context
+            context = {
+                "edit": True if curate_data_structure.data is not None else False,
+                "xsd_form": xsd_form,
+                "data_structure": curate_data_structure,
+            }
+
+            return render(request,
+                          'core_curate_app/user/data-entry/enter_data.html',
+                          assets=self.assets,
+                          context=context,
+                          modals=self.modals)
+        except LockError, ler:
+            return render(request,
+                          'core_curate_app/user/errors.html',
+                          assets={},
+                          context={'errors': ler.message})
+        except Exception, e:
+            try:
+                # unlock from database
+                if curate_data_structure is not None and curate_data_structure.data is not None:
+                    lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+            except:
+                pass
+
+            return render(request,
+                          'core_curate_app/user/errors.html',
+                          assets={},
+                          context={'errors': e.message})
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
