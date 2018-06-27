@@ -129,6 +129,42 @@ class EnterDataView(View):
             'core_curate_app/user/data-entry/modals/xml-valid.html',
         ]
 
+    def build_context(self, request, curate_data_structure, reload_unsaved_changes):
+        """ Build the context of the view
+
+        Args:
+            request:
+            curate_data_structure:
+            reload_unsaved_changes:
+
+        Returns:
+
+        """
+        # get xsd string from the template
+        xsd_string = curate_data_structure.template.content
+
+        if reload_unsaved_changes:
+            # get root element from the data structure
+            root_element = curate_data_structure.data_structure_element_root
+        else:
+            # if form string provided, use it to generate the form
+            xml_string = curate_data_structure.form_string
+
+            # get the root element
+            root_element = generate_form(xsd_string, xml_string)
+
+            # save the root element in the data structure
+            update_data_structure_root(curate_data_structure, root_element)
+
+        # renders the form
+        xsd_form = render_form(request, root_element)
+
+        return {
+            "edit": True if curate_data_structure.data is not None else False,
+            "xsd_form": xsd_form,
+            "data_structure": curate_data_structure,
+        }
+
     @method_decorator(decorators.
                       permission_required(content_type=rights.curate_content_type,
                                           permission=rights.curate_access,
@@ -158,31 +194,8 @@ class EnterDataView(View):
                 curate_data_structure.user = str(request.user.id)
                 curate_data_structure = curate_data_structure_api.upsert(curate_data_structure)
 
-            # get xsd string from the template
-            xsd_string = curate_data_structure.template.content
-
-            if reload_unsaved_changes:
-                # get root element from the data structure
-                root_element = curate_data_structure.data_structure_element_root
-            else:
-                # if form string provided, use it to generate the form
-                xml_string = curate_data_structure.form_string
-
-                # get the root element
-                root_element = generate_form(xsd_string, xml_string)
-
-                # save the root element in the data structure
-                update_data_structure_root(curate_data_structure, root_element)
-
-            # renders the form
-            xsd_form = render_form(request, root_element)
-
             # Set the context
-            context = {
-                "edit": True if curate_data_structure.data is not None else False,
-                "xsd_form": xsd_form,
-                "data_structure": curate_data_structure,
-            }
+            context = self.build_context(request, curate_data_structure, reload_unsaved_changes)
 
             return render(request,
                           'core_curate_app/user/data-entry/enter_data.html',
