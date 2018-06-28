@@ -9,7 +9,8 @@ from core_curate_app.views.common import views as common_views
 
 admin_urls = [
     url(r'^view-form/(?P<curate_data_structure_id>\w+)$', staff_member_required(common_views.FormView.as_view(
-        administration=True)),
+        administration=True,
+        template='core_curate_app/admin/view_curate_data_structure.html')),
         name='core_curate_view_form')
 ]
 

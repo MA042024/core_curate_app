@@ -11,6 +11,8 @@ class FormView(CommonView):
         Form View
     """
 
+    template = 'core_curate_app/user/detail.html'
+
     def get(self, request, *args, **kwargs):
         try:
             # get data structure
@@ -41,7 +43,7 @@ class FormView(CommonView):
             }
 
             return self.common_render(request,
-                                      'core_curate_app/user/detail.html',
+                                      self.template,
                                       assets=assets,
                                       context=context)
         except Exception, e:
