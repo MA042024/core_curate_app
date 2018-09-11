@@ -1,13 +1,14 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
 
 {% block modal_id %}xml-valid-modal{% endblock %}
 {% block modal_title %}Validation Successful{% endblock %}
 
 {% block modal_body %}
 <div class="alert alert-warning">
-  <strong>Warning!</strong> Please save the form before proceeding to review. All unsaved changes will be lost.
+  <strong>Warning!</strong> Please save the {% trans "form_label" %} before proceeding to review. All unsaved changes will be lost.
 </div>
-The form is valid. You can now proceed to the Review page.
+The {% trans "form_label" %} is valid. You can now proceed to the Review page.
 {% endblock %}
 
 {% block modal_footer %}

@@ -1,8 +1,9 @@
+{% load i18n %}
 <h1>Data Entry</h1>
 
-Here you can fill in the {{CUSTOM_DATA}} form. Once it is completed, you can Validate the form.
+Here you can fill in the {{CUSTOM_DATA}} form. Once it is completed, you can Validate the {% trans "form_label" %}.
 You won't be able to reach the review page before the document is valid according to the selected template. From the review page, you will be able to curate the data.
-The 'Save Form' button allows you to save partial data that you may want to edit later. This will only save a temporary document and won't actually curate data.
+The 'Save {% trans "form_label"|title %}' button allows you to save partial data that you may want to edit later. This will only save a temporary document and won't actually curate data.
 All grayed elements are optional. Thus, all elements written in black are required. The document may still be valid with empty elements.
 There are no validation on empty fields if no such constraint is defined in the template.
 Thus, an empty string of characters may not raise a validation error, but an empty number will.
@@ -11,8 +12,8 @@ Thus, an empty string of characters may not raise a validation error, but an emp
 	<div class="btn-group pull-right">
 		<a class="btn btn-danger clear-fields"><i class="fa fa-eraser"></i> Clear Fields </a>
         <a class="btn btn-danger cancel-changes"><i class="fa fa-refresh"></i> Cancel Changes </a>
-        <a class="btn btn-danger cancel-form"><i class="fa fa-times"></i> Cancel Form </a>
-    	<a class="btn btn-default save-form"><i class="fa fa-floppy-o"></i> Save Form </a>
+        <a class="btn btn-danger cancel-form"><i class="fa fa-times"></i> Cancel {% trans "form_label"|title %} </a>
+    	<a class="btn btn-default save-form"><i class="fa fa-floppy-o"></i> Save {% trans "form_label"|title %} </a>
     	<a class="btn btn-default download"><i class="fa fa-download"></i> Download </a>
         <a class="btn btn-default validate"><i style="color:green;" class="fa fa-check-square"></i> Validate </a>
 	</div>

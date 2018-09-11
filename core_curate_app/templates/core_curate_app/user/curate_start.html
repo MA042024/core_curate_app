@@ -1,8 +1,9 @@
+{% load i18n %}
 <form id="form_select_template">
 		<input type="radio" name="curate_form" value="new"> <b class="pop_curate_label">Create a new document:</b>
 		{{new_form}}
 
-		<input type="radio" name="curate_form" value="open"> <b class="pop_curate_label">Open an existing form: </b>
+		<input type="radio" name="curate_form" value="open"> <b class="pop_curate_label">Open an existing {% trans "form_label" %}: </b>
 		{{open_form}}
 
 		<input type="radio" name="curate_form" value="upload"> <b class="pop_curate_label">Open an existing XML document: </b>

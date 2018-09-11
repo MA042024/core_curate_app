@@ -1,10 +1,11 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
 
 {% block modal_id %}clear-fields-modal{% endblock %}
 {% block modal_title %}Clear Fields{% endblock %}
 
 {% block modal_body %}
-Are you sure you want to reset the form? All your changes will be lost.
+Are you sure you want to reset the {% trans "form_label" %}? All your changes will be lost.
 {% endblock %}
 
 {% block modal_footer %}

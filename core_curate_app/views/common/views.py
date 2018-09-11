@@ -1,8 +1,9 @@
 """
     Common views
 """
+from django.utils.translation import ugettext as _
 
-from core_curate_app.views.user.views import _get_curate_data_structure_by_id, render_xml
+from core_curate_app.views.user.views import _get_curate_data_structure_by_id
 from core_main_app.views.common.views import CommonView
 
 
@@ -20,7 +21,7 @@ class FormView(CommonView):
 
             # TODO: fix with the rework on the curate workflow
             if curate_data_structure.form_string is None:
-                raise Exception("The form was not saved. We can't display the correct data.")
+                raise Exception("The " + _('form_label') + " was not saved. We can't display the correct data.")
 
             # Set the assets
             assets = {

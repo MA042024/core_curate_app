@@ -1,10 +1,11 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
 
 {% block modal_id %}save-form-modal{% endblock %}
-{% block modal_title %}Save Form{% endblock %}
+{% block modal_title %}Save {% trans "form_label"|title %}{% endblock %}
 
 {% block modal_body %}
-Are you sure you want to save the form?
+Are you sure you want to save the {% trans "form_label" %}?
 {% endblock %}
 
 {% block modal_footer %}

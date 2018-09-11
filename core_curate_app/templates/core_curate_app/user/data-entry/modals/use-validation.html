@@ -1,4 +1,5 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
 
 {% block modal_id %}use-warning-modal{% endblock %}
 {% block modal_title %}Validation Warning{% endblock %}
@@ -9,7 +10,7 @@ Some <span style="color:red;">required</span> or <span style="color:blue;">recom
 </p>
 <div id="useErrorMessage">
 </div>
-<p>Edit the form or proceed to review page.</p>
+<p>Edit the {% trans "form_label" %} or proceed to review page.</p>
 {% endblock %}
 
 {% block modal_footer %}

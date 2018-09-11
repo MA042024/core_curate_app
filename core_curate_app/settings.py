@@ -1,5 +1,6 @@
 """Core Curate App Settings
 """
+import os
 from django.conf import settings
 
 if not settings.configured:
@@ -14,3 +15,8 @@ PARSER_DOWNLOAD_DEPENDENCIES = getattr(settings, 'PARSER_DOWNLOAD_DEPENDENCIES',
 
 # MENU
 CURATE_MENU_NAME = getattr(settings, 'CURATE_MENU_NAME', 'Curator')
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'core_curate_app/locale'),
+)
