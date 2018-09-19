@@ -24,7 +24,7 @@ from core_parser_app.components.data_structure_element import api as data_struct
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-
+from core_main_app.utils.labels import get_data_label, get_form_label
 
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
@@ -237,7 +237,7 @@ def cancel_form(request):
         curate_data_structure_api.delete(curate_data_structure)
 
         # add success message
-        messages.add_message(request, messages.SUCCESS, 'Form deleted with success.')
+        messages.add_message(request, messages.SUCCESS, get_form_label().capitalize() + ' deleted with success.')
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
     except:
@@ -274,7 +274,7 @@ def save_form(request):
         curate_data_structure_api.upsert(curate_data_structure)
 
         # add success message
-        message = Message(messages.SUCCESS, 'Form saved with success.')
+        message = Message(messages.SUCCESS, get_form_label().capitalize() + ' saved with success.')
 
         return HttpResponse(json.dumps({'message': message.message, 'tags': message.tags}),
                             content_type='application/json')
@@ -360,7 +360,7 @@ def save_data(request):
 
         curate_data_structure_api.delete(curate_data_structure)
 
-        messages.add_message(request, messages.SUCCESS, 'Data saved with success.')
+        messages.add_message(request, messages.SUCCESS, get_data_label().capitalize() + ' saved with success.')
     except Exception, e:
         message = e.message.replace('"', '\'')
         return HttpResponseBadRequest(message, content_type='application/javascript')
@@ -390,7 +390,7 @@ def _start_curate_post(request):
                                                                 template=template_id,
                                                                 name=name)
                 else:
-                    raise exceptions.CurateAjaxError('Error occurred during the validation form')
+                    raise exceptions.CurateAjaxError('Error occurred during the validation ' + get_form_label())
             else:
                 try:  # check XML data or not?
                     upload_form = users_forms.UploadForm(request.POST, request.FILES)
@@ -408,7 +408,7 @@ def _start_curate_post(request):
                                                                         name=name,
                                                                         form_string=xml_data)
                     else:
-                        raise exceptions.CurateAjaxError('Error occurred during the validation form')
+                        raise exceptions.CurateAjaxError('Error occurred during the validation ' + get_form_label())
                 except Exception as e:
                     raise exceptions.CurateAjaxError('Error during file uploading')
 
@@ -453,4 +453,4 @@ def _start_curate_get(request):
         return HttpResponse(json.dumps({'template': template.render(context)}),
                             content_type='application/javascript')
     except Exception as e:
-        raise exceptions.CurateAjaxError('Error occurred during the form display')
+        raise exceptions.CurateAjaxError('Error occurred during the ' + get_form_label() + ' display.')
