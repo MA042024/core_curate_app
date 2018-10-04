@@ -18,7 +18,7 @@ from core_parser_app.components.data_structure_element import api as data_struct
 from core_parser_app.tools.parser import parser
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-
+from core_main_app.utils.labels import get_form_label
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -443,7 +443,7 @@ def _check_owner(request, accessed_object):
     if not request.user.is_superuser:
         # If not the owner of the accessed object
         if str(request.user.id) != accessed_object.user:
-            raise CoreError("You are not the owner of the resource that you are trying to access")
+            raise CoreError("You are not the owner of the " + get_form_label() + " that you are trying to access")
 
 
 def _check_can_write_data(request, accessed_object):

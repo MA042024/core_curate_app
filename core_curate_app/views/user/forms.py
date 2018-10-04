@@ -1,6 +1,8 @@
 """ User curate forms
 """
+from core_main_app.utils.labels import get_form_label
 from django import forms
+
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
 
@@ -50,7 +52,7 @@ class UploadForm(forms.Form):
 class CancelChangesForm(forms.Form):
     """ Cancel changes form.
     """
-    CANCEL_CHOICES = [('revert', 'Revert to my previously Saved Form'),
+    CANCEL_CHOICES = [('revert', 'Revert to my previously Saved ' + get_form_label()),
                       ('return', 'Return to Add Resources')]
 
     cancel = forms.ChoiceField(label='', choices=CANCEL_CHOICES, widget=forms.RadioSelect())
