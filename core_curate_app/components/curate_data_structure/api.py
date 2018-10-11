@@ -131,3 +131,23 @@ def get_by_data_id(data_id):
 
     """
     return CurateDataStructure.get_by_data_id(data_id)
+
+
+def update_data_structure_root(curate_data_structure, root_element):
+    """Update the data structure with a root element.
+
+    Args:
+        curate_data_structure:
+        root_element:
+
+    Returns:
+
+    """
+    # Delete data structure elements
+    curate_data_structure.delete_data_structure_elements_from_root()
+
+    # set the root element in the data structure
+    curate_data_structure.data_structure_element_root = root_element
+
+    # save the data structure
+    return upsert(curate_data_structure)

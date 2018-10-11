@@ -30,17 +30,6 @@ class CurateDataStructure(DataStructure):
         except Exception as ex:
             raise exceptions.ModelError(ex.message)
 
-    @classmethod
-    def pre_delete(cls, sender, document, **kwargs):
-        """ Pre delete operations
-
-        Returns:
-
-        """
-        # Delete data structure elements
-        if document.data_structure_element_root is not None:
-            parser.delete_branch_from_db(document.data_structure_element_root.id)
-
     @staticmethod
     def get_by_id(data_structure_id):
         """ Return the object with the given id.
@@ -164,4 +153,4 @@ class CurateDataStructure(DataStructure):
 
 
 # Connect signals
-connector.connect(CurateDataStructure.pre_delete, signals.pre_delete, CurateDataStructure)
+connector.connect(DataStructure.pre_delete, signals.pre_delete, CurateDataStructure)

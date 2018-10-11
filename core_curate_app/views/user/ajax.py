@@ -15,7 +15,7 @@ import core_curate_app.views.user.forms as users_forms
 import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.utils.parser import get_parser
-from core_curate_app.views.user.views import generate_form, render_form, update_data_structure_root, render_xml
+from core_curate_app.views.user.views import generate_form, render_form, render_xml
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
@@ -166,7 +166,7 @@ def clear_fields(request):
         root_element = generate_form(curate_data_structure.template.content)
 
         # save the root element in the data structure
-        update_data_structure_root(curate_data_structure, root_element)
+        curate_data_structure_api.update_data_structure_root(curate_data_structure, root_element)
 
         # renders the form
         xsd_form = render_form(request, root_element)
@@ -206,7 +206,7 @@ def cancel_changes(request):
         root_element = generate_form(curate_data_structure.template.content, xml_data)
 
         # save the root element in the data structure
-        update_data_structure_root(curate_data_structure, root_element)
+        curate_data_structure_api.update_data_structure_root(curate_data_structure, root_element)
 
         # renders the form
         xsd_form = render_form(request, root_element)

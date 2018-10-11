@@ -15,7 +15,6 @@ from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.rendering import render
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_parser_app.tools.parser import parser
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 from core_main_app.utils.labels import get_form_label
@@ -154,7 +153,7 @@ class EnterDataView(View):
             root_element = generate_form(xsd_string, xml_string)
 
             # save the root element in the data structure
-            update_data_structure_root(curate_data_structure, root_element)
+            curate_data_structure_api.update_data_structure_root(curate_data_structure, root_element)
 
         # renders the form
         xsd_form = render_form(request, root_element)
@@ -384,26 +383,6 @@ def render_xml(root_element):
     xml_data = xml_renderer.render()
 
     return xml_data
-
-
-def update_data_structure_root(curate_data_structure, root_element):
-    """Update the data structure with a root element.
-
-    Args:
-        curate_data_structure:
-        root_element:
-
-    Returns:
-
-    """
-    # FIXME: do the delete branch asynchronously
-    # Delete data structure elements
-    if curate_data_structure.data_structure_element_root is not None:
-        parser.delete_branch_from_db(curate_data_structure.data_structure_element_root.id)
-    # set the root element in the data structure
-    curate_data_structure.data_structure_element_root = root_element
-    # save the data structure
-    curate_data_structure_api.upsert(curate_data_structure)
 
 
 def _get_curate_data_structure_by_id(curate_data_structure_id, request):
