@@ -100,6 +100,8 @@ displayTemplateProcess = function ()
             error: function(data){
                 // FIXME: temp fix for safari support
                 $( "#id_file" ).prop('disabled', false);
+                // FIXME: temp fix for chrome support (click twice on start raise an error)
+                $( "#btn-display-data" ).prop('disabled', false);
                 if (data.responseText != ""){
                     $("#form_start_errors").html(data.responseText);
                     $("#banner_errors").show(500);
@@ -147,6 +149,8 @@ validateStartCurate = function(){
 	    if (selected_option != "upload"){
             $( "#id_file" ).prop('disabled', true);
         }
+        // FIXME: temp fix for chrome support (click twice on start raise an error)
+        $( "#btn-display-data" ).prop('disabled', true);
 		return (true)
 	}
 }
