@@ -1,4 +1,5 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
 
 {% block modal_id %}select-template-modal{% endblock %}
 {% block modal_title %}Data Entry{% endblock %}
@@ -10,7 +11,7 @@
         <div id="form_start_errors">
 </div>
 </div>
-<div class="pop_curate_instruction">Please choose one of the following options to start curating data:</div>
+<div class="pop_curate_instruction">Please choose one of the following options to start curating a {% trans "record_label" %}:</div>
 <div id="form_start_content">
 </div>
 {% endblock %}
