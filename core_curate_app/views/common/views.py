@@ -48,7 +48,10 @@ class FormView(CommonView):
                                       assets=assets,
                                       context=context)
         except Exception, e:
+            template = "core_main_app/common/commons/error.html"
+            if self.administration:
+                template = "core_main_app/admin/commons/errors/errors_wrapper.html"
+
             return self.common_render(request,
-                                      'core_curate_app/user/errors.html',
-                                      assets={},
-                                      context={'errors': e.message})
+                                      template,
+                                      context={'error': e.message})
