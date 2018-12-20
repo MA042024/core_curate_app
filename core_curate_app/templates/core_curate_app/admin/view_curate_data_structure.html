@@ -1,7 +1,8 @@
 {% extends "core_main_app/_render/admin/theme/tools/section.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
-{% block section_title %} {{ data.data_structure.name }}{% endblock %}
+{% block section_title %} {% trans "form_label"|title %} Detail {% endblock %}
 
 {% block section_content %}
 <div class="row">
