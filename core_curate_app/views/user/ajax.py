@@ -260,10 +260,6 @@ def save_form(request):
         curate_data_structure_id = request.POST['id']
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
 
-        # unlock from database
-        if curate_data_structure.data is not None:
-            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
-
         # generate xml data
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
 
