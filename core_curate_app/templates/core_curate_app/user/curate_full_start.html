@@ -6,12 +6,14 @@
 
 {% block modal_body %}
 <div class="alert alert-danger" id="banner_errors" style="display: none;">
-        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
-     	<h4><i class="fa fa-exclamation-circle"></i> Error</h4>
-        <div id="form_start_errors">
+    <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+    <h4><i class="fa fa-exclamation-circle"></i> Error</h4>
+    <div id="form_start_errors">
 </div>
 </div>
-<div class="pop_curate_instruction">Please choose one of the following options to start curating a {% trans "record_label" %}:</div>
+<div class="pop_curate_instruction">
+    Please choose one of the following options to start curating a {% trans "record_label" %}:
+</div>
 <div id="form_start_content">
 </div>
 {% endblock %}

@@ -44,7 +44,8 @@ def index(request):
                 "is_raw": True
             },
         ],
-        "css": ['core_curate_app/user/css/style.css']
+        "css": ['core_curate_app/user/css/common.css',
+                'core_curate_app/user/css/style.css']
     }
 
     global_active_template_list = template_api.get_active_global_version_manager()
@@ -114,7 +115,8 @@ class EnterDataView(View):
                     "is_raw": True
                 },
             ],
-            "css": ['core_curate_app/user/css/xsd_form.css',
+            "css": ['core_curate_app/user/css/common.css',
+                    'core_curate_app/user/css/xsd_form.css',
                     'core_parser_app/css/use.css']
         }
         self.modals = [

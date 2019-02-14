@@ -4,8 +4,15 @@
 {% block modal_title %}Download{% endblock %}
 
 {% block modal_body %}
-<a href="{% url 'core_curate_download_xsd' data.data_structure.id %}" class="btn btn-default">Download Template</a>
-<a href="{% url 'core_curate_download_xml' data.data_structure.id %}" class="btn btn-default">Download Document</a>
+<div class="center-text">
+    <a href="{% url 'core_curate_download_xsd' data.data_structure.id %}" class="btn btn-primary">
+        <i class="fa fa-file-code-o"></i> Download Template
+    </a>
+    <a href="{% url 'core_curate_download_xml' data.data_structure.id %}" class="btn btn-success">
+        <i class="fa fa-file-text-o"></i> Download Document
+    </a>
+</div>
+
 {% endblock %}
 
 {% block modal_footer %}

@@ -1,13 +1,16 @@
 {% load i18n %}
 <form id="form_select_template">
-		<input type="radio" name="curate_form" value="new"> <b class="pop_curate_label">Create a new document:</b>
-		{{new_form}}
+	<input type="radio" id="curate_form_new" name="curate_form" value="new">
+	<label for="curate_form_new" class="pop_curate_label">Create a new document:</label>
+	{{new_form}}
 
-		<input type="radio" name="curate_form" value="open"> <b class="pop_curate_label">Open an existing {% trans "form_label" %}: </b>
-		{{open_form}}
+	<input type="radio" id="curate_form_open" name="curate_form" value="open">
+	<label for="curate_form_open" class="pop_curate_label">Open an existing {% trans "form_label" %}:</label>
+	{{open_form}}
 
-		<input type="radio" name="curate_form" value="upload"> <b class="pop_curate_label">Open an existing XML document: </b>
-		{{upload_form}}
+	<input type="radio" id="curate_form_upload" name="curate_form" value="upload">
+	<label for="curate_form_upload" class="pop_curate_label">Open an existing XML document:</label>
+	{{upload_form}}
 
 	{{hidden_form}}
 </form>

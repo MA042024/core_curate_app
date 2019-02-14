@@ -32,17 +32,14 @@ li.current_page_item a {color: #333;}
     margin-bottom: 0.5em;
 }
 
-.center-text{
-	text-align: center;
-}
-
-/*************/
-/* Pop Up    */
-/*************/
+/****************/
+/* Start Pop Up */
+/****************/
 
 .pop_curate_label{
 	font-size: smaller;
 	font-weight: bold;
+	display: inline;
 }
 
 .pop_curate_instruction{
