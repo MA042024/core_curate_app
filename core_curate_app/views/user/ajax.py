@@ -310,7 +310,7 @@ def validate_form(request):
             response_dict['errors'] = errors
 
     except Exception, e:
-        message = e.message.replace('"', '\'')
+        message = e.message.replace('"', '\'') if e.message is not None else "The current document cannot be validated."
         response_dict['errors'] = message
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
