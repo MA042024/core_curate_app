@@ -1,5 +1,8 @@
 {% load xsl_transform_tag %}
 {% load i18n %}
+{% if 'core_file_preview_app' in INSTALLED_APPS %}
+    {% load html_file_preview_tag %}
+{% endif %}
 
 <h1>View Data</h1>
 
@@ -15,6 +18,9 @@
 
 <div id="XMLHolder">
 {% xsl_transform_detail xml_content=data.xml_string as xml_representation %}
+{% if 'core_file_preview_app' in INSTALLED_APPS %}
+    {% render_blob_links_in_span xml_string=xml_representation as xml_representation %}
+{% endif %}
 {{ xml_representation|safe}}
 </div>
 

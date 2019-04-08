@@ -9,15 +9,17 @@ import core_main_app.components.template_version_manager.api as template_api
 import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 from core_curate_app.utils.parser import get_parser
+from core_explore_example_app.settings import INSTALLED_APPS
 from core_main_app.commons.exceptions import CoreError, LockError
 from core_main_app.components.data.access_control import check_can_write_data
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
+from core_main_app.utils.labels import get_form_label
 from core_main_app.utils.rendering import render
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-from core_main_app.utils.labels import get_form_label
+
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -269,6 +271,14 @@ def view_data(request, curate_data_structure_id):
         modals = [
             'core_curate_app/user/data-review/modals/save-error.html',
         ]
+
+        if "core_file_preview_app" in INSTALLED_APPS:
+            assets["js"].append({
+                "path": 'core_file_preview_app/user/js/file_preview.js',
+                "is_raw": False
+            })
+            assets["css"].append("core_file_preview_app/user/css/file_preview.css")
+            modals.append("core_file_preview_app/user/file_preview_modal.html")
 
         return render(request,
                       'core_curate_app/user/data-review/view_data.html',
