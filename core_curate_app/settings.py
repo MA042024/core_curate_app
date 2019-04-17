@@ -6,6 +6,8 @@ from django.conf import settings
 if not settings.configured:
     settings.configure()
 
+INSTALLED_APPS = getattr(settings, 'INSTALLED_APPS', [])
+
 PARSER_MIN_TREE = getattr(settings, 'PARSER_MIN_TREE', True)
 PARSER_IGNORE_MODULES = getattr(settings, 'PARSER_IGNORE_MODULES', False)
 PARSER_COLLAPSE = getattr(settings, 'PARSER_COLLAPSE', True)
