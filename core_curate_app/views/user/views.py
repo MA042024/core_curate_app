@@ -73,6 +73,14 @@ class EnterDataView(View):
         self.assets = {
             "js": [
                 {
+                    "path": "core_main_app/common/js/debounce.js",
+                    "is_raw": False
+                },
+                {
+                    "path": "core_main_app/common/js/elementViewport.js",
+                    "is_raw": False
+                },
+                {
                     "path": "core_curate_app/user/js/enter_data.js",
                     "is_raw": False
                 },

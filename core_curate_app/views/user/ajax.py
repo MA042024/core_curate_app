@@ -7,6 +7,7 @@ from django.contrib.messages.storage.base import Message
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
+from lxml.etree import XMLSyntaxError
 
 import core_curate_app.common.exceptions as exceptions
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
@@ -305,10 +306,11 @@ def validate_form(request):
         # validate XML document
         errors = validate_xml_data(xsd_tree, xml_tree)
 
-        # FIXME: test xmlParseEntityRef exception: use of & < > forbidden
         if errors is not None:
             response_dict['errors'] = errors
 
+    except XMLSyntaxError as xml_syntax_error:
+        response_dict['errors'] = "Your XML data is not well formatted. " + xml_syntax_error.message
     except Exception, e:
         message = e.message.replace('"', '\'') if e.message is not None else "The current document cannot be validated."
         response_dict['errors'] = message
@@ -406,7 +408,7 @@ def _start_curate_post(request):
                     else:
                         raise exceptions.CurateAjaxError('Error occurred during the validation ' + get_form_label())
                 except Exception as e:
-                    raise exceptions.CurateAjaxError('Error during file uploading')
+                    raise exceptions.CurateAjaxError('Error during file uploading : ' + e.message)
 
             curate_data_structure_api.upsert(curate_data_structure)
         else:

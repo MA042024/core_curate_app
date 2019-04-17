@@ -1,3 +1,35 @@
+.tooltip {
+    z-index: 1 !important;
+}
+
 .center-text{
 	text-align: center;
+}
+
+.warning-modal-container {
+    display: none;
+    opacity: 0;
+}
+
+#valid-modal-toggle-warning {
+    display: inline;
+    color: #004ad6;
+    cursor: pointer;
+}
+
+.warning-icon {
+    color: #ff8f00;
+}
+
+.alert.alert-warning {
+    margin: 20px;
+}
+
+.warning-tooltip-inner {
+    max-width: 400px !important;
+    background-color: #ea8d00;
+}
+
+.warning-tooltip-arrow {
+    border-right-color: #ea8d00 !important;
 }
