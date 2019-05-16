@@ -6,12 +6,7 @@
 
 {% block modal_body %}
 The {% trans "form_label" %} is valid. You can now proceed to the Review page.
-<div id="valid-modal-toggle-warning">
-    <i class="fa fa-exclamation-triangle warning-icon"></i>See all warnings
-</div>
-<div class="warning-modal-container">
-    {% include 'core_curate_app/user/data-entry/modals/validation-warning.html' %}
-</div>
+{% include 'core_curate_app/user/data-entry/modals/validation-warning.html' %}
 {% endblock %}
 
 {% block modal_footer %}

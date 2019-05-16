@@ -12,7 +12,7 @@
 }
 
 #valid-modal-toggle-warning {
-    display: inline;
+    width: 100%;
     color: #004ad6;
     cursor: pointer;
 }

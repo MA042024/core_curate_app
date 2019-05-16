@@ -1,4 +1,9 @@
 {% load i18n %}
-<div class="alert alert-warning">
-  <strong>Warning!</strong> Please save the {% trans "form_label" %} before proceeding to review. All unsaved changes will be lost.
+<div id="valid-modal-toggle-warning">
+    <i class="fa fa-exclamation-triangle warning-icon"></i>See all warnings
+</div>
+<div class="warning-modal-container">
+  <div class="alert alert-warning">
+    <strong>Warning!</strong> Please save the {% trans "form_label" %} before proceeding to review. All unsaved changes will be lost.
+  </div>
 </div>

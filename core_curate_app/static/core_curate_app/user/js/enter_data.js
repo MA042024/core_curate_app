@@ -9,23 +9,23 @@ $(document).ready(function() {
 /**
  * Clear the fields of the current curated data
  */
-var clearFields = function(){
+var clearFields = function() {
     $("#clear-fields-modal").modal("show");
 };
 
 /**
  * AJAX call, clears fields
  */
-var clear_fields = function(){
+var clear_fields = function() {
     var objectID = $("#curate_data_structure_id").html();
     $.ajax({
-        url : clearFieldsUrl,
-        type : "POST",
-        data:{
+        url: clearFieldsUrl,
+        type: "POST",
+        data: {
             'id': objectID
         },
         dataType: "json",
-        success: function(data){
+        success: function(data) {
             $("#xsdForm").html(data.xsdForm);
 
             $('link.module').each(function(index, item) {
@@ -46,7 +46,7 @@ var clear_fields = function(){
 /**
  * Cancel the changes of the current curated data
  */
-var cancelChanges = function(){
+var cancelChanges = function() {
     $("#cancel-changes-modal").modal("show");
 };
 
@@ -54,16 +54,16 @@ var cancelChanges = function(){
 /**
  * AJAX call, cancel changes
  */
-var cancel_changes = function(){
+var cancel_changes = function() {
     var objectID = $("#curate_data_structure_id").html();
     $.ajax({
-        url : cancelChangesUrl,
-        type : "POST",
-        data:{
+        url: cancelChangesUrl,
+        type: "POST",
+        data: {
             'id': objectID
         },
         dataType: "json",
-        success: function(data){
+        success: function(data) {
             $("#xsdForm").html(data.xsdForm);
 
             $('link.module').each(function(index, item) {
@@ -84,8 +84,7 @@ var cancel_changes = function(){
 /**
  * Cancel the form
  */
-var cancelForm = function()
-{
+var cancelForm = function() {
     $("#cancel-form-modal").modal("show");
 };
 
@@ -93,20 +92,20 @@ var cancelForm = function()
 /**
  * AJAX call, cancel form
  */
-var cancel_form = function(){
+var cancel_form = function() {
     $("#cancel-form-modal").modal("hide");
     var objectID = $("#curate_data_structure_id").html();
     $.ajax({
-        url : cancelFormUrl,
-        type : "POST",
-        data:{
+        url: cancelFormUrl,
+        type: "POST",
+        data: {
             'id': objectID
         },
         dataType: "json",
-        success: function(data){
+        success: function(data) {
             window.location = curateIndexUrl;
         },
-        error: function () {
+        error: function() {
 
         }
     });
@@ -116,8 +115,7 @@ var cancel_form = function(){
 /**
  * Display the saving confirmation popup
  */
-var saveForm = function()
-{
+var saveForm = function() {
     $("#save-form-modal").modal("show");
 };
 
@@ -130,12 +128,12 @@ var sendSaveRequest = function() {
     $.ajax({
         url: saveFormUrl,
         type: 'POST',
-        data:{
+        data: {
             'id': objectID
         },
         dataType: 'json',
         success: function(data) {
-            $.notify(data.message, {style: data.tags });
+            $.notify(data.message, { style: data.tags });
         },
         error: function() {
 
@@ -160,32 +158,31 @@ var validateXML = function() {
 
     clearPreviousWarning();
 
-    //find warning tooltip to display warning in the validation modal
-    if(findFormWarningTooltip())
-        displayWarningInValidModal(' this form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
-
     $.ajax({
-        url : validateFormUrl,
-        type : "POST",
+        url: validateFormUrl,
+        type: "POST",
         data: {
-          'id': objectID
+            'id': objectID
         },
         dataType: "json",
-        success: function(data){
-            if ('errors' in data){
+        success: function(data) {
+            if ('errors' in data) {
                 showXMLDataValidationError(data.errors);
             } else {
                 var useErrors = checkElementUse();
-
-                // if we have a warning, we have to display it in the validation modal
-                if ('warning' in data)
-                    displayWarningInValidModal(data.warning);
 
                 if (useErrors.length > 0) {
                     useErrorsAndView(useErrors);
                 } else {
                     reviewDataDialog();
                 }
+
+                // if we have warnings, we have to display it in the validation modal
+                if ('warning' in data)
+                    displayWarningInValidModal(data.warning);
+                //find warning tooltip to display warning in the validation modal
+                if (findFormWarningTooltip())
+                    displayWarningInValidModal(' this form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
             }
         }
     });
@@ -196,16 +193,28 @@ var validateXML = function() {
  * Shows XML validation warning message in the modal.
  * @param warningMessage
  */
-var displayWarningInValidModal = function (warningMessage) {
-    var alertWarningNode = $("#xml-valid-modal").find(".alert-warning");
+var displayWarningInValidModal = function(warningMessage) {
+    var modalContainerSelector = $(".warning-modal-container");
+
+    // build the warning element
     var node = document.createElement("div");
     node.classList.add("alert");
     node.classList.add("alert-warning");
     node.classList.add("alert-warning-xml");
     node.innerHTML = "<strong>Warning!</strong> " + warningMessage;
+
     clearPreviousWarning();
 
-    $("#xml-valid-modal").find(".warning-modal-container")[0].prepend(node);
+    // if there are multiple modal with warning container we have to fill all there modal's container
+    if (modalContainerSelector.length && modalContainerSelector.length > 0) {
+
+        for (var index = 0; index < modalContainerSelector.length; ++index) {
+            modalContainerSelector[index].prepend(node.cloneNode(true)); // need to call clone function otherwise prepend will perform a move operation
+        }
+
+    }
+
+
 }
 
 /**
@@ -221,11 +230,19 @@ var findFormWarningTooltip = function() {
  * Clear all the previous warning (By default there is only one warning container in the modal).
  */
 var clearPreviousWarning = function() {
-    var alertWarningNode = $("#xml-valid-modal").find(".alert-warning-xml");
-    if (alertWarningNode.length > 0) {
-        // remove all the warning except the first one
-        for ( var index = 0; index < alertWarningNode.length; ++index ) {
-            alertWarningNode[index].remove();
+    var alertWarningNode = $(".warning-modal-container");
+    if (alertWarningNode.length && alertWarningNode.length > 0) {
+        // for all the validation modal in the page
+        for (var index = 0; index < alertWarningNode.length; ++index) {
+            // get the warning message element
+            var warningMessage = $(alertWarningNode[index]).find(".alert-warning-xml");
+            if (warningMessage.length && warningMessage.length > 0) {
+                // for all the warning message in the current modal
+                for (var warningIndex = 0; warningIndex < warningMessage.length; ++warningIndex) {
+                    // delete the message element
+                    warningMessage[warningIndex].remove();
+                }
+            }
         }
     }
 }
@@ -243,27 +260,27 @@ var showXMLDataValidationError = function(errors) {
  * Check required, recommended elements
  * @returns {string}
  */
-var checkElementUse = function(){
+var checkElementUse = function() {
     var required_count = 0;
-    $(".required:visible").each(function(){
-        if (!$(this).closest("li").hasClass("removed")){
-          if($(this).val().trim() == ""){
-            required_count += 1;
-          }
+    $(".required:visible").each(function() {
+        if (!$(this).closest("li").hasClass("removed")) {
+            if ($(this).val().trim() == "") {
+                required_count += 1;
+            }
         }
     });
 
     var recommended_count = 0;
-    $(".recommended:visible").each(function(){
-        if (!$(this).closest("li").hasClass("removed")){
-          if($(this).val().trim() == ""){
-              recommended_count += 1;
-          }
+    $(".recommended:visible").each(function() {
+        if (!$(this).closest("li").hasClass("removed")) {
+            if ($(this).val().trim() == "") {
+                recommended_count += 1;
+            }
         }
     });
 
     var errors = "";
-    if (required_count > 0 || recommended_count > 0){
+    if (required_count > 0 || recommended_count > 0) {
         errors += "<ul>";
         errors += "<li>" + required_count.toString() + " required element(s) are empty.</li>";
         errors += "<li>" + recommended_count.toString() + " recommended element(s) are empty.</li>";
@@ -277,7 +294,7 @@ var checkElementUse = function(){
  * Displays use error before viewing data
  * @param errors
  */
-var useErrorsAndView = function(errors){
+var useErrorsAndView = function(errors) {
     $("#useErrorMessage").html(errors);
     $("#use-warning-modal").modal("show");
 
@@ -298,7 +315,7 @@ var checkPredefinedXmlEntities = function(selector) {
     selector = selector.val ? selector : $(this)
     var value = selector.val();
     value = value.replace(/((&amp;)|(&gt;)|(&lt;)|(&apos;)|(&quot;))/g, '');
-    if(value.indexOf('<') > -1 || value.indexOf('>') > -1 || value.indexOf('&')  > -1 || value.indexOf('"')  > -1 || value.indexOf("'")  > -1) {
+    if (value.indexOf('<') > -1 || value.indexOf('>') > -1 || value.indexOf('&') > -1 || value.indexOf('"') > -1 || value.indexOf("'") > -1) {
         selector.tooltip({
             title: "Warning! this field may contain predefined XML entities. These entities will be automatically escaped.",
             template: template,
@@ -307,12 +324,12 @@ var checkPredefinedXmlEntities = function(selector) {
             placement: function(tip, element) {
                 var jqueryTip = $(tip);
                 jqueryTip.css('opacity', 0);
-                setTimeout(function(){
+                setTimeout(function() {
                     var circleItemNumber = checkCircleItem(element);
 
-                    if(circleItemNumber > 0) {
+                    if (circleItemNumber > 0) {
                         var tipLeftPosition = parseFloat(jqueryTip.css("left").replace("px", ""));
-                        tipLeftPosition += 25*circleItemNumber;
+                        tipLeftPosition += 25 * circleItemNumber;
                         $(tip).css({
                             left: tipLeftPosition + "px"
                         });
@@ -321,7 +338,7 @@ var checkPredefinedXmlEntities = function(selector) {
                     jqueryTip.css('opacity', 1);
                 }, 100);
 
-                 return "right" ;
+                return "right";
             }
         });
 
@@ -336,8 +353,8 @@ var checkPredefinedXmlEntities = function(selector) {
  */
 var refreshTooltipPosition = function() {
     var inputs = $('input.default');
-    for (var i=0; i<inputs.length; ++i) {
-        if(isElementInViewport(inputs[i])) checkPredefinedXmlEntities($(inputs[i]));
+    for (var i = 0; i < inputs.length; ++i) {
+        if (isElementInViewport(inputs[i])) checkPredefinedXmlEntities($(inputs[i]));
     }
 }
 
@@ -348,17 +365,17 @@ var refreshTooltipPosition = function() {
 var checkCircleItem = function(element) {
     var parentItem = $(element).parent();
     var parentString = parentItem.html();
-    var buttonNumber = (parentString.match(/((fa-question-circle)|(fa-plus-circle)|(fa-minus-circle))/g )|| []).length;
-    var hiddenButtonNumber = (parentString.match(/<span class="icon .*(hidden)/g )|| []).length;
+    var buttonNumber = (parentString.match(/((fa-question-circle)|(fa-plus-circle)|(fa-minus-circle))/g) || []).length;
+    var hiddenButtonNumber = (parentString.match(/<span class="icon .*(hidden)/g) || []).length;
 
     // we count all the buttons, all the hidden buttons and return the sub to get all the visible buttons
     return buttonNumber - hiddenButtonNumber;
 }
 
 /**
-  * Show / Hide
-  */
-var toggleWarning = function (){
+ * Show / Hide
+ */
+var toggleWarning = function() {
     var warningModalContainer = $('.warning-modal-container');
     if (warningModalContainer.css('display') == 'none') {
         warningModalContainer.css('display', 'block');
@@ -381,12 +398,12 @@ $(document).on('click', '#btn-clear-fields', clear_fields);
 $(document).on('click', '#btn-cancel-form', cancel_form);
 $(document).on('click', '#btn-save-form', sendSaveRequest);
 
-$('#valid-modal-toggle-warning').on('click', toggleWarning);
+$(document).on('click', '#valid-modal-toggle-warning', toggleWarning);
 
 $(document).on('blur', 'input.default', checkPredefinedXmlEntities);
-$(document).on('blur', 'textarea', function(){ setTimeout(refreshTooltipPosition, 500 )});
-$(document).on('click', '.add', function(){ setTimeout(refreshTooltipPosition, 500 )});
-$(document).on('click', '.remove', function(){ setTimeout(refreshTooltipPosition, 500)});
+$(document).on('blur', 'textarea', function() { setTimeout(refreshTooltipPosition, 500) });
+$(document).on('click', '.add', function() { setTimeout(refreshTooltipPosition, 500) });
+$(document).on('click', '.remove', function() { setTimeout(refreshTooltipPosition, 500) });
 
-$(document).scroll(debounce(function() {refreshTooltipPosition();}, 300));
-$(window).resize(debounce(function() {refreshTooltipPosition();}, 300));
+$(document).scroll(debounce(function() { refreshTooltipPosition(); }, 300));
+$(window).resize(debounce(function() { refreshTooltipPosition(); }, 300));
