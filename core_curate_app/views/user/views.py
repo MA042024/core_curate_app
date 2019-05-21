@@ -213,12 +213,12 @@ class EnterDataView(View):
                           assets=self.assets,
                           context=context,
                           modals=self.modals)
-        except LockError, ler:
+        except LockError as ler:
             return render(request,
                           'core_curate_app/user/errors.html',
                           assets={},
                           context={'errors': ler.message})
-        except Exception, e:
+        except Exception as e:
             try:
                 # unlock from database
                 if curate_data_structure is not None and curate_data_structure.data is not None:
@@ -295,7 +295,7 @@ def view_data(request, curate_data_structure_id):
                       assets=assets,
                       context=context,
                       modals=modals)
-    except Exception, e:
+    except Exception as e:
         return render(request,
                       'core_curate_app/user/errors.html',
                       assets={},
@@ -461,5 +461,5 @@ def _check_can_write_data(request, accessed_object):
         # Super user can access everything
         if not request.user.is_superuser:
             check_can_write_data(accessed_object.data, request.user)
-    except Exception, e:
+    except Exception as e:
         raise CoreError(e.message)

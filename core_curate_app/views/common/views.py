@@ -47,7 +47,7 @@ class FormView(CommonView):
                                       self.template,
                                       assets=assets,
                                       context=context)
-        except Exception, e:
+        except Exception as e:
             template = "core_main_app/common/commons/error.html"
             if self.administration:
                 template = "core_main_app/admin/commons/errors/errors_wrapper.html"

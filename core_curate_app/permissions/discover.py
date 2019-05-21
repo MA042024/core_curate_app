@@ -1,5 +1,6 @@
 """ Initialize permissions for core curate app
 """
+from __future__ import print_function
 from django.contrib.auth.models import Group, Permission
 import core_main_app.permissions.rights as main_rights
 import core_curate_app.permissions.rights as curate_rights
@@ -23,5 +24,5 @@ def init_permissions():
         default_group.permissions.add(curate_access_perm,
                                       curate_view_data_save_repo_perm)
 
-    except Exception, e:
+    except Exception as e:
         print('ERROR : Impossible to init the permissions : ' + e.message)

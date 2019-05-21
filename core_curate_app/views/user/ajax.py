@@ -68,7 +68,7 @@ def generate_choice(request, curate_data_structure_id):
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         xsd_parser = get_parser()
         html_form = xsd_parser.generate_choice_absent(request, element_id, curate_data_structure.template.content)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest()
 
     return HttpResponse(html_form)
@@ -91,7 +91,7 @@ def generate_element(request, curate_data_structure_id):
         curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
         xsd_parser = get_parser()
         html_form = xsd_parser.generate_element_absent(request, element_id, curate_data_structure.template.content)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest()
 
     return HttpResponse(html_form)
@@ -311,7 +311,7 @@ def validate_form(request):
 
     except XMLSyntaxError as xml_syntax_error:
         response_dict['errors'] = "Your XML data is not well formatted. " + xml_syntax_error.message
-    except Exception, e:
+    except Exception as e:
         message = e.message.replace('"', '\'') if e.message is not None else "The current document cannot be validated."
         response_dict['errors'] = message
 
@@ -359,7 +359,7 @@ def save_data(request):
         curate_data_structure_api.delete(curate_data_structure)
 
         messages.add_message(request, messages.SUCCESS, get_data_label().capitalize() + ' saved with success.')
-    except Exception, e:
+    except Exception as e:
         message = e.message.replace('"', '\'')
         return HttpResponseBadRequest(message, content_type='application/javascript')
 
