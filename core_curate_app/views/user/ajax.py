@@ -1,6 +1,7 @@
 """AJAX views for the Curate app
 """
 import json
+from builtins import str
 
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
@@ -20,12 +21,13 @@ from core_curate_app.views.user.views import generate_form, render_form, render_
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
+from core_main_app.utils.labels import get_data_label, get_form_label
 from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-from core_main_app.utils.labels import get_data_label, get_form_label
+
 
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences

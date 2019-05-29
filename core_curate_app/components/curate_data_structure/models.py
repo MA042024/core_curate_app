@@ -1,13 +1,15 @@
 """Curate Data Structure models
 """
+from builtins import str
+
 from django_mongoengine import fields
 from mongoengine import errors as mongoengine_errors
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.base import CASCADE
+
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
-from core_parser_app.tools.parser import parser
 from signals_utils.signals.mongo import connector, signals
 
 
@@ -44,9 +46,9 @@ class CurateDataStructure(DataStructure):
         try:
             return CurateDataStructure.objects.get(pk=str(data_structure_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_none():
@@ -85,9 +87,9 @@ class CurateDataStructure(DataStructure):
         try:
             return CurateDataStructure.objects.get(user=str(user_id), template=str(template_id), name=name)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_all_by_user_id_with_no_data(user_id):
@@ -147,9 +149,9 @@ class CurateDataStructure(DataStructure):
         try:
             return CurateDataStructure.objects.get(data=str(data_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
 
 # Connect signals

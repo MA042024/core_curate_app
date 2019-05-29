@@ -1,12 +1,15 @@
 """Curate models
 """
+from builtins import object
+
 from django.db import models
-from core_main_app.permissions.utils import get_formatted_name
+
 from core_curate_app.permissions import rights
+from core_main_app.permissions.utils import get_formatted_name
 
 
 class Curate(models.Model):
-    class Meta:
+    class Meta(object):
         verbose_name = 'core_curate_app'
         default_permissions = ()
         permissions = (
