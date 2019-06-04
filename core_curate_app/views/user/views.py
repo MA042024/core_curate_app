@@ -219,7 +219,7 @@ class EnterDataView(View):
             return render(request,
                           'core_curate_app/user/errors.html',
                           assets={},
-                          context={'errors': ler.message})
+                          context={'errors': str(ler)})
         except Exception as e:
             try:
                 # unlock from database
@@ -231,7 +231,7 @@ class EnterDataView(View):
             return render(request,
                           'core_curate_app/user/errors.html',
                           assets={},
-                          context={'errors': e.message})
+                          context={'errors': str(e)})
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
@@ -301,7 +301,7 @@ def view_data(request, curate_data_structure_id):
         return render(request,
                       'core_curate_app/user/errors.html',
                       assets={},
-                      context={'errors': e.message})
+                      context={'errors': str(e)})
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
@@ -464,4 +464,4 @@ def _check_can_write_data(request, accessed_object):
         if not request.user.is_superuser:
             check_can_write_data(accessed_object.data, request.user)
     except Exception as e:
-        raise CoreError(e.message)
+        raise CoreError(str(e))

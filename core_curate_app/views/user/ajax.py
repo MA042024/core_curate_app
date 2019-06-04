@@ -50,7 +50,7 @@ def start_curate(request):
         else:
             return _start_curate_get(request)
     except Exception as e:
-        return HttpResponseBadRequest(e.message)
+        return HttpResponseBadRequest(str(e))
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
@@ -312,9 +312,9 @@ def validate_form(request):
             response_dict['errors'] = errors
 
     except XMLSyntaxError as xml_syntax_error:
-        response_dict['errors'] = "Your XML data is not well formatted. " + xml_syntax_error.message
+        response_dict['errors'] = "Your XML data is not well formatted. " + str(xml_syntax_error)
     except Exception as e:
-        message = e.message.replace('"', '\'') if e.message is not None else "The current document cannot be validated."
+        message = str(e).replace('"', '\'') if str(e) is not None else "The current document cannot be validated."
         response_dict['errors'] = message
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -362,7 +362,7 @@ def save_data(request):
 
         messages.add_message(request, messages.SUCCESS, get_data_label().capitalize() + ' saved with success.')
     except Exception as e:
-        message = e.message.replace('"', '\'')
+        message = str(e).replace('"', '\'')
         return HttpResponseBadRequest(message, content_type='application/javascript')
 
     return HttpResponse(json.dumps({}), content_type='application/javascript')
@@ -410,7 +410,7 @@ def _start_curate_post(request):
                     else:
                         raise exceptions.CurateAjaxError('Error occurred during the validation ' + get_form_label())
                 except Exception as e:
-                    raise exceptions.CurateAjaxError('Error during file uploading : ' + e.message)
+                    raise exceptions.CurateAjaxError('Error during file uploading : ' + str(e))
 
             curate_data_structure_api.upsert(curate_data_structure)
         else:
@@ -419,7 +419,7 @@ def _start_curate_post(request):
         url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
         return HttpResponse(url)
     except Exception as e:
-        raise exceptions.CurateAjaxError(e.message)
+        raise exceptions.CurateAjaxError(str(e))
 
 
 def _start_curate_get(request):

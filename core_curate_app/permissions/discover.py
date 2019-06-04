@@ -25,4 +25,4 @@ def init_permissions():
                                       curate_view_data_save_repo_perm)
 
     except Exception as e:
-        print('ERROR : Impossible to init the permissions : ' + e.message)
+        print('ERROR : Impossible to init the permissions : ' + str(e))

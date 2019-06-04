@@ -54,4 +54,4 @@ class FormView(CommonView):
 
             return self.common_render(request,
                                       template,
-                                      context={'error': e.message})
+                                      context={'error': str(e)})

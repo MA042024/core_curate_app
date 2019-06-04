@@ -30,7 +30,7 @@ class CurateDataStructure(DataStructure):
         except NotUniqueError:
             raise exceptions.ModelError("Unable to save the document: not unique.")
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
 
     @staticmethod
     def get_by_id(data_structure_id):
