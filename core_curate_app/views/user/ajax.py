@@ -1,7 +1,6 @@
 """AJAX views for the Curate app
 """
 import json
-from builtins import str
 
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message

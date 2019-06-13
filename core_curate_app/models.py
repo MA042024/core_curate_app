@@ -1,6 +1,5 @@
 """Curate models
 """
-from builtins import object
 
 from django.db import models
 

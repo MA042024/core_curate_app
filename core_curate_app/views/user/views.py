@@ -1,6 +1,5 @@
 """Curate app user views
 """
-from builtins import str
 
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
