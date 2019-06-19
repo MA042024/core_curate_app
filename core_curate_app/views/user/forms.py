@@ -1,9 +1,9 @@
 """ User curate forms
 """
-from core_main_app.utils.labels import get_form_label
 from django import forms
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
+from core_main_app.utils.labels import get_form_label
 
 
 class NewForm(forms.Form):

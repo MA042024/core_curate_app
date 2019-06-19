@@ -1,11 +1,13 @@
 """ Unit Test Curate Data Structure
 """
+from unittest.case import TestCase
+
+from mock import patch
+
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
-from core_main_app.components.template.models import Template
-from unittest.case import TestCase
-from mock import patch
 from core_main_app.commons import exceptions
+from core_main_app.components.template.models import Template
 
 
 class TestCurateDataStructureGetById(TestCase):

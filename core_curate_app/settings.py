@@ -1,6 +1,7 @@
 """Core Curate App Settings
 """
 import os
+
 from django.conf import settings
 
 if not settings.configured:
