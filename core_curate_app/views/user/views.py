@@ -1,5 +1,6 @@
 """Curate app user views
 """
+import logging
 
 from django.core.urlresolvers import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -21,6 +22,7 @@ from core_parser_app.components.data_structure_element import api as data_struct
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
+logger = logging.getLogger(__name__)
 
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
@@ -224,8 +226,9 @@ class EnterDataView(View):
                 # unlock from database
                 if curate_data_structure is not None and curate_data_structure.data is not None:
                     lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
-            except:
-                pass
+            except Exception as e:
+                # data structure not found, continue search
+                logger.warning("EnterDataView get threw an exception: {0}".format(str(e)))
 
             return render(request,
                           'core_curate_app/user/errors.html',
