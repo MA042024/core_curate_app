@@ -13,7 +13,7 @@ from core_curate_app.components.curate_data_structure import api as curate_data_
 from core_curate_app.settings import INSTALLED_APPS
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import CoreError, LockError
-from core_main_app.components.data.access_control import check_can_write_data
+from core_main_app.access_control.api import check_can_write
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.labels import get_form_label
@@ -464,6 +464,6 @@ def _check_can_write_data(request, accessed_object):
     try:
         # Super user can access everything
         if not request.user.is_superuser:
-            check_can_write_data(accessed_object.data, request.user)
+            check_can_write(accessed_object.data, request.user)
     except Exception as e:
         raise CoreError(str(e))
