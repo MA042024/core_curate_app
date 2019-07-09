@@ -358,7 +358,7 @@ def save_data(request):
         # set content
         data.xml_content = xml_data
         # save data
-        data_api.upsert(data, request.user)
+        data = data_api.upsert(data, request.user)
 
         curate_data_structure_api.delete(curate_data_structure)
 
@@ -367,7 +367,7 @@ def save_data(request):
         message = str(e).replace('"', '\'')
         return HttpResponseBadRequest(message, content_type='application/javascript')
 
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
+    return HttpResponse(json.dumps({"data_id": str(data.id)}), content_type='application/javascript')
 
 
 def _start_curate_post(request):

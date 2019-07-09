@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^enter-data/(?P<curate_data_structure_id>\w+)/(?P<reload_unsaved_changes>\w+)$',
         user_views.EnterDataView.as_view(),
         name='core_curate_enter_data'),
-    url(r'^view-data/(?P<curate_data_structure_id>\w+)$', user_views.view_data,
+    url(r'^view-data/(?P<curate_data_structure_id>\w+)$', user_views.ViewDataView.as_view(),
         name='core_curate_view_data'),
     url(r'^download-xml/(?P<curate_data_structure_id>\w+)$', user_views.download_current_xml,
         name='core_curate_download_xml'),

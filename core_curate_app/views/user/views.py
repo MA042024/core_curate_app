@@ -236,26 +236,10 @@ class EnterDataView(View):
                           context={'errors': str(e)})
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
-def view_data(request, curate_data_structure_id):
-    """Load the view to review data.
-
-    Args:
-        request:
-        curate_data_structure_id:
-
-    Returns:
-
-    """
-    try:
-        curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
-
-        # generate xml string
-        xml_string = render_xml(curate_data_structure.data_structure_element_root)
-
-        # Set the assets
-        assets = {
+class ViewDataView(View):
+    def __init__(self):
+        super(ViewDataView, self).__init__()
+        self.assets = {
             "js": [
                 {
                     "path": "core_curate_app/user/js/view_data.js",
@@ -269,41 +253,58 @@ def view_data(request, curate_data_structure_id):
                     "path": "core_main_app/common/js/XMLTree.js",
                     "is_raw": False
                 },
-            ],
-            "css": ['core_main_app/common/css/XMLTree.css']
-        }
+         ],
+               "css": ['core_main_app/common/css/XMLTree.css']
+          }
 
-        # Set the context
-        context = {
+        self.modals = [
+            'core_curate_app/user/data-review/modals/save-error.html',
+        ]
+
+    def build_context(self, request, curate_data_structure):
+
+
+        # generate xml string
+        xml_string = render_xml(curate_data_structure.data_structure_element_root)
+
+        return {
             "edit": True if curate_data_structure.data is not None else False,
             "xml_string": xml_string,
             "data_structure": curate_data_structure,
         }
 
-        modals = [
-            'core_curate_app/user/data-review/modals/save-error.html',
-        ]
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.curate_content_type,
+                                          permission=rights.curate_access,
+                                          login_url=reverse_lazy("core_main_app_login")))
+    def get(self, request, curate_data_structure_id):
 
-        if "core_file_preview_app" in INSTALLED_APPS:
-            assets["js"].extend([
-                {
-                    "path": 'core_file_preview_app/user/js/file_preview.js',
-                    "is_raw": False
-                }
-            ])
-            assets["css"].append("core_file_preview_app/user/css/file_preview.css")
-            modals.append("core_file_preview_app/user/file_preview_modal.html")
+        try:
+            curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
 
-        return render(request,
-                      'core_curate_app/user/data-review/view_data.html',
-                      assets=assets,
-                      context=context,
-                      modals=modals)
-    except Exception as e:
-        return render(request,
-                      'core_curate_app/user/errors.html',
-                      assets={},
-                      context={'errors': str(e)})
+            # generate xml string
+            xml_string = render_xml(curate_data_structure.data_structure_element_root)
+
+            if "core_file_preview_app" in INSTALLED_APPS:
+                self.assets["js"].extend([
+                    {
+                        "path": 'core_file_preview_app/user/js/file_preview.js',
+                        "is_raw": False
+                    }
+                ])
+                self.assets["css"].append("core_file_preview_app/user/css/file_preview.css")
+                self.modals.append("core_file_preview_app/user/file_preview_modal.html")
+            self.context = self.build_context(request, curate_data_structure)
+            return render(request,
+                          'core_curate_app/user/data-review/view_data.html',
+                          assets=self.assets,
+                          context=self.context,
+                          modals=self.modals)
+        except Exception as e:
+            return render(request,
+                          'core_curate_app/user/errors.html',
+                          assets={},
+                          context={'errors': str(e)})
 
 
 @decorators.permission_required(content_type=rights.curate_content_type,
