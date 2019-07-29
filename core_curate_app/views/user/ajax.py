@@ -444,8 +444,9 @@ def _start_curate_get(request):
         context_params['open_form'] = open_form
         context_params['upload_form'] = upload_form
         context_params['hidden_form'] = hidden_form
+        context_params['request'] = request
         context = {}
-        context.update(request)
+
         context.update(context_params)
         return HttpResponse(json.dumps({'template': template.render(context)}),
                             content_type='application/javascript')
