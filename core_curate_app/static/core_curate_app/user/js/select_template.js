@@ -51,6 +51,8 @@ set_current_template = function(templateID){
 displayTemplateSelectedDialog = function()
 {
     $("#select-template-modal").modal("show");
+    // before create a new listener delete all the previous listeners
+    $('#btn-display-data').off('click');
     $('#btn-display-data').on('click', displayTemplateProcess);
 }
 
