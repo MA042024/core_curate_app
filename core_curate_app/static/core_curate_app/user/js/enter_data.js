@@ -317,7 +317,7 @@ var checkPredefinedXmlEntities = function(selector) {
     value = value.replace(/((&amp;)|(&gt;)|(&lt;)|(&apos;)|(&quot;))/g, '');
     if (value.indexOf('<') > -1 || value.indexOf('>') > -1 || value.indexOf('&') > -1 || value.indexOf('"') > -1 || value.indexOf("'") > -1) {
         selector.tooltip({
-            title: "Warning! this field may contain predefined XML entities. These entities will be automatically escaped.",
+            title: "Warning! This field may contain predefined XML entities. These entities will be automatically escaped.",
             template: template,
             animation: true,
             trigger: "manual",
