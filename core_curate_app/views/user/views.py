@@ -12,7 +12,8 @@ import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
 from core_curate_app.settings import INSTALLED_APPS
 from core_curate_app.utils.parser import get_parser
-from core_main_app.commons.exceptions import CoreError, LockError
+from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
+from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.access_control.api import check_can_write
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
@@ -194,6 +195,7 @@ class EnterDataView(View):
         Returns:
 
         """
+        curate_data_structure = None
         try:
             # get data structure
             curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
@@ -216,11 +218,11 @@ class EnterDataView(View):
                           assets=self.assets,
                           context=context,
                           modals=self.modals)
-        except LockError as ler:
+        except (LockError, AccessControlError, ModelError, DoesNotExist) as ex:
             return render(request,
                           'core_curate_app/user/errors.html',
                           assets={},
-                          context={'errors': str(ler)})
+                          context={'errors': str(ex)})
         except Exception as e:
             try:
                 # unlock from database
@@ -449,7 +451,7 @@ def _check_owner(request, accessed_object):
     if not request.user.is_superuser:
         # If not the owner of the accessed object
         if str(request.user.id) != accessed_object.user:
-            raise CoreError("You are not the owner of the " + get_form_label() + " that you are trying to access")
+            raise AccessControlError("You are not the owner of the " + get_form_label() + " that you are trying to access")
 
 
 def _check_can_write_data(request, accessed_object):
@@ -467,4 +469,4 @@ def _check_can_write_data(request, accessed_object):
         if not request.user.is_superuser:
             check_can_write(accessed_object.data, request.user)
     except Exception as e:
-        raise CoreError(str(e))
+        raise AccessControlError(str(e))
