@@ -182,7 +182,7 @@ var validateXML = function() {
                     displayWarningInValidModal(data.warning);
                 //find warning tooltip to display warning in the validation modal
                 if (findFormWarningTooltip())
-                    displayWarningInValidModal(' this form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
+                    displayWarningInValidModal(' This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
             }
         }
     });
