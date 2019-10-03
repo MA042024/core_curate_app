@@ -12,7 +12,11 @@
 <div id="template_selection">
     <h3 class="text-center">Templates</h3>
     {% if data.templates_version_manager or data.userTemplates %}
-        <table class="table">
+        <table class="table fixed-table">
+            <colgroup>
+                <col class="col-width-75">
+                <col class="col-width-25">
+            </colgroup>
             {% include 'core_main_app/user/template/list_header.html' with object_type='Template' %}
             {% include 'core_curate_app/user/list/list.html' with object_list=data.templates_version_manager owner='Global' object_type='Template' %}
             {% include 'core_curate_app/user/list/list.html' with object_list=data.userTemplates owner=request.user object_type='Template' %}
