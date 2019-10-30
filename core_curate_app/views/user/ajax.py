@@ -4,7 +4,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from lxml.etree import XMLSyntaxError
