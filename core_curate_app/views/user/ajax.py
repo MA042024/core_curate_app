@@ -4,9 +4,9 @@ import json
 
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
-from django.urls import reverse
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
+from django.urls import reverse
 from lxml.etree import XMLSyntaxError
 
 import core_curate_app.common.exceptions as exceptions
@@ -23,6 +23,7 @@ from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.labels import get_data_label, get_form_label
 from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
+from core_main_app.views.common.views import read_xsd_file
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
@@ -396,8 +397,7 @@ def _start_curate_post(request):
             upload_form = users_forms.UploadForm(request.POST, request.FILES)
             if upload_form.is_valid():
                 xml_file = request.FILES['file']
-                xml_file.seek(0)  # put the cursor at the beginning of the file
-                xml_data = xml_file.read()  # read the content of the file
+                xml_data = read_xsd_file(xml_file)
                 well_formed = is_well_formed_xml(xml_data)
                 name = xml_file.name
                 if not well_formed:
