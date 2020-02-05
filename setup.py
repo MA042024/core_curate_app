@@ -33,7 +33,7 @@ required = [req_link(r) if r.startswith("https://") else r for r in required]
 
 setup(
     name="core_curate_app",
-    version="1.7.0",
+    version="1.8.0",
     description="Curation functionalities for the curator core project",
     long_description=long_desc,
     author="NIST IT Lab",
