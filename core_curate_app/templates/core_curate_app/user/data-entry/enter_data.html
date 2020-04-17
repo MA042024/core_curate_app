@@ -9,12 +9,12 @@ There are no validation on empty fields if no such constraint is defined in the 
 Thus, an empty string of characters may not raise a validation error, but an empty number will.
 
 <div class="toolbar">
-	<div class="btn-group pull-right">
-		<button class="btn btn-danger clear-fields"><i class="fa fa-eraser"></i> Clear Fields </button>
-        <button class="btn btn-danger cancel-changes"><i class="fa fa-refresh"></i> Cancel Changes </button>
-        <button class="btn btn-danger cancel-form"><i class="fa fa-trash"></i> Delete {% trans "form_label"|title %} </button>
-    	<button class="btn btn-secondary save-form"><i class="fa fa-floppy-o"></i> Save {% trans "form_label"|title %} </button>
-    	<button class="btn btn-secondary download"><i class="fa fa-download"></i> Download </button>
+	<div class="float-right">
+		<button class="btn btn-danger clear-fields mr-auto"><i class="fa fa-eraser"></i> Clear Fields </button>
+        <button class="btn btn-danger cancel-changes mr-auto"><i class="fa fa-sync"></i> Cancel Changes </button>
+        <button class="btn btn-danger cancel-form mr-auto"><i class="fa fa-trash"></i> Delete {% trans "form_label"|title %} </button>
+    	<button class="btn btn-secondary save-form mr-auto"><i class="fa fa-save"></i> Save {% trans "form_label"|title %} </button>
+    	<button class="btn btn-secondary download mr-auto"><i class="fa fa-download"></i> Download </button>
         <button class="btn btn-secondary validate"><i class="fa fa-check"></i> Validate </button>
 	</div>
     <br/><br/>
