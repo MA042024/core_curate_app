@@ -1,5 +1,7 @@
 """ Apps file for setting core package when app is ready
 """
+import sys
+
 from django.apps import AppConfig
 
 
@@ -14,5 +16,6 @@ class CurateAppConfig(AppConfig):
         Returns:
 
         """
-        import core_curate_app.permissions.discover as discover
-        discover.init_permissions()
+        if 'migrate' not in sys.argv:
+            import core_curate_app.permissions.discover as discover
+            discover.init_permissions()
