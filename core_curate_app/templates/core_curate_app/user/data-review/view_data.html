@@ -4,12 +4,12 @@
 
 <h1>View Data</h1>
 
-<div class="btn-group float-right">
-    <a class="btn btn-danger" href="{% url 'core_curate_enter_data' data.data_structure.id True %}">
+<div class="float-right">
+    <a class="btn btn-danger mr-auto" href="{% url 'core_curate_enter_data' data.data_structure.id True %}">
         <i class="fa fa-arrow-left"></i> Back to {% trans "form_label"|title %}</a>
-	<a class="btn btn-secondary" href="{% url 'core_curate_download_xml' data.data_structure.id %}">
+	<a class="btn btn-secondary mr-auto" href="{% url 'core_curate_download_xml' data.data_structure.id %}">
         <i class="fa fa-download"></i> Download XML</a>
-	<a class="btn btn-secondary save-to-repo"><i class="fa fa-save"></i> Save to Repository</a>
+	<button class="btn btn-primary mr-auto save-to-repo"><i class="fa fa-save"></i> Save to Repository</button>
 </div>
 
 <span>Title: {{data.data_structure.name}}</span>
