@@ -1,5 +1,6 @@
 """ Url router for the curate application
 """
+from django.conf.urls import include
 from django.urls import re_path, reverse_lazy
 
 import core_curate_app.permissions.rights as rights
@@ -47,5 +48,6 @@ urlpatterns = [
             permission_required(content_type=rights.curate_content_type,
                                 permission=rights.curate_access,
                                 login_url=reverse_lazy("core_main_app_login"))(common_views.FormView.as_view()),
-            name='core_curate_view_form')
+            name='core_curate_view_form'),
+    re_path(r'^rest/', include('core_curate_app.rest.urls')),
 ]
