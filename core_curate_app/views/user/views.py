@@ -9,7 +9,9 @@ from django.views import View
 import core_curate_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_api
 import core_main_app.utils.decorators as decorators
-from core_curate_app.components.curate_data_structure import api as curate_data_structure_api
+from core_curate_app.components.curate_data_structure import (
+    api as curate_data_structure_api,
+)
 from core_curate_app.settings import INSTALLED_APPS
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
@@ -19,7 +21,9 @@ from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.labels import get_form_label
 from core_main_app.utils.rendering import render
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
@@ -28,8 +32,11 @@ logger = logging.getLogger(__name__)
 # TODO: Add a view for the registry. Ajax code need to be refactored
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
+@decorators.permission_required(
+    content_type=rights.curate_content_type,
+    permission=rights.curate_access,
+    login_url=reverse_lazy("core_main_app_login"),
+)
 def index(request):
     """ Page that allows to select a template to start curating.
 
@@ -41,107 +48,69 @@ def index(request):
     """
     assets = {
         "js": [
-            {
-                "path": 'core_curate_app/user/js/select_template.js',
-                "is_raw": False
-            },
-            {
-                "path": 'core_curate_app/user/js/select_template.raw.js',
-                "is_raw": True
-            },
+            {"path": "core_curate_app/user/js/select_template.js", "is_raw": False},
+            {"path": "core_curate_app/user/js/select_template.raw.js", "is_raw": True},
         ],
-        "css": ['core_curate_app/user/css/common.css',
-                'core_curate_app/user/css/style.css']
+        "css": [
+            "core_curate_app/user/css/common.css",
+            "core_curate_app/user/css/style.css",
+        ],
     }
 
     global_active_template_list = template_api.get_active_global_version_manager()
-    user_active_template_list = template_api.get_active_version_manager_by_user_id(request.user.id)
+    user_active_template_list = template_api.get_active_version_manager_by_user_id(
+        request.user.id
+    )
 
     context = {
-        'templates_version_manager': global_active_template_list,
-        'userTemplates': user_active_template_list,
+        "templates_version_manager": global_active_template_list,
+        "userTemplates": user_active_template_list,
     }
 
-    return render(request,
-                  'core_curate_app/user/curate.html',
-                  # modals=modals,
-                  assets=assets,
-                  context=context)
+    return render(
+        request,
+        "core_curate_app/user/curate.html",
+        # modals=modals,
+        assets=assets,
+        context=context,
+    )
 
 
 # FIXME: allow reopening a form with unsaved changes (may be temporary until curate workflow redesign)
 class EnterDataView(View):
-
     def __init__(self):
         super(EnterDataView, self).__init__()
         self.assets = {
             "js": [
-                {
-                    "path": "core_main_app/common/js/debounce.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_main_app/common/js/elementViewport.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_curate_app/user/js/enter_data.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_curate_app/user/js/enter_data.raw.js",
-                    "is_raw": True
-                },
-                {
-                    "path": "core_parser_app/js/modules.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_parser_app/js/modules.raw.js",
-                    "is_raw": True
-                },
-                {
-                    "path": 'core_main_app/common/js/XMLTree.js',
-                    "is_raw": False
-                },
-                {
-                    "path": "core_parser_app/js/autosave.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_parser_app/js/autosave.raw.js",
-                    "is_raw": True
-                },
-                {
-                    "path": "core_parser_app/js/buttons.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_curate_app/user/js/buttons.raw.js",
-                    "is_raw": True
-                },
-                {
-                    "path": "core_parser_app/js/choice.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_curate_app/user/js/choice.raw.js",
-                    "is_raw": True
-                },
+                {"path": "core_main_app/common/js/debounce.js", "is_raw": False},
+                {"path": "core_main_app/common/js/elementViewport.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/enter_data.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/enter_data.raw.js", "is_raw": True},
+                {"path": "core_parser_app/js/modules.js", "is_raw": False},
+                {"path": "core_parser_app/js/modules.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
+                {"path": "core_parser_app/js/autosave.js", "is_raw": False},
+                {"path": "core_parser_app/js/autosave.raw.js", "is_raw": True},
+                {"path": "core_parser_app/js/buttons.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/buttons.raw.js", "is_raw": True},
+                {"path": "core_parser_app/js/choice.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/choice.raw.js", "is_raw": True},
             ],
-            "css": ['core_curate_app/user/css/common.css',
-                    'core_curate_app/user/css/xsd_form.css',
-                    'core_parser_app/css/use.css']
+            "css": [
+                "core_curate_app/user/css/common.css",
+                "core_curate_app/user/css/xsd_form.css",
+                "core_parser_app/css/use.css",
+            ],
         }
         self.modals = [
-            'core_curate_app/user/data-entry/modals/cancel-changes.html',
-            'core_curate_app/user/data-entry/modals/cancel-form.html',
-            'core_curate_app/user/data-entry/modals/clear-fields.html',
-            'core_curate_app/user/data-entry/modals/download-options.html',
-            'core_curate_app/user/data-entry/modals/save-form.html',
-            'core_curate_app/user/data-entry/modals/use-validation.html',
-            'core_curate_app/user/data-entry/modals/xml-error.html',
-            'core_curate_app/user/data-entry/modals/xml-valid.html',
+            "core_curate_app/user/data-entry/modals/cancel-changes.html",
+            "core_curate_app/user/data-entry/modals/cancel-form.html",
+            "core_curate_app/user/data-entry/modals/clear-fields.html",
+            "core_curate_app/user/data-entry/modals/download-options.html",
+            "core_curate_app/user/data-entry/modals/save-form.html",
+            "core_curate_app/user/data-entry/modals/use-validation.html",
+            "core_curate_app/user/data-entry/modals/xml-error.html",
+            "core_curate_app/user/data-entry/modals/xml-valid.html",
         ]
 
     def build_context(self, request, curate_data_structure, reload_unsaved_changes):
@@ -169,7 +138,9 @@ class EnterDataView(View):
             root_element = generate_form(xsd_string, xml_string)
 
             # save the root element in the data structure
-            curate_data_structure_api.update_data_structure_root(curate_data_structure, root_element)
+            curate_data_structure_api.update_data_structure_root(
+                curate_data_structure, root_element
+            )
 
         # renders the form
         xsd_form = render_form(request, root_element)
@@ -180,10 +151,13 @@ class EnterDataView(View):
             "data_structure": curate_data_structure,
         }
 
-    @method_decorator(decorators.
-                      permission_required(content_type=rights.curate_content_type,
-                                          permission=rights.curate_access,
-                                          login_url=reverse_lazy("core_main_app_login")))
+    @method_decorator(
+        decorators.permission_required(
+            content_type=rights.curate_content_type,
+            permission=rights.curate_access,
+            login_url=reverse_lazy("core_main_app_login"),
+        )
+    )
     def get(self, request, curate_data_structure_id, reload_unsaved_changes=False):
         """Load view to enter data.
 
@@ -198,7 +172,9 @@ class EnterDataView(View):
         curate_data_structure = None
         try:
             # get data structure
-            curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
+            curate_data_structure = _get_curate_data_structure_by_id(
+                curate_data_structure_id, request
+            )
 
             # lock from database
             if curate_data_structure.data is not None:
@@ -208,34 +184,51 @@ class EnterDataView(View):
             # Code executed only if the data is unlocked. set_lock_object() raises LockError.
             if str(request.user.id) != curate_data_structure.user:
                 curate_data_structure.user = str(request.user.id)
-                curate_data_structure = curate_data_structure_api.upsert(curate_data_structure)
+                curate_data_structure = curate_data_structure_api.upsert(
+                    curate_data_structure
+                )
 
             # Set the context
-            context = self.build_context(request, curate_data_structure, reload_unsaved_changes)
+            context = self.build_context(
+                request, curate_data_structure, reload_unsaved_changes
+            )
 
-            return render(request,
-                          'core_curate_app/user/data-entry/enter_data.html',
-                          assets=self.assets,
-                          context=context,
-                          modals=self.modals)
+            return render(
+                request,
+                "core_curate_app/user/data-entry/enter_data.html",
+                assets=self.assets,
+                context=context,
+                modals=self.modals,
+            )
         except (LockError, AccessControlError, ModelError, DoesNotExist) as ex:
-            return render(request,
-                          'core_curate_app/user/errors.html',
-                          assets={},
-                          context={'errors': str(ex)})
+            return render(
+                request,
+                "core_curate_app/user/errors.html",
+                assets={},
+                context={"errors": str(ex)},
+            )
         except Exception as e:
             try:
                 # unlock from database
-                if curate_data_structure is not None and curate_data_structure.data is not None:
-                    lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+                if (
+                    curate_data_structure is not None
+                    and curate_data_structure.data is not None
+                ):
+                    lock_api.remove_lock_on_object(
+                        curate_data_structure.data, request.user
+                    )
             except Exception as e:
                 # data structure not found, continue search
-                logger.warning("EnterDataView get threw an exception: {0}".format(str(e)))
+                logger.warning(
+                    "EnterDataView get threw an exception: {0}".format(str(e))
+                )
 
-            return render(request,
-                          'core_curate_app/user/errors.html',
-                          assets={},
-                          context={'errors': str(e)})
+            return render(
+                request,
+                "core_curate_app/user/errors.html",
+                assets={},
+                context={"errors": str(e)},
+            )
 
 
 class ViewDataView(View):
@@ -243,28 +236,18 @@ class ViewDataView(View):
         super(ViewDataView, self).__init__()
         self.assets = {
             "js": [
-                {
-                    "path": "core_curate_app/user/js/view_data.js",
-                    "is_raw": False
-                },
-                {
-                    "path": "core_curate_app/user/js/view_data.raw.js",
-                    "is_raw": True
-                },
-                {
-                    "path": "core_main_app/common/js/XMLTree.js",
-                    "is_raw": False
-                },
-         ],
-               "css": ['core_main_app/common/css/XMLTree.css']
-          }
+                {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/view_data.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
+            ],
+            "css": ["core_main_app/common/css/XMLTree.css"],
+        }
 
         self.modals = [
-            'core_curate_app/user/data-review/modals/save-error.html',
+            "core_curate_app/user/data-review/modals/save-error.html",
         ]
 
     def build_context(self, request, curate_data_structure):
-
 
         # generate xml string
         xml_string = render_xml(curate_data_structure.data_structure_element_root)
@@ -275,42 +258,58 @@ class ViewDataView(View):
             "data_structure": curate_data_structure,
         }
 
-    @method_decorator(decorators.
-                      permission_required(content_type=rights.curate_content_type,
-                                          permission=rights.curate_access,
-                                          login_url=reverse_lazy("core_main_app_login")))
+    @method_decorator(
+        decorators.permission_required(
+            content_type=rights.curate_content_type,
+            permission=rights.curate_access,
+            login_url=reverse_lazy("core_main_app_login"),
+        )
+    )
     def get(self, request, curate_data_structure_id):
 
         try:
-            curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
+            curate_data_structure = _get_curate_data_structure_by_id(
+                curate_data_structure_id, request
+            )
 
             # generate xml string
             xml_string = render_xml(curate_data_structure.data_structure_element_root)
 
             if "core_file_preview_app" in INSTALLED_APPS:
-                self.assets["js"].extend([
-                    {
-                        "path": 'core_file_preview_app/user/js/file_preview.js',
-                        "is_raw": False
-                    }
-                ])
-                self.assets["css"].append("core_file_preview_app/user/css/file_preview.css")
+                self.assets["js"].extend(
+                    [
+                        {
+                            "path": "core_file_preview_app/user/js/file_preview.js",
+                            "is_raw": False,
+                        }
+                    ]
+                )
+                self.assets["css"].append(
+                    "core_file_preview_app/user/css/file_preview.css"
+                )
                 self.modals.append("core_file_preview_app/user/file_preview_modal.html")
             self.context = self.build_context(request, curate_data_structure)
-            return render(request,
-                          'core_curate_app/user/data-review/view_data.html',
-                          assets=self.assets,
-                          context=self.context,
-                          modals=self.modals)
+            return render(
+                request,
+                "core_curate_app/user/data-review/view_data.html",
+                assets=self.assets,
+                context=self.context,
+                modals=self.modals,
+            )
         except Exception as e:
-            return render(request,
-                          'core_curate_app/user/errors.html',
-                          assets={},
-                          context={'errors': str(e)})
+            return render(
+                request,
+                "core_curate_app/user/errors.html",
+                assets={},
+                context={"errors": str(e)},
+            )
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
+@decorators.permission_required(
+    content_type=rights.curate_content_type,
+    permission=rights.curate_access,
+    login_url=reverse_lazy("core_main_app_login"),
+)
 def download_current_xml(request, curate_data_structure_id):
     """Make the current XML document available for download.
 
@@ -322,20 +321,27 @@ def download_current_xml(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
+    curate_data_structure = _get_curate_data_structure_by_id(
+        curate_data_structure_id, request
+    )
 
     # generate xml string
     xml_data = render_xml(curate_data_structure.data_structure_element_root)
 
     # build response with file
-    return get_file_http_response(file_content=xml_data,
-                                  file_name=curate_data_structure.name,
-                                  content_type='application/xml',
-                                  extension='xml')
+    return get_file_http_response(
+        file_content=xml_data,
+        file_name=curate_data_structure.name,
+        content_type="application/xml",
+        extension="xml",
+    )
 
 
-@decorators.permission_required(content_type=rights.curate_content_type,
-                                permission=rights.curate_access, login_url=reverse_lazy("core_main_app_login"))
+@decorators.permission_required(
+    content_type=rights.curate_content_type,
+    permission=rights.curate_access,
+    login_url=reverse_lazy("core_main_app_login"),
+)
 def download_xsd(request, curate_data_structure_id):
     """Make the current XSD available for download.
 
@@ -347,15 +353,19 @@ def download_xsd(request, curate_data_structure_id):
 
     """
     # get curate data structure
-    curate_data_structure = _get_curate_data_structure_by_id(curate_data_structure_id, request)
+    curate_data_structure = _get_curate_data_structure_by_id(
+        curate_data_structure_id, request
+    )
 
     # get the template
     template = curate_data_structure.template
     # return the file
-    return get_file_http_response(file_content=template.content,
-                                  file_name=template.filename,
-                                  content_type='application/xsd',
-                                  extension='.xsd')
+    return get_file_http_response(
+        file_content=template.content,
+        file_name=template.filename,
+        content_type="application/xsd",
+        extension=".xsd",
+    )
 
 
 def generate_form(xsd_string, xml_string=None):
@@ -423,7 +433,9 @@ def _get_curate_data_structure_by_id(curate_data_structure_id, request):
     """
 
     # get data structure
-    curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id)
+    curate_data_structure = curate_data_structure_api.get_by_id(
+        curate_data_structure_id
+    )
 
     # If not link to a data, only ownership check
     if curate_data_structure.data is None:
@@ -451,7 +463,11 @@ def _check_owner(request, accessed_object):
     if not request.user.is_superuser:
         # If not the owner of the accessed object
         if str(request.user.id) != accessed_object.user:
-            raise AccessControlError("You are not the owner of the " + get_form_label() + " that you are trying to access")
+            raise AccessControlError(
+                "You are not the owner of the "
+                + get_form_label()
+                + " that you are trying to access"
+            )
 
 
 def _check_can_write_data(request, accessed_object):

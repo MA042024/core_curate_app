@@ -8,7 +8,8 @@ from django.apps import AppConfig
 class CurateAppConfig(AppConfig):
     """ Core application settings.
     """
-    name = 'core_curate_app'
+
+    name = "core_curate_app"
 
     def ready(self):
         """ Run when the app is ready.
@@ -16,6 +17,7 @@ class CurateAppConfig(AppConfig):
         Returns:
 
         """
-        if 'migrate' not in sys.argv:
+        if "migrate" not in sys.argv:
             import core_curate_app.permissions.discover as discover
+
             discover.init_permissions()

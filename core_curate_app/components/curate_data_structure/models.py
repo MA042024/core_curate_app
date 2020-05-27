@@ -15,6 +15,7 @@ from signals_utils.signals.mongo import connector, signals
 class CurateDataStructure(DataStructure):
     """ Curate data structure.
     """
+
     form_string = fields.StringField(blank=True)
     data = fields.ReferenceField(Data, blank=True, reverse_delete_rule=CASCADE)
 
@@ -74,7 +75,9 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(user=str(user_id), template=str(template_id)).all()
+        return CurateDataStructure.objects(
+            user=str(user_id), template=str(template_id)
+        ).all()
 
     @staticmethod
     def get_by_user_id_and_template_id_and_name(user_id, template_id, name):
@@ -84,7 +87,9 @@ class CurateDataStructure(DataStructure):
 
         """
         try:
-            return CurateDataStructure.objects.get(user=str(user_id), template=str(template_id), name=name)
+            return CurateDataStructure.objects.get(
+                user=str(user_id), template=str(template_id), name=name
+            )
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
@@ -107,7 +112,9 @@ class CurateDataStructure(DataStructure):
         Args: user_id:
         Return:
         """
-        return CurateDataStructure.objects(user__ne=str(user_id), data__exists=False).all()
+        return CurateDataStructure.objects(
+            user__ne=str(user_id), data__exists=False
+        ).all()
 
     @staticmethod
     def get_all_by_user_id_and_template_id_with_no_data(user_id, template_id):
@@ -120,9 +127,9 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(user=str(user_id),
-                                           template=str(template_id),
-                                           data__exists=False).all()
+        return CurateDataStructure.objects(
+            user=str(user_id), template=str(template_id), data__exists=False
+        ).all()
 
     @staticmethod
     def get_all_with_no_data():

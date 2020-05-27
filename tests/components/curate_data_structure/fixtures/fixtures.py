@@ -9,6 +9,7 @@ from core_main_app.utils.integration_tests.fixture_interface import FixtureInter
 class DataStructureFixtures(FixtureInterface):
     """ Data structure fixtures
     """
+
     data_structure_1 = None
     data_structure_2 = None
     data_structure_3 = None
@@ -33,13 +34,23 @@ class DataStructureFixtures(FixtureInterface):
         """
 
         # NOTE: no xml_content to avoid using unsupported GridFS mock
-        self.data_structure_1 = CurateDataStructure(user='1' ,template=self.template, name='data_structure_1').save()
+        self.data_structure_1 = CurateDataStructure(
+            user="1", template=self.template, name="data_structure_1"
+        ).save()
 
-        self.data_structure_2 = CurateDataStructure(user='1', template=self.template, name='data_structure_2').save()
+        self.data_structure_2 = CurateDataStructure(
+            user="1", template=self.template, name="data_structure_2"
+        ).save()
 
-        self.data_structure_3 = CurateDataStructure(user='2', template=self.template, name='data_structure_3').save()
+        self.data_structure_3 = CurateDataStructure(
+            user="2", template=self.template, name="data_structure_3"
+        ).save()
 
-        self.data_collection = [self.data_structure_1, self.data_structure_2, self.data_structure_3]
+        self.data_collection = [
+            self.data_structure_1,
+            self.data_structure_2,
+            self.data_structure_3,
+        ]
 
     def generate_template(self):
         """ Generate an unique Template.
@@ -48,11 +59,11 @@ class DataStructureFixtures(FixtureInterface):
 
         """
         template = Template()
-        xsd = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">' \
-              '<xs:element name="tag"></xs:element></xs:schema>'
+        xsd = (
+            '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">'
+            '<xs:element name="tag"></xs:element></xs:schema>'
+        )
         template.content = xsd
         template.hash = ""
         template.filename = "filename"
         self.template = template.save()
-
-

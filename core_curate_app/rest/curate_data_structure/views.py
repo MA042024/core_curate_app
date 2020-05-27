@@ -9,7 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
-from core_curate_app.rest.curate_data_structure.serializers import CurateDataStructureSerializer
+from core_curate_app.rest.curate_data_structure.serializers import (
+    CurateDataStructureSerializer,
+)
 from core_main_app.commons import exceptions
 
 logger = logging.getLogger(__name__)
@@ -18,6 +20,7 @@ logger = logging.getLogger(__name__)
 class AdminCurateDataStructureList(APIView):
     """ List all Curate Data Structure, or create a new one.
     """
+
     permission_classes = (IsAdminUser,)
     serializer = CurateDataStructureSerializer
 
@@ -50,7 +53,7 @@ class AdminCurateDataStructureList(APIView):
             # Return response
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
@@ -84,7 +87,7 @@ class AdminCurateDataStructureList(APIView):
         """
         if not request.user.is_superuser:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        
+
         try:
             # Build serializer
             serializer = self.serializer(data=request.data)
@@ -97,11 +100,11 @@ class AdminCurateDataStructureList(APIView):
             # Return the serialized data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as validation_exception:
-            content = {'message': validation_exception.detail}
+            content = {"message": validation_exception.detail}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
-            content = {'message': 'Object not found.'}
+            content = {"message": "Object not found."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
