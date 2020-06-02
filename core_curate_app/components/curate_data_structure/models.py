@@ -142,6 +142,15 @@ class CurateDataStructure(DataStructure):
         return CurateDataStructure.objects(data__exists=False).all()
 
     @staticmethod
+    def get_all_by_user(user_id):
+        """Return all curate data structure by user.
+
+        Returns:
+
+        """
+        return CurateDataStructure.objects(user=str(user_id)).all()
+
+    @staticmethod
     def get_by_data_id(data_id):
         """Return the curate data structure with the given data id
 

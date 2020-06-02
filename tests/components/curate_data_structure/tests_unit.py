@@ -209,6 +209,25 @@ class TestCurateDataStructureGetAllByUserIdandTemplateIdWithNoData(TestCase):
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
 
 
+class TestCurateDataStructureGetByUserId(TestCase):
+    @patch.object(CurateDataStructure, "get_all_by_user")
+    def test_curate_data_structure_get_all_by_user_return_collection_of_curate_data_structure(
+        self, mock_list
+    ):
+        # Arrange
+        mock_data_1 = CurateDataStructure(
+            user="1", template=_get_template(), name="name_title_1"
+        )
+        mock_data_2 = CurateDataStructure(
+            user="1", template=_get_template(), name="name_title_2"
+        )
+        mock_list.return_value = [mock_data_1, mock_data_2]
+        # Act
+        result = curate_data_structure_api.get_all_by_user(create_mock_user(1))
+        # Assert
+        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+
+
 def _get_template():
     template = Template()
     template.id_field = 1

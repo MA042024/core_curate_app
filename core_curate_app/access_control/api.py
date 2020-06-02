@@ -28,8 +28,10 @@ def can_read(func, *args, **kwargs):
     document = func(*args, **kwargs)
     if type(document) is list:
         document_list = document
-    else:
+    elif isinstance(document, CurateDataStructure):
         document_list = [document]
+    else:
+        document_list = list(document)
 
     _check_can_read(document_list, user)
 

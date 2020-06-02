@@ -86,3 +86,243 @@ class TestDataStructureListAdmin(MongoIntegrationBaseTestCase):
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class TestDataStructureList(MongoIntegrationBaseTestCase):
+    fixture = fixture_data_structure
+
+    def setUp(self):
+        super(TestDataStructureList, self).setUp()
+
+        self.superuser = create_mock_user("1", is_staff=True, is_superuser=True)
+
+        self.user = create_mock_user("2")
+
+        self.data = {
+            "user": "2",
+            "name": "name",
+            "form_string": "<tag></tag>",
+            "template": str(self.fixture.template.id),
+        }
+
+    def test_get_returns_all_user_data_structure_as_superuser(self):
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureList.as_view(), self.superuser
+        )
+
+        # Assert
+        self.assertEqual(len(response.data), 2)
+
+    def test_get_returns_all_user_data_structure_as_user(self):
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureList.as_view(), self.user
+        )
+
+        # Assert
+        self.assertEqual(len(response.data), 1)
+
+    def test_post_returns_http_201(self):
+        # Arrange
+
+        # Act
+        response = RequestMock.do_request_post(
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            self.user,
+            data=self.data,
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_incorrect_parameter_returns_http_400(self):
+        # Arrange
+        self.data["template"] = "507f1f77bcf86cd799439011"
+
+        # Act
+        response = RequestMock.do_request_post(
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            self.user,
+            data=self.data,
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_post_data_structure_missing_field_returns_http_400(self):
+        # Arrange
+        self.data = {"user": "1", "name": "name", "form_string": "<tag></tag>"}
+
+        # Act
+        response = RequestMock.do_request_post(
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            self.user,
+            data=self.data,
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class TestDataStructureDetail(MongoIntegrationBaseTestCase):
+    fixture = fixture_data_structure
+
+    def setUp(self):
+        super(TestDataStructureDetail, self).setUp()
+
+    def test_get_returns_http_200(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_returns_data_structure(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.data["name"], self.fixture.data_structure_1.name)
+
+    def test_get_other_user_data_structure_returns_http_403(self):
+        # Arrange
+        user = create_mock_user("2")
+
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_wrong_id_returns_http_404(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_get(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": "507f1f77bcf86cd799439011"},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_returns_http_204(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_delete(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_other_user_blob_returns_http_403(self):
+        # Arrange
+        user = create_mock_user("2")
+
+        # Act
+        response = RequestMock.do_request_delete(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_wrong_id_returns_http_404(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_delete(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": "507f1f77bcf86cd799439011"},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_other_user_blob_returns_http_403(self):
+        # Arrange
+        user = create_mock_user("2")
+
+        # Act
+        response = RequestMock.do_request_patch(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_patch_returns_updated_name(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_patch(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": str(self.fixture.data_structure_1.id)},
+            data={"name": "new_name"},
+        )
+
+        # Assert
+        self.assertEqual(response.data["name"], "new_name")
+
+    def test_patch_wrong_id_returns_http_404(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_patch(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            param={"pk": "507f1f77bcf86cd799439011"},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_patch_wrong_template_returns_http_400(self):
+        # Arrange
+        user = create_mock_user("1")
+
+        # Act
+        response = RequestMock.do_request_patch(
+            data_structure_rest_views.CurateDataStructureDetail.as_view(),
+            user,
+            data={"template": "507f1f77bcf86cd799439011"},
+            param={"pk": self.fixture.data_structure_1.id},
+        )
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

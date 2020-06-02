@@ -152,6 +152,19 @@ def get_by_data_id(data_id, user):
     return CurateDataStructure.get_by_data_id(data_id)
 
 
+@access_control(can_read)
+def get_all_by_user(user):
+    """Get all curate data that belong to user.
+
+    Args:
+        user: User
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_all_by_user(user.id)
+
+
 @access_control(can_write)
 def update_data_structure_root(curate_data_structure, root_element, user):
     """Update the data structure with a root element.
