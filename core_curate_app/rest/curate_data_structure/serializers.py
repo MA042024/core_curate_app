@@ -37,4 +37,6 @@ class CurateDataStructureSerializer(DocumentSerializer):
             if "data_structure_element_root" in validated_data
             else None,
         )
-        return curate_data_structure_api.upsert(curate_data_structure)
+        return curate_data_structure_api.upsert(
+            curate_data_structure, validated_data["user_request"]
+        )

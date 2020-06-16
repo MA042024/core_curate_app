@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from core_main_app.access_control.exceptions import AccessControlError
 
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.rest.curate_data_structure.serializers import (
@@ -95,10 +96,12 @@ class AdminCurateDataStructureList(APIView):
             # Validate data
             serializer.is_valid(True)
             # Save data
-            serializer.save()
+            serializer.save(user_request=request.user)
 
             # Return the serialized data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except AccessControlError as e:
+            content = {"message": str(e)}
         except ValidationError as validation_exception:
             content = {"message": validation_exception.detail}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)

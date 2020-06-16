@@ -139,7 +139,7 @@ class EnterDataView(View):
 
             # save the root element in the data structure
             curate_data_structure_api.update_data_structure_root(
-                curate_data_structure, root_element
+                curate_data_structure, root_element, request.user
             )
 
         # renders the form
@@ -185,7 +185,7 @@ class EnterDataView(View):
             if str(request.user.id) != curate_data_structure.user:
                 curate_data_structure.user = str(request.user.id)
                 curate_data_structure = curate_data_structure_api.upsert(
-                    curate_data_structure
+                    curate_data_structure, request.user
                 )
 
             # Set the context
@@ -434,7 +434,7 @@ def _get_curate_data_structure_by_id(curate_data_structure_id, request):
 
     # get data structure
     curate_data_structure = curate_data_structure_api.get_by_id(
-        curate_data_structure_id
+        curate_data_structure_id, request.user
     )
 
     # If not link to a data, only ownership check

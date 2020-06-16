@@ -7,6 +7,7 @@ from mock import patch
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.components.template.models import Template
 
 
@@ -15,24 +16,32 @@ class TestCurateDataStructureGetById(TestCase):
     def test_curate_data_structure_get_by_id_raises_does_not_exist_error_if_not_found(
         self, mock_get
     ):
+
         # Arrange
         mock_get.side_effect = exceptions.DoesNotExist("")
+        mock_user = create_mock_user("1")
+
         # Act # Assert
         with self.assertRaises(exceptions.DoesNotExist):
-            curate_data_structure_api.get_by_id(1)
+            curate_data_structure_api.get_by_id(1, mock_user)
 
     def test_data_structure_get_by_id_raises_model_error_if_not_found(self):
+
+        # Arrange
+        mock_user = create_mock_user("1")
+
         # Act # Assert
         with self.assertRaises(exceptions.ModelError):
-            curate_data_structure_api.get_by_id(1)
+            curate_data_structure_api.get_by_id(1, mock_user)
 
     @patch.object(CurateDataStructure, "get_by_id")
     def test_curate_data_structure_get_by_id_return_data_if_found(self, mock_get):
         # Arrange
         mock_data_structure = CurateDataStructure("1", Template(), "name")
         mock_get.return_value = mock_data_structure
+        mock_user = create_mock_user("1")
         # Act
-        result = curate_data_structure_api.get_by_id(1)
+        result = curate_data_structure_api.get_by_id(1, mock_user)
         # Assert
         self.assertIsInstance(result, CurateDataStructure)
 
@@ -45,8 +54,9 @@ class TestCurateDataStructureUpsert(TestCase):
         # Arrange
         mock_data_structure = CurateDataStructure("1", Template(), "name")
         mock_save.return_value = mock_data_structure
+        mock_user = create_mock_user("1")
         # Act
-        result = curate_data_structure_api.upsert(mock_data_structure)
+        result = curate_data_structure_api.upsert(mock_data_structure, mock_user)
         # Assert
         self.assertIsInstance(result, CurateDataStructure)
 
@@ -63,7 +73,9 @@ class TestCurateDataStructureGetAll(TestCase):
         )
         mock_list.return_value = [mock_data_1, mock_data_2]
         # Act
-        result = curate_data_structure_api.get_all()
+        result = curate_data_structure_api.get_all(
+            create_mock_user("1", is_staff=True, is_superuser=True)
+        )
         # Assert
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
 
@@ -81,6 +93,7 @@ class TestCurateDataStructureGetByUserIdAndTemplateId(TestCase):
             user="1", template=_get_template(), name="name_title_2"
         )
         mock_list.return_value = [mock_data_1, mock_data_2]
+
         # Act
         result = curate_data_structure_api.get_all_by_user_id_and_template_id(1, 1)
         # Assert
@@ -119,6 +132,7 @@ class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
     def test_data_structure_get_by_user_and_template_and_name_raises_model_error_if_not_found(
         self,
     ):
+
         # Act # Assert
         with self.assertRaises(exceptions.ModelError):
             curate_data_structure_api.get_by_user_id_and_template_id_and_name(
@@ -158,8 +172,12 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(TestCase):
             user="1", template=_get_template(), name="name_title_2"
         )
         mock_list.return_value = [mock_data_1, mock_data_2]
+        mock_user = create_mock_user("1", is_staff=True, is_superuser=True)
+
         # Act
-        result = curate_data_structure_api.get_all_except_user_id_with_no_data(2)
+        result = curate_data_structure_api.get_all_except_user_id_with_no_data(
+            2, mock_user
+        )
         # Assert
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
 
@@ -180,6 +198,7 @@ class TestCurateDataStructureGetAllByUserIdandTemplateIdWithNoData(TestCase):
             user="1", template=template, name="name_title_2"
         )
         mock_list.return_value = [mock_data_1, mock_data_2]
+        mock_user = create_mock_user("1")
         # Act
         result = curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
             "1", template.id

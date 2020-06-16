@@ -80,7 +80,7 @@ def generate_choice(request, curate_data_structure_id):
     try:
         element_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
         xsd_parser = get_parser()
         html_form = xsd_parser.generate_choice_absent(
@@ -110,7 +110,7 @@ def generate_element(request, curate_data_structure_id):
     try:
         element_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
         xsd_parser = get_parser()
         html_form = xsd_parser.generate_element_absent(
@@ -191,7 +191,7 @@ def clear_fields(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
 
         # generate form
@@ -199,7 +199,7 @@ def clear_fields(request):
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
-            curate_data_structure, root_element
+            curate_data_structure, root_element, request.user
         )
 
         # renders the form
@@ -230,7 +230,7 @@ def cancel_changes(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
 
         if curate_data_structure.data is not None:
@@ -248,7 +248,7 @@ def cancel_changes(request):
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
-            curate_data_structure, root_element
+            curate_data_structure, root_element, request.user
         )
 
         # renders the form
@@ -279,12 +279,12 @@ def cancel_form(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
         # unlock from database
         if curate_data_structure.data is not None:
             lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
-        curate_data_structure_api.delete(curate_data_structure)
+        curate_data_structure_api.delete(curate_data_structure, request.user)
 
         # add success message
         messages.add_message(
@@ -316,7 +316,7 @@ def save_form(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
 
         # generate xml data
@@ -326,7 +326,7 @@ def save_form(request):
         curate_data_structure.form_string = xml_data
 
         # save data structure
-        curate_data_structure_api.upsert(curate_data_structure)
+        curate_data_structure_api.upsert(curate_data_structure, request.user)
 
         # add success message
         message = Message(
@@ -360,7 +360,7 @@ def validate_form(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
 
         # generate the XML
@@ -411,7 +411,7 @@ def save_data(request):
         # get curate data structure
         curate_data_structure_id = request.POST["id"]
         curate_data_structure = curate_data_structure_api.get_by_id(
-            curate_data_structure_id
+            curate_data_structure_id, request.user
         )
 
         # unlock from database
@@ -436,7 +436,7 @@ def save_data(request):
         # save data
         data = data_api.upsert(data, request.user)
 
-        curate_data_structure_api.delete(curate_data_structure)
+        curate_data_structure_api.delete(curate_data_structure, request.user)
 
         messages.add_message(
             request,
@@ -499,11 +499,11 @@ def _start_curate_post(request):
                     "An error occurred during the validation " + get_form_label()
                 )
 
-        curate_data_structure_api.upsert(curate_data_structure)
+        curate_data_structure_api.upsert(curate_data_structure, request.user)
     else:
         open_form = users_forms.OpenForm(request.POST)
         curate_data_structure = curate_data_structure_api.get_by_id(
-            open_form.data["forms"]
+            open_form.data["forms"], request.user
         )
 
     url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
@@ -526,7 +526,7 @@ def _start_curate_get(request):
 
         open_form = users_forms.OpenForm(
             forms=curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
-                str(request.user.id), template_id
+                request.user.id, template_id
             )
         )
         new_form = users_forms.NewForm()

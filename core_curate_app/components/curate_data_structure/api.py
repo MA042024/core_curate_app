@@ -1,13 +1,21 @@
 """ Curate data Structure api
 """
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.access_control.api import (
+    can_read,
+    can_write,
+    has_perm_administration,
+)
+from core_main_app.access_control.decorators import access_control
 
 
-def upsert(curate_data_structure):
+@access_control(can_write)
+def upsert(curate_data_structure, user):
     """ Save or update the Curate Data Structure
 
     Args:
         curate_data_structure:
+        user:
 
     Returns:
 
@@ -24,7 +32,8 @@ def get_none():
     return CurateDataStructure.get_none()
 
 
-def get_all():
+@access_control(has_perm_administration)
+def get_all(user):
     """ Returns all curate data structure api
 
     Returns:
@@ -33,11 +42,13 @@ def get_all():
     return CurateDataStructure.get_all()
 
 
-def get_by_id(curate_data_structure_id):
+@access_control(can_read)
+def get_by_id(curate_data_structure_id, user):
     """ Returns the curate data structure with the given id
 
     Args:
         curate_data_structure_id:
+        user:
 
     Returns:
 
@@ -74,11 +85,13 @@ def get_by_user_id_and_template_id_and_name(user_id, template_id, name):
     )
 
 
-def delete(curate_data_structure):
+@access_control(can_write)
+def delete(curate_data_structure, user):
     """ Deletes the curate data structure and the element associated
 
     Args:
         curate_data_structure:
+        user:
     """
     curate_data_structure.delete()
 
@@ -86,16 +99,19 @@ def delete(curate_data_structure):
 def get_all_by_user_id_with_no_data(user_id):
     """ Returns all the curate date structure of the user, with no data.
 
-    Args: user_id:
+    Args:
+        user_id:
     Returns:
     """
     return CurateDataStructure.get_all_by_user_id_with_no_data(user_id)
 
 
-def get_all_except_user_id_with_no_data(user_id):
+@access_control(has_perm_administration)
+def get_all_except_user_id_with_no_data(user_id, user):
     """ Returns all the curate date structure except the one of the user, with no data.
 
-    Args: user_id:
+    Args:
+        user_id:
     Returns:
     """
     return CurateDataStructure.get_all_except_user_id_with_no_data(user_id)
@@ -116,7 +132,8 @@ def get_all_by_user_id_and_template_id_with_no_data(user_id, template_id):
     )
 
 
-def get_all_with_no_data():
+@access_control(has_perm_administration)
+def get_all_with_no_data(user):
     """ Returns all curate data structure api with no link to a data.
 
     Returns:
@@ -125,7 +142,8 @@ def get_all_with_no_data():
     return CurateDataStructure.get_all_with_no_data()
 
 
-def get_by_data_id(data_id):
+@access_control(can_read)
+def get_by_data_id(data_id, user):
     """ Return the curate data structure with the given data id
 
     Args:
@@ -137,7 +155,8 @@ def get_by_data_id(data_id):
     return CurateDataStructure.get_by_data_id(data_id)
 
 
-def update_data_structure_root(curate_data_structure, root_element):
+@access_control(can_write)
+def update_data_structure_root(curate_data_structure, root_element, user):
     """Update the data structure with a root element.
 
     Args:
@@ -154,4 +173,4 @@ def update_data_structure_root(curate_data_structure, root_element):
     curate_data_structure.data_structure_element_root = root_element
 
     # save the data structure
-    return upsert(curate_data_structure)
+    return upsert(curate_data_structure, user)
