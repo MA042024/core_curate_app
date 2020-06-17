@@ -7,6 +7,7 @@ from django.contrib.messages.storage.base import Message
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.urls import reverse
+from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
 
 import core_curate_app.common.exceptions as exceptions
@@ -56,9 +57,9 @@ def start_curate(request):
         else:
             return _start_curate_get(request)
     except CurateAjaxError as e:
-        return HttpResponseBadRequest(str(e))
+        return HttpResponseBadRequest(escape(str(e)))
     except Exception as e:
-        return HttpResponseBadRequest(str(e))
+        return HttpResponseBadRequest(escape(str(e)))
 
 
 @decorators.permission_required(
