@@ -77,26 +77,3 @@ def can_write(func, *args, **kwargs):
         )
 
     return func(*args, **kwargs)
-
-
-def has_perm_administration(func, *args, **kwargs):
-    """ Is the given user has administration rights.
-
-    Args:
-        func:
-        *args:
-        **kwargs:
-
-    Returns:
-
-    """
-
-    # get the User in the args list
-    user = next((arg for arg in args if isinstance(arg, User)), None)
-    try:
-        if user.is_superuser:
-            return func(*args, **kwargs)
-    except Exception as e:
-        logger.warning("has_perm_administration threw an exception: ".format(str(e)))
-
-    raise AccessControlError("The user doesn't have enough rights.")
