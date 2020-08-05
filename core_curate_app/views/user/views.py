@@ -12,7 +12,7 @@ import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
-from core_curate_app.settings import INSTALLED_APPS
+from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
 from core_curate_app.utils.parser import get_parser
 from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
 from core_main_app.access_control.exceptions import AccessControlError
@@ -102,6 +102,15 @@ class EnterDataView(View):
                 "core_parser_app/css/use.css",
             ],
         }
+
+        if ENABLE_XML_ENTITIES_TOOLTIPS:
+            self.assets["js"].append(
+                {
+                    "path": "core_curate_app/user/js/xml_entities_tooltip.js",
+                    "is_raw": False,
+                }
+            )
+
         self.modals = [
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
             "core_curate_app/user/data-entry/modals/cancel-form.html",

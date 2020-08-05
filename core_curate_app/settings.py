@@ -23,3 +23,7 @@ CURATE_MENU_NAME = getattr(settings, "CURATE_MENU_NAME", "Curator")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = (os.path.join(BASE_DIR, "core_curate_app/locale"),)
+
+ENABLE_XML_ENTITIES_TOOLTIPS = getattr(settings, "ENABLE_XML_ENTITIES_TOOLTIPS", True)
+""" boolean: enable the xml entities warning tooltip on the GUI.
+"""
