@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
     login_url=reverse_lazy("core_main_app_login"),
 )
 def index(request):
-    """ Page that allows to select a template to start curating.
+    """Page that allows to select a template to start curating.
 
     Args:
         request:
@@ -123,7 +123,7 @@ class EnterDataView(View):
         ]
 
     def build_context(self, request, curate_data_structure, reload_unsaved_changes):
-        """ Build the context of the view
+        """Build the context of the view
 
         Args:
             request:
@@ -434,7 +434,7 @@ def render_xml(root_element):
 
 
 def _get_curate_data_structure_by_id(curate_data_structure_id, request):
-    """ Get the curate data structure by its id.
+    """Get the curate data structure by its id.
 
     Args: curate_data_structure_id:
           request:

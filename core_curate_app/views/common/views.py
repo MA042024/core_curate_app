@@ -9,7 +9,7 @@ from core_main_app.views.common.views import CommonView
 
 class FormView(CommonView):
     """
-        Form View
+    Form View
     """
 
     template = "core_curate_app/user/detail.html"

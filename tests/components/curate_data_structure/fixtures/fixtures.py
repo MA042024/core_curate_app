@@ -7,8 +7,7 @@ from core_main_app.utils.integration_tests.fixture_interface import FixtureInter
 
 
 class DataStructureFixtures(FixtureInterface):
-    """ Data structure fixtures
-    """
+    """Data structure fixtures"""
 
     data_structure_1 = None
     data_structure_2 = None
@@ -18,7 +17,7 @@ class DataStructureFixtures(FixtureInterface):
     data_collection = None
 
     def insert_data(self):
-        """ Insert a set of Data.
+        """Insert a set of Data.
 
         Returns:
 
@@ -28,7 +27,7 @@ class DataStructureFixtures(FixtureInterface):
         self.generate_data_collection()
 
     def generate_data_collection(self):
-        """ Generate a Data collection.
+        """Generate a Data collection.
 
         Returns:
 
@@ -59,7 +58,7 @@ class DataStructureFixtures(FixtureInterface):
         ]
 
     def generate_template(self):
-        """ Generate an unique Template.
+        """Generate an unique Template.
 
         Returns:
 

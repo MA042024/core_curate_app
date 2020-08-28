@@ -13,14 +13,13 @@ from signals_utils.signals.mongo import connector, signals
 
 
 class CurateDataStructure(DataStructure):
-    """ Curate data structure.
-    """
+    """Curate data structure."""
 
     form_string = fields.StringField(blank=True)
     data = fields.ReferenceField(Data, blank=True, reverse_delete_rule=CASCADE)
 
     def save_object(self):
-        """ Custom save
+        """Custom save
 
         Returns:
 
@@ -34,7 +33,7 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_by_id(data_structure_id):
-        """ Return the object with the given id.
+        """Return the object with the given id.
 
         Args:
             data_structure_id:
@@ -52,7 +51,7 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_none():
-        """ Return None object, used by forms.
+        """Return None object, used by forms.
 
         Returns:
 
@@ -61,7 +60,7 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_all():
-        """ Return all curate data structure api.
+        """Return all curate data structure api.
 
         Returns:
 
@@ -133,7 +132,7 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_all_with_no_data():
-        """ Returns all curate data structure api with no link to a data.
+        """Returns all curate data structure api with no link to a data.
 
         Args:
 
@@ -144,7 +143,7 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_by_data_id(data_id):
-        """ Return the curate data structure with the given data id
+        """Return the curate data structure with the given data id
 
         Args:
             data_id:

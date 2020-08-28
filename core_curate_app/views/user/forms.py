@@ -7,8 +7,7 @@ from core_main_app.utils.labels import get_form_label
 
 
 class NewForm(forms.Form):
-    """ Form to start curating from an empty form.
-    """
+    """Form to start curating from an empty form."""
 
     document_name = forms.CharField(
         label="",
@@ -19,8 +18,7 @@ class NewForm(forms.Form):
 
 
 class FormDataModelChoiceField(forms.ModelChoiceField):
-    """ Choice Field to select an existing form.
-    """
+    """Choice Field to select an existing form."""
 
     def label_from_instance(self, obj):
         """Return label.
@@ -35,8 +33,7 @@ class FormDataModelChoiceField(forms.ModelChoiceField):
 
 
 class OpenForm(forms.Form):
-    """ Form to open an existing form.
-    """
+    """Form to open an existing form."""
 
     forms = FormDataModelChoiceField(
         label="",
@@ -54,8 +51,7 @@ class OpenForm(forms.Form):
 
 
 class UploadForm(forms.Form):
-    """ Form to start curating from a file.
-    """
+    """Form to start curating from a file."""
 
     file = forms.FileField(
         label="",
@@ -64,8 +60,7 @@ class UploadForm(forms.Form):
 
 
 class CancelChangesForm(forms.Form):
-    """ Cancel changes form.
-    """
+    """Cancel changes form."""
 
     CANCEL_CHOICES = [
         ("revert", "Revert to my previously Saved " + get_form_label()),
@@ -78,8 +73,7 @@ class CancelChangesForm(forms.Form):
 
 
 class HiddenFieldsForm(forms.Form):
-    """ Form for hidden fields.
-    """
+    """Form for hidden fields."""
 
     hidden_value = forms.CharField(widget=forms.HiddenInput(), required=True)
 

@@ -11,8 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def init_permissions():
-    """ Initialization of groups and permissions.
-    """
+    """Initialization of groups and permissions."""
     try:
         # Get or Create the default group
         default_group, created = Group.objects.get_or_create(

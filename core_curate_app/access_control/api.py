@@ -9,16 +9,16 @@ logger = logging.getLogger(__name__)
 
 
 def can_read(func, *args, **kwargs):
-    """ Can user read
+    """Can user read
 
-        Args:
-            func:
-            *args:
-            **kwargs:
+    Args:
+        func:
+        *args:
+        **kwargs:
 
-        Returns:
+    Returns:
 
-        """
+    """
     # get the User in the args list
     user = next((arg for arg in args if isinstance(arg, User)), None)
 
@@ -37,7 +37,7 @@ def can_read(func, *args, **kwargs):
 
 
 def _check_can_read(document_list, user):
-    """ Can read from list id.
+    """Can read from list id.
 
     Args:
         document_list:
@@ -56,7 +56,7 @@ def _check_can_read(document_list, user):
 
 
 def can_write(func, *args, **kwargs):
-    """ Can user write
+    """Can user write
 
     Args:
         func:

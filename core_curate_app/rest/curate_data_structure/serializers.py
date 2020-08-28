@@ -10,12 +10,10 @@ from core_curate_app.components.curate_data_structure.models import CurateDataSt
 
 
 class CurateDataStructureSerializer(DocumentSerializer):
-    """ CurateDataStructure Serializer
-    """
+    """CurateDataStructure Serializer"""
 
     class Meta(object):
-        """ Meta
-        """
+        """Meta"""
 
         model = CurateDataStructure
         fields = "__all__"

@@ -200,8 +200,10 @@ class TestCurateDataStructureGetAllByUserIdandTemplateIdWithNoData(TestCase):
         mock_list.return_value = [mock_data_1, mock_data_2]
         mock_user = create_mock_user("1")
         # Act
-        result = curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
-            "1", template.id
+        result = (
+            curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
+                "1", template.id
+            )
         )
         # Assert
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))

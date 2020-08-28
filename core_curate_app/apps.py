@@ -6,13 +6,12 @@ from django.apps import AppConfig
 
 
 class CurateAppConfig(AppConfig):
-    """ Core application settings.
-    """
+    """Core application settings."""
 
     name = "core_curate_app"
 
     def ready(self):
-        """ Run when the app is ready.
+        """Run when the app is ready.
 
         Returns:
 

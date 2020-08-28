@@ -5,7 +5,7 @@
 
 class CurateAjaxError(Exception):
     """
-        Exception raised by the curate package from views.
+    Exception raised by the curate package from views.
     """
 
     def __init__(self, message):

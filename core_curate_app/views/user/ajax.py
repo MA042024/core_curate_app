@@ -43,7 +43,7 @@ from xml_utils.xsd_tree.xsd_tree import XSDTree
     raise_exception=True,
 )
 def start_curate(request):
-    """ Load forms to start curating.
+    """Load forms to start curating.
 
     Args:
         request:

@@ -181,7 +181,9 @@ class TestCurateDataStructureCreateOrUpdate(MongoIntegrationBaseTestCase):
 class TestCurateDataStructureGetAllWithNoData(MongoIntegrationBaseTestCase):
     fixture = fixture_data_structure
 
-    def test_get_all_with_no_data_as_superuser_returns_all_data_structure(self,):
+    def test_get_all_with_no_data_as_superuser_returns_all_data_structure(
+        self,
+    ):
         mock_user = create_mock_user("4", is_staff=True, is_superuser=True)
         result = curate_data_structure_api.get_all_with_no_data(mock_user)
         self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))

@@ -19,14 +19,13 @@ logger = logging.getLogger(__name__)
 
 
 class AdminCurateDataStructureList(APIView):
-    """ List all Curate Data Structure, or create a new one.
-    """
+    """List all Curate Data Structure, or create a new one."""
 
     permission_classes = (IsAdminUser,)
     serializer = CurateDataStructureSerializer
 
     def get(self, request):
-        """ Get all user Curate Data Structure
+        """Get all user Curate Data Structure
 
         Args:
 
@@ -58,7 +57,7 @@ class AdminCurateDataStructureList(APIView):
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
-        """ Create a Curate Data Structure
+        """Create a Curate Data Structure
 
         Parameters:
 
