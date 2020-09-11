@@ -1,4 +1,4 @@
-core-main-app==1.11.*
-core-parser-app==1.11.*
+core-main-app==1.12.*
+core-parser-app==1.12.*
 xml-utils==1.10.*
 signals-utils==1.8.*
