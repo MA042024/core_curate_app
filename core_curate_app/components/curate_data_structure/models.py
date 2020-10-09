@@ -167,6 +167,25 @@ class CurateDataStructure(DataStructure):
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
+    @staticmethod
+    def get_by_data_structure_element_root(data_structure_element_root):
+        """Return the curate data structure with the given data id
+
+        Args:
+            data_structure_element_root:
+
+        Returns:
+
+        """
+        try:
+            return CurateDataStructure.objects.get(
+                data_structure_element_root=str(data_structure_element_root.id)
+            )
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(str(e))
+        except Exception as ex:
+            raise exceptions.ModelError(str(ex))
+
 
 # Connect signals
 connector.connect(DataStructure.pre_delete, signals.pre_delete, CurateDataStructure)

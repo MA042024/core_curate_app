@@ -184,3 +184,19 @@ def update_data_structure_root(curate_data_structure, root_element, user):
 
     # save the data structure
     return upsert(curate_data_structure, user)
+
+
+@access_control(can_read)
+def get_by_data_structure_element_root_id(data_structure_element_root, user):
+    """Return the curate data structure with the given data structure element root id
+
+    Args:
+        data_structure_element_root:
+        user:
+
+    Returns:
+
+    """
+    return CurateDataStructure.get_by_data_structure_element_root(
+        data_structure_element_root
+    )
