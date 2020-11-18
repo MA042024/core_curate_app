@@ -15,7 +15,7 @@
 <span>Title: {{data.data_structure.name}}</span>
 
 <div id="XMLHolder">
-{% xsl_transform_detail xml_content=data.xml_string as xml_representation %}
+{% xsl_transform_detail xml_content=data.xml_string request=request as xml_representation %}
 {% if 'core_file_preview_app' in INSTALLED_APPS %}
     {% render_blob_links_in_span xml_string=xml_representation as xml_representation %}
 {% endif %}

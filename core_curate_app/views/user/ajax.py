@@ -12,6 +12,7 @@ from lxml.etree import XMLSyntaxError
 
 import core_curate_app.common.exceptions as exceptions
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
+from core_main_app.components.template import api as template_api
 import core_curate_app.permissions.rights as rights
 import core_curate_app.views.user.forms as users_forms
 import core_main_app.utils.decorators as decorators
@@ -82,9 +83,12 @@ def generate_choice(request, curate_data_structure_id):
         curate_data_structure = curate_data_structure_api.get_by_id(
             curate_data_structure_id, request.user
         )
-        xsd_parser = get_parser()
+        xsd_parser = get_parser(request=request)
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
         html_form = xsd_parser.generate_choice_absent(
-            request, element_id, curate_data_structure.template.content
+            request, element_id, template.content
         )
     except Exception as e:
         return HttpResponseBadRequest()
@@ -112,9 +116,12 @@ def generate_element(request, curate_data_structure_id):
         curate_data_structure = curate_data_structure_api.get_by_id(
             curate_data_structure_id, request.user
         )
-        xsd_parser = get_parser()
+        xsd_parser = get_parser(request=request)
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
         html_form = xsd_parser.generate_element_absent(
-            request, element_id, curate_data_structure.template.content
+            request, element_id, template.content
         )
     except Exception as e:
         return HttpResponseBadRequest()
@@ -195,7 +202,10 @@ def clear_fields(request):
         )
 
         # generate form
-        root_element = generate_form(curate_data_structure.template.content)
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
+        root_element = generate_form(template.content, request=request)
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
@@ -244,7 +254,10 @@ def cancel_changes(request):
             xml_data = None
 
         # generate form
-        root_element = generate_form(curate_data_structure.template.content, xml_data)
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
+        root_element = generate_form(template.content, xml_data, request=request)
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
@@ -367,11 +380,14 @@ def validate_form(request):
         xml_data = render_xml(curate_data_structure.data_structure_element_root)
 
         # build trees
-        xsd_tree = XSDTree.build_tree(curate_data_structure.template.content)
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
+        xsd_tree = XSDTree.build_tree(template.content)
         xml_tree = XSDTree.build_tree(xml_data)
 
         # validate XML document
-        errors = validate_xml_data(xsd_tree, xml_tree)
+        errors = validate_xml_data(xsd_tree, xml_tree, request=request)
 
         if errors is not None:
             response_dict["errors"] = errors
@@ -428,13 +444,16 @@ def save_data(request):
             # create new data
             data = Data()
             data.title = curate_data_structure.name
-            data.template = curate_data_structure.template
+            template = template_api.get(
+                str(curate_data_structure.template.id), request=request
+            )
+            data.template = template
             data.user_id = str(request.user.id)
 
         # set content
         data.xml_content = xml_data
         # save data
-        data = data_api.upsert(data, request.user)
+        data = data_api.upsert(data, request)
 
         curate_data_structure_api.delete(curate_data_structure, request.user)
 

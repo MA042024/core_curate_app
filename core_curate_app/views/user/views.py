@@ -7,7 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 import core_curate_app.permissions.rights as rights
-import core_main_app.components.template_version_manager.api as template_api
+import core_main_app.components.template_version_manager.api as template_version_manager_api
+import core_main_app.components.template.api as template_api
 import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
@@ -57,9 +58,13 @@ def index(request):
         ],
     }
 
-    global_active_template_list = template_api.get_active_global_version_manager()
-    user_active_template_list = template_api.get_active_version_manager_by_user_id(
-        request.user.id
+    global_active_template_list = (
+        template_version_manager_api.get_active_global_version_manager(request=request)
+    )
+    user_active_template_list = (
+        template_version_manager_api.get_active_version_manager_by_user_id(
+            request=request
+        )
     )
 
     context = {
@@ -134,7 +139,10 @@ class EnterDataView(View):
 
         """
         # get xsd string from the template
-        xsd_string = curate_data_structure.template.content
+        template = template_api.get(
+            str(curate_data_structure.template.id), request=request
+        )
+        xsd_string = template.content
 
         if reload_unsaved_changes:
             # get root element from the data structure
@@ -144,7 +152,7 @@ class EnterDataView(View):
             xml_string = curate_data_structure.form_string
 
             # get the root element
-            root_element = generate_form(xsd_string, xml_string)
+            root_element = generate_form(xsd_string, xml_string, request=request)
 
             # save the root element in the data structure
             curate_data_structure_api.update_data_structure_root(
@@ -367,7 +375,7 @@ def download_xsd(request, curate_data_structure_id):
     )
 
     # get the template
-    template = curate_data_structure.template
+    template = template_api.get(str(curate_data_structure.template.id), request=request)
     # return the file
     return get_file_http_response(
         file_content=template.content,
@@ -377,20 +385,21 @@ def download_xsd(request, curate_data_structure_id):
     )
 
 
-def generate_form(xsd_string, xml_string=None):
+def generate_form(xsd_string, xml_string=None, request=None):
     """Generate the form using the parser, returns the root element.
 
     Args:
         xsd_string:
         xml_string:
+        request:
 
     Returns:
 
     """
     # build parser
-    parser = get_parser()
+    parser = get_parser(request=request)
     # generate form
-    root_element_id = parser.generate_form(xsd_string, xml_string)
+    root_element_id = parser.generate_form(xsd_string, xml_string, request=request)
     # get the root element
     root_element = data_structure_element_api.get_by_id(root_element_id)
 

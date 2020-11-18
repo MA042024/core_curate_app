@@ -12,7 +12,7 @@ from core_curate_app.settings import (
 from core_parser_app.tools.parser.parser import XSDParser
 
 
-def get_parser():
+def get_parser(request=None):
     """Load configuration for the parser.
 
     Returns:
@@ -26,4 +26,5 @@ def get_parser():
         auto_key_keyref=PARSER_AUTO_KEY_KEYREF,
         implicit_extension_base=PARSER_IMPLICIT_EXTENSION_BASE,
         download_dependencies=PARSER_DOWNLOAD_DEPENDENCIES,
+        request=request,
     )
