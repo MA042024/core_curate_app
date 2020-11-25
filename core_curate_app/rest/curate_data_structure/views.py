@@ -96,12 +96,14 @@ class AdminCurateDataStructureList(APIView):
 
         try:
             # Build serializer
-            serializer = self.serializer(data=request.data)
+            serializer = self.serializer(
+                data=request.data, context={"request": request}
+            )
 
             # Validate data
             serializer.is_valid(True)
             # Save data
-            serializer.save(user_request=request.user)
+            serializer.save()
 
             # Return the serialized data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -184,12 +186,14 @@ class CurateDataStructureList(APIView):
 
         try:
             # Build serializer
-            serializer = self.serializer(data=request.data)
+            serializer = self.serializer(
+                data=request.data, context={"request": request}
+            )
 
             # Validate data
             serializer.is_valid(True)
             # Save data
-            serializer.save(user_request=request.user)
+            serializer.save()
 
             # Return the serialized data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -333,13 +337,16 @@ class CurateDataStructureDetail(APIView):
 
             # Build serializer
             serializer = self.serializer(
-                instance=data_structure_object, data=request.data, partial=True
+                instance=data_structure_object,
+                data=request.data,
+                partial=True,
+                context={"request": request},
             )
 
             # Validate data
             serializer.is_valid(True)
             # Save data
-            serializer.save(user_request=request.user)
+            serializer.save()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except AccessControlError as e:

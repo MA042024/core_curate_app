@@ -29,7 +29,7 @@ class CurateDataStructureSerializer(DocumentSerializer):
             form_string=validated_data["form_string"]
             if "form_string" in validated_data
             else None,
-            user=str(validated_data["user_request"].id),
+            user=str(self.context["request"].user.id),
             data=validated_data["data"] if "data" in validated_data else None,
             data_structure_element_root=validated_data["data_structure_element_root"]
             if "data_structure_element_root" in validated_data
@@ -37,7 +37,7 @@ class CurateDataStructureSerializer(DocumentSerializer):
         )
 
         return curate_data_structure_api.upsert(
-            curate_data_structure, validated_data["user_request"]
+            curate_data_structure, self.context["request"].user
         )
 
     def update(self, instance, validated_data):
@@ -51,6 +51,4 @@ class CurateDataStructureSerializer(DocumentSerializer):
         )
         instance.data = validated_data.get("data", instance.data)
 
-        return curate_data_structure_api.upsert(
-            instance, validated_data["user_request"]
-        )
+        return curate_data_structure_api.upsert(instance, self.context["request"].user)

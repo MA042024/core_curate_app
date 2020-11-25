@@ -36,5 +36,5 @@ class CurateDataStructureAdminSerializer(DocumentSerializer):
             else None,
         )
         return curate_data_structure_api.upsert(
-            curate_data_structure, validated_data["user_request"]
+            curate_data_structure, self.context["request"].user
         )
