@@ -15,10 +15,12 @@ from core_parser_app.tools.parser.parser import XSDParser
 def get_parser(request=None):
     """Load configuration for the parser.
 
+    Args:
+        request:
+
     Returns:
 
     """
-
     return XSDParser(
         min_tree=PARSER_MIN_TREE,
         ignore_modules=PARSER_IGNORE_MODULES,

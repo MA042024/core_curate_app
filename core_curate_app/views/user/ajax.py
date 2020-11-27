@@ -1,6 +1,7 @@
 """AJAX views for the Curate app
 """
 import json
+import logging
 
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
@@ -32,6 +33,8 @@ from core_parser_app.components.data_structure_element import (
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+
+logger = logging.getLogger(__name__)
 
 
 # FIXME: delete_branch not deleting all elements
@@ -87,11 +90,9 @@ def generate_choice(request, curate_data_structure_id):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        html_form = xsd_parser.generate_choice_absent(
-            request, element_id, template.content
-        )
+        html_form = xsd_parser.generate_choice_absent(element_id, template.content)
     except Exception as e:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(escape(str(e)))
 
     return HttpResponse(html_form)
 
@@ -120,11 +121,9 @@ def generate_element(request, curate_data_structure_id):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        html_form = xsd_parser.generate_element_absent(
-            request, element_id, template.content
-        )
+        html_form = xsd_parser.generate_element_absent(element_id, template.content)
     except Exception as e:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(escape(str(e)))
 
     return HttpResponse(html_form)
 
@@ -145,7 +144,7 @@ def remove_element(request):
 
     """
     element_id = request.POST["id"]
-    element_list = data_structure_element_api.get_all_by_child_id(element_id)
+    element_list = data_structure_element_api.get_all_by_child_id(element_id, request)
 
     if len(element_list) == 0:
         raise ValueError("No Data Structure Element found")
@@ -154,13 +153,15 @@ def remove_element(request):
 
     # Removing the element from the data structure
     data_structure_element = element_list[0]
-    data_structure_element_to_pull = data_structure_element_api.get_by_id(element_id)
+    data_structure_element_to_pull = data_structure_element_api.get_by_id(
+        element_id, request
+    )
 
     # number of children after deletion
     children_number = len(data_structure_element.children) - 1
 
     data_structure_element = remove_child_element(
-        data_structure_element, data_structure_element_to_pull
+        data_structure_element, data_structure_element_to_pull, request
     )
 
     response = {"code": 0, "html": ""}
@@ -218,8 +219,8 @@ def clear_fields(request):
         return HttpResponse(
             json.dumps({"xsdForm": xsd_form}), content_type="application/javascript"
         )
-    except:
-        return HttpResponseBadRequest()
+    except Exception as e:
+        return HttpResponseBadRequest(escape(str(e)))
 
 
 @decorators.permission_required(
@@ -270,8 +271,8 @@ def cancel_changes(request):
         return HttpResponse(
             json.dumps({"xsdForm": xsd_form}), content_type="application/javascript"
         )
-    except:
-        return HttpResponseBadRequest()
+    except Exception as e:
+        return HttpResponseBadRequest(escape(str(e)))
 
 
 @decorators.permission_required(
@@ -307,8 +308,11 @@ def cancel_form(request):
         )
 
         return HttpResponse(json.dumps({}), content_type="application/javascript")
-    except:
-        return HttpResponseBadRequest()
+    except Exception as e:
+        return HttpResponseBadRequest(
+            "An unexpected error has occured: %s" % str(e).replace('"', "'"),
+            content_type="application/javascript",
+        )
 
 
 @decorators.permission_required(
@@ -333,7 +337,9 @@ def save_form(request):
         )
 
         # generate xml data
-        xml_data = render_xml(curate_data_structure.data_structure_element_root)
+        xml_data = render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
 
         # update curate data structure data
         curate_data_structure.form_string = xml_data
@@ -350,8 +356,8 @@ def save_form(request):
             json.dumps({"message": message.message, "tags": message.tags}),
             content_type="application/json",
         )
-    except:
-        return HttpResponseBadRequest()
+    except Exception as e:
+        return HttpResponseBadRequest(escape(str(e)))
 
 
 @decorators.permission_required(
@@ -377,7 +383,9 @@ def validate_form(request):
         )
 
         # generate the XML
-        xml_data = render_xml(curate_data_structure.data_structure_element_root)
+        xml_data = render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
 
         # build trees
         template = template_api.get(
@@ -435,7 +443,9 @@ def save_data(request):
             lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
 
         # generate the XML
-        xml_data = render_xml(curate_data_structure.data_structure_element_root)
+        xml_data = render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
 
         if curate_data_structure.data is not None:
             # update existing data
@@ -463,8 +473,9 @@ def save_data(request):
             get_data_label().capitalize() + " saved with success.",
         )
     except Exception as e:
-        message = str(e).replace('"', "'")
-        return HttpResponseBadRequest(message, content_type="application/javascript")
+        return HttpResponseBadRequest(
+            str(e).replace('"', "'"), content_type="application/javascript"
+        )
 
     return HttpResponse(
         json.dumps({"data_id": str(data.id)}), content_type="application/javascript"
@@ -504,7 +515,8 @@ def _start_curate_post(request):
                 name = xml_file.name
                 if not well_formed:
                     raise CurateAjaxError(
-                        "An error occurred during the file upload: the file is not well formed XML"
+                        "An error occurred during the file upload: the file is "
+                        "not well formed XML"
                     )
                 else:
                     curate_data_structure = CurateDataStructure(
@@ -564,6 +576,7 @@ def _start_curate_get(request):
             content_type="application/javascript",
         )
     except Exception as e:
+        logger.error(str(e))
         raise exceptions.CurateAjaxError(
             "Error occurred during the " + get_form_label() + " display."
         )

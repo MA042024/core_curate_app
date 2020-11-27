@@ -1,6 +1,8 @@
 """Curate app user views
 """
 import logging
+from builtins import any
+from typing import Dict, List
 
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -81,7 +83,8 @@ def index(request):
     )
 
 
-# FIXME: allow reopening a form with unsaved changes (may be temporary until curate workflow redesign)
+# FIXME: allow reopening a form with unsaved changes (may be temporary until
+#  curate workflow redesign)
 class EnterDataView(View):
     def __init__(self):
         super(EnterDataView, self).__init__()
@@ -188,33 +191,31 @@ class EnterDataView(View):
         """
         curate_data_structure = None
         try:
-            # get data structure
+            # Retrieve CurateDataStructure and lock the object for the current
+            # user.
             curate_data_structure = _get_curate_data_structure_by_id(
                 curate_data_structure_id, request
             )
 
-            # lock from database
+            # Lock from database
             if curate_data_structure.data is not None:
                 lock_api.set_lock_object(curate_data_structure.data, request.user)
 
-            # Check if we need to change the user.
-            # Code executed only if the data is unlocked. set_lock_object() raises LockError.
+            # Check if we need to change the user. Code executed only if the
+            # data is unlocked. set_lock_object() raises LockError.
             if str(request.user.id) != curate_data_structure.user:
                 curate_data_structure.user = str(request.user.id)
                 curate_data_structure = curate_data_structure_api.upsert(
                     curate_data_structure, request.user
                 )
 
-            # Set the context
-            context = self.build_context(
-                request, curate_data_structure, reload_unsaved_changes
-            )
-
             return render(
                 request,
                 "core_curate_app/user/data-entry/enter_data.html",
                 assets=self.assets,
-                context=context,
+                context=self.build_context(
+                    request, curate_data_structure, reload_unsaved_changes
+                ),
                 modals=self.modals,
             )
         except (LockError, AccessControlError, ModelError, DoesNotExist) as ex:
@@ -226,7 +227,7 @@ class EnterDataView(View):
             )
         except Exception as e:
             try:
-                # unlock from database
+                # Unlock from database
                 if (
                     curate_data_structure is not None
                     and curate_data_structure.data is not None
@@ -234,10 +235,10 @@ class EnterDataView(View):
                     lock_api.remove_lock_on_object(
                         curate_data_structure.data, request.user
                     )
-            except Exception as e:
-                # data structure not found, continue search
+            except Exception as lock_exc:
+                # CurateDataStructure not found, continue search
                 logger.warning(
-                    "EnterDataView get threw an exception: {0}".format(str(e))
+                    "'EnterDataView.get' threw an exception: {0}".format(str(lock_exc))
                 )
 
             return render(
@@ -251,7 +252,7 @@ class EnterDataView(View):
 class ViewDataView(View):
     def __init__(self):
         super(ViewDataView, self).__init__()
-        self.assets = {
+        self.assets: Dict[str, List[any]] = {
             "js": [
                 {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/view_data.raw.js", "is_raw": True},
@@ -265,9 +266,17 @@ class ViewDataView(View):
         ]
 
     def build_context(self, request, curate_data_structure):
+        """Build XML string from CurateDataStructure
 
-        # generate xml string
-        xml_string = render_xml(curate_data_structure.data_structure_element_root)
+        Args:
+            request:
+            curate_data_structure:
+
+        Returns:
+        """
+        xml_string = render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
 
         return {
             "edit": True if curate_data_structure.data is not None else False,
@@ -289,9 +298,6 @@ class ViewDataView(View):
                 curate_data_structure_id, request
             )
 
-            # generate xml string
-            xml_string = render_xml(curate_data_structure.data_structure_element_root)
-
             if "core_file_preview_app" in INSTALLED_APPS:
                 self.assets["js"].extend(
                     [
@@ -305,12 +311,12 @@ class ViewDataView(View):
                     "core_file_preview_app/user/css/file_preview.css"
                 )
                 self.modals.append("core_file_preview_app/user/file_preview_modal.html")
-            self.context = self.build_context(request, curate_data_structure)
+
             return render(
                 request,
                 "core_curate_app/user/data-review/view_data.html",
                 assets=self.assets,
-                context=self.context,
+                context=self.build_context(request, curate_data_structure),
                 modals=self.modals,
             )
         except Exception as e:
@@ -343,7 +349,7 @@ def download_current_xml(request, curate_data_structure_id):
     )
 
     # generate xml string
-    xml_data = render_xml(curate_data_structure.data_structure_element_root)
+    xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
 
     # build response with file
     return get_file_http_response(
@@ -401,7 +407,7 @@ def generate_form(xsd_string, xml_string=None, request=None):
     # generate form
     root_element_id = parser.generate_form(xsd_string, xml_string, request=request)
     # get the root element
-    root_element = data_structure_element_api.get_by_id(root_element_id)
+    root_element = data_structure_element_api.get_by_id(root_element_id, request)
 
     return root_element
 
@@ -424,17 +430,18 @@ def render_form(request, root_element):
     return xsd_form
 
 
-def render_xml(root_element):
+def render_xml(request, root_element):
     """Render the XML.
 
     Args:
+        request:
         root_element:
 
     Returns:
 
     """
     # build XML renderer
-    xml_renderer = XmlRenderer(root_element)
+    xml_renderer = XmlRenderer(root_element, request)
 
     # generate xml data
     xml_data = xml_renderer.render()
