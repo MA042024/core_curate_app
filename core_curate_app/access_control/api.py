@@ -1,7 +1,7 @@
 """ Set of functions to define the common rules for access control across collections
 """
 import logging
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.exceptions import AccessControlError
 
@@ -20,7 +20,19 @@ def can_read(func, *args, **kwargs):
 
     """
     # get the User in the args list
-    user = next((arg for arg in args if isinstance(arg, User)), None)
+    user = next(
+        (
+            arg
+            for arg in args
+            if isinstance(arg, User) or isinstance(arg, AnonymousUser)
+        ),
+        None,
+    )
+
+    if user.is_anonymous or user is None:
+        raise AccessControlError(
+            "The user doesn't have enough rights to access this document."
+        )
 
     if user.is_superuser:
         return func(*args, **kwargs)
@@ -68,7 +80,20 @@ def can_write(func, *args, **kwargs):
     Returns:
 
     """
-    user = next((arg for arg in args if isinstance(arg, User)), None)
+    user = next(
+        (
+            arg
+            for arg in args
+            if isinstance(arg, User) or isinstance(arg, AnonymousUser)
+        ),
+        None,
+    )
+
+    if user.is_anonymous or user is None:
+        raise AccessControlError(
+            "The user doesn't have enough rights to access this document."
+        )
+
     if user.is_superuser:
         return func(*args, **kwargs)
 
@@ -79,3 +104,30 @@ def can_write(func, *args, **kwargs):
         )
 
     return func(*args, **kwargs)
+
+
+def can_change_owner(func, document, new_user, user):
+    """Can user change document's owner.
+
+    Args:
+        func:
+        document:
+        new_user:
+        user:
+
+    Returns:
+
+    """
+    if user.is_anonymous:
+        raise AccessControlError(
+            "The user doesn't have enough rights to access this document."
+        )
+    if user.is_superuser:
+        return func(document, new_user, user)
+
+    if document.user == str(user.id):
+        return func(document, new_user, user)
+
+    raise AccessControlError(
+        "The user doesn't have enough rights to access this document."
+    )

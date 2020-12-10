@@ -1,7 +1,7 @@
 """ Curate data Structure api
 """
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
-from core_curate_app.access_control.api import can_read, can_write
+from core_curate_app.access_control.api import can_read, can_write, can_change_owner
 from core_main_app.access_control.api import has_perm_administration
 from core_main_app.access_control.decorators import access_control
 
@@ -200,3 +200,18 @@ def get_by_data_structure_element_root_id(data_structure_element_root, user):
     return CurateDataStructure.get_by_data_structure_element_root(
         data_structure_element_root
     )
+
+
+@access_control(can_change_owner)
+def change_owner(curate_data_structure, new_user, user):
+    """Change curate data structure's owner.
+
+    Args:
+        curate_data_structure:
+        user:
+        new_user:
+
+    Returns:
+    """
+    curate_data_structure.user = str(new_user.id)
+    curate_data_structure.save_object()
