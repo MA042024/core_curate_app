@@ -26,9 +26,15 @@ def init_permissions():
             codename=curate_rights.curate_view_data_save_repo
         )
 
+        curate_data_structure_access = Permission.objects.get(
+            codename=curate_rights.curate_data_structure_access
+        )
+
         # Add permissions to default group
         default_group.permissions.add(
-            curate_access_perm, curate_view_data_save_repo_perm
+            curate_access_perm,
+            curate_view_data_save_repo_perm,
+            curate_data_structure_access,
         )
 
     except Exception as e:

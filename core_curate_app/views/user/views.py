@@ -155,7 +155,12 @@ class EnterDataView(View):
             xml_string = curate_data_structure.form_string
 
             # get the root element
-            root_element = generate_form(xsd_string, xml_string, request=request)
+            root_element = generate_form(
+                xsd_string,
+                xml_string,
+                data_structure=curate_data_structure,
+                request=request,
+            )
 
             # save the root element in the data structure
             curate_data_structure_api.update_data_structure_root(
@@ -391,12 +396,13 @@ def download_xsd(request, curate_data_structure_id):
     )
 
 
-def generate_form(xsd_string, xml_string=None, request=None):
+def generate_form(xsd_string, xml_string=None, data_structure=None, request=None):
     """Generate the form using the parser, returns the root element.
 
     Args:
         xsd_string:
         xml_string:
+        data_structure:
         request:
 
     Returns:
@@ -405,7 +411,9 @@ def generate_form(xsd_string, xml_string=None, request=None):
     # build parser
     parser = get_parser(request=request)
     # generate form
-    root_element_id = parser.generate_form(xsd_string, xml_string, request=request)
+    root_element_id = parser.generate_form(
+        xsd_string, xml_string, data_structure, request=request
+    )
     # get the root element
     root_element = data_structure_element_api.get_by_id(root_element_id, request)
 

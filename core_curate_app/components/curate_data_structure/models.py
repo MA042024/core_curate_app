@@ -6,6 +6,7 @@ from mongoengine import errors as mongoengine_errors
 from mongoengine.errors import NotUniqueError
 from mongoengine.queryset.base import CASCADE
 
+from core_curate_app.permissions import rights
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
@@ -17,6 +18,10 @@ class CurateDataStructure(DataStructure):
 
     form_string = fields.StringField(blank=True)
     data = fields.ReferenceField(Data, blank=True, reverse_delete_rule=CASCADE)
+
+    @staticmethod
+    def get_permission():
+        return f"{rights.curate_content_type}.{rights.curate_data_structure_access}"
 
     def save_object(self):
         """Custom save

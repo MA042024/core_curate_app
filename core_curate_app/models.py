@@ -17,4 +17,8 @@ class Curate(models.Model):
                 rights.curate_view_data_save_repo,
                 get_formatted_name(rights.curate_view_data_save_repo),
             ),
+            (
+                rights.curate_data_structure_access,
+                get_formatted_name(rights.curate_data_structure_access),
+            ),
         )

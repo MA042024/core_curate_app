@@ -206,7 +206,9 @@ def clear_fields(request):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        root_element = generate_form(template.content, request=request)
+        root_element = generate_form(
+            template.content, data_structure=curate_data_structure, request=request
+        )
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
@@ -258,7 +260,12 @@ def cancel_changes(request):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        root_element = generate_form(template.content, xml_data, request=request)
+        root_element = generate_form(
+            template.content,
+            xml_data,
+            data_structure=curate_data_structure,
+            request=request,
+        )
 
         # save the root element in the data structure
         curate_data_structure_api.update_data_structure_root(
