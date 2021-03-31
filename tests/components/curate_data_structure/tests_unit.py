@@ -37,7 +37,9 @@ class TestCurateDataStructureGetById(TestCase):
     @patch.object(CurateDataStructure, "get_by_id")
     def test_curate_data_structure_get_by_id_return_data_if_found(self, mock_get):
         # Arrange
-        mock_data_structure = CurateDataStructure("1", Template(), "name")
+        mock_data_structure = CurateDataStructure(
+            user="1", template=Template(), name="name"
+        )
         mock_get.return_value = mock_data_structure
         mock_user = create_mock_user("1")
         # Act
@@ -52,7 +54,9 @@ class TestCurateDataStructureUpsert(TestCase):
         self, mock_save
     ):
         # Arrange
-        mock_data_structure = CurateDataStructure("1", Template(), "name")
+        mock_data_structure = CurateDataStructure(
+            user="1", template=Template(), name="name"
+        )
         mock_save.return_value = mock_data_structure
         mock_user = create_mock_user("1")
         # Act

@@ -1,5 +1,5 @@
-Django==2.2.13
-django-mongoengine==0.3.3
+Django==2.2.19
+django-mongoengine==0.4.1
 django-simple-menu==1.2.1
 mock==2.0.0
-mongoengine==0.18.2
+mongoengine==0.23.0
