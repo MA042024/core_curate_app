@@ -6,15 +6,15 @@
 {% block modal_body %}
 <div class="center-text">
     <a href="{% url 'core_curate_download_xsd' data.data_structure.id %}" class="btn btn-primary">
-        <i class="fa fa-file-code"></i> Download Template
+        <i class="fas fa-file-code"></i> Download Template
     </a>
     <a href="{% url 'core_curate_download_xml' data.data_structure.id %}" class="btn btn-success">
-        <i class="fa fa-file-alt"></i> Download Document
+        <i class="fas fa-file-alt"></i> Download Document
     </a>
 </div>
 
 {% endblock %}
 
 {% block modal_footer %}
-<a class="btn btn-secondary pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+<a class="btn btn-secondary pull-left" data-dismiss="modal" href="#"><i class="fas fa-times"></i> Cancel</a>
 {% endblock %}
