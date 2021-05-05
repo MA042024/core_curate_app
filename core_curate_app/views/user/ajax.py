@@ -90,7 +90,9 @@ def generate_choice(request, curate_data_structure_id):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        html_form = xsd_parser.generate_choice_absent(element_id, template.content)
+        html_form = xsd_parser.generate_choice_absent(
+            element_id, template.content, data_structure=curate_data_structure
+        )
     except Exception as e:
         return HttpResponseBadRequest(escape(str(e)))
 
@@ -121,7 +123,9 @@ def generate_element(request, curate_data_structure_id):
         template = template_api.get(
             str(curate_data_structure.template.id), request=request
         )
-        html_form = xsd_parser.generate_element_absent(element_id, template.content)
+        html_form = xsd_parser.generate_element_absent(
+            element_id, template.content, data_structure=curate_data_structure
+        )
     except Exception as e:
         return HttpResponseBadRequest(escape(str(e)))
 
