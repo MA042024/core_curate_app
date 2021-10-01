@@ -47,8 +47,18 @@ class FormView(CommonView):
                 request, self.template, assets=assets, context=context
             )
         except Exception as e:
+            assets = {
+                "js": [
+                    {
+                        "path": "core_main_app/common/js/backtoprevious.js",
+                        "is_raw": True,
+                    }
+                ]
+            }
             template = "core_main_app/common/commons/error.html"
             if self.administration:
                 template = "core_main_app/admin/commons/errors/errors_wrapper.html"
 
-            return self.common_render(request, template, context={"error": str(e)})
+            return self.common_render(
+                request, template, context={"error": str(e)}, assets=assets
+            )
