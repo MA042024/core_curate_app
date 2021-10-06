@@ -9,17 +9,17 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 import core_curate_app.permissions.rights as rights
-import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.components.template.api as template_api
+import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
 from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
 from core_curate_app.utils.parser import get_parser
-from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
-from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.access_control.api import check_can_write
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.labels import get_form_label
@@ -142,7 +142,7 @@ class EnterDataView(View):
 
         """
         # get xsd string from the template
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         xsd_string = template.content
@@ -386,7 +386,9 @@ def download_xsd(request, curate_data_structure_id):
     )
 
     # get the template
-    template = template_api.get(str(curate_data_structure.template.id), request=request)
+    template = template_api.get_by_id(
+        str(curate_data_structure.template.id), request=request
+    )
     # return the file
     return get_file_http_response(
         file_content=template.content,

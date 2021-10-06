@@ -1,18 +1,18 @@
 """ ACL Test Data Structure
 """
-
-from tests.components.curate_data_structure.fixtures.fixtures import (
-    DataStructureFixtures,
-)
 from django.contrib.auth.models import AnonymousUser
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
-)
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.utils.integration_tests.integration_base_test_case import (
+    MongoIntegrationBaseTestCase,
+)
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_parser_app.components.data_structure.models import DataStructureElement
+from tests.components.curate_data_structure.fixtures.fixtures import (
+    DataStructureFixtures,
+)
 
 fixture_data_structure = DataStructureFixtures()
 
@@ -83,6 +83,7 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(MongoIntegrationBaseTe
         self.assertTrue(
             all((item.user != self.fixture.data_structure_3.user) for item in result)
         )
+        self.assertTrue(all((item.data is None) for item in result))
 
     def test_get_all_except_user_id_with_no_data_as_user_raises_error(self):
         mock_user = create_mock_user("1")
@@ -136,7 +137,9 @@ class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCas
         self,
     ):
         data_structure = self.fixture.data_structure_1
-        new_data_structure_element_root = self.fixture.data_structure_3.id
+        new_data_structure_element_root = _get_data_structure_element(
+            self.fixture.data_structure_3.user, self.fixture.data_structure_3
+        )
         mock_user = create_mock_user(
             self.fixture.data_structure_2.user, is_staff=True, is_superuser=True
         )
@@ -150,7 +153,9 @@ class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCas
 
     def test_update_own_data_structure_root_updates_data_structure(self):
         data_structure = self.fixture.data_structure_1
-        new_data_structure_element_root = self.fixture.data_structure_2.id
+        new_data_structure_element_root = _get_data_structure_element(
+            self.fixture.data_structure_2.user, self.fixture.data_structure_2
+        )
         mock_user = create_mock_user(self.fixture.data_structure_1.user)
         result = curate_data_structure_api.update_data_structure_root(
             data_structure, new_data_structure_element_root, mock_user
@@ -316,3 +321,24 @@ class TestDataStructureChangeOwner(MongoIntegrationBaseTestCase):
             new_user=mock_user,
             user=mock_user,
         )
+
+
+def _get_data_structure_element(user, data_structure):
+    """Return a data structure element
+
+    Args:
+        user:
+        data_structure:
+
+    Returns:
+
+    """
+    data_structure_element = DataStructureElement(
+        user=user,
+        tag="tag",
+        value="value",
+        options={},
+        data_structure=data_structure,
+    )
+    data_structure_element.save()
+    return data_structure_element

@@ -1,7 +1,6 @@
 """Curate Data Structure Serializers
 """
-
-from rest_framework_mongoengine.serializers import DocumentSerializer
+from rest_framework.serializers import ModelSerializer
 
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
@@ -9,7 +8,7 @@ from core_curate_app.components.curate_data_structure import (
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 
-class CurateDataStructureAdminSerializer(DocumentSerializer):
+class CurateDataStructureAdminSerializer(ModelSerializer):
     """CurateDataStructure Serializer"""
 
     class Meta(object):

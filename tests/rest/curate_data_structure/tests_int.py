@@ -1,18 +1,18 @@
 """ Integration Test for Data Structure Rest API
 """
 
-from tests.components.curate_data_structure.fixtures.fixtures import (
-    DataStructureFixtures,
-)
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from rest_framework import status
+
 from core_curate_app.rest.curate_data_structure import (
     views as data_structure_rest_views,
 )
-from rest_framework import status
-
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
+)
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from tests.components.curate_data_structure.fixtures.fixtures import (
+    DataStructureFixtures,
 )
 
 fixture_data_structure = DataStructureFixtures()
@@ -55,7 +55,7 @@ class TestDataStructureListAdmin(MongoIntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.data["user"], self.user.id)
 
-        self.assertEqual(response.data["template"], str(self.fixture.template.id))
+        self.assertEqual(response.data["template"], self.fixture.template.id)
 
         self.assertEqual(response.data["form_string"], "<tag></tag>")
 
@@ -221,7 +221,7 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_get(
             data_structure_rest_views.CurateDataStructureDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -263,7 +263,7 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_delete(
             data_structure_rest_views.CurateDataStructureDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -306,7 +306,7 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_patch(
             data_structure_rest_views.CurateDataStructureDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -320,7 +320,7 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_patch(
             data_structure_rest_views.CurateDataStructureDetail.as_view(),
             user,
-            data={"template": "507f1f77bcf86cd799439011"},
+            data={"template": -1},
             param={"pk": self.fixture.data_structure_1.id},
         )
 

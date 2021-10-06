@@ -2,24 +2,23 @@
 """
 import logging
 
+from django.http import Http404
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from core_main_app.access_control.exceptions import AccessControlError
-from core_curate_app.components.curate_data_structure import api as data_structure_api
 
+from core_curate_app.components.curate_data_structure import api as data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
-from core_curate_app.rest.curate_data_structure.serializers import (
-    CurateDataStructureSerializer,
-)
 from core_curate_app.rest.curate_data_structure.admin_serializers import (
     CurateDataStructureAdminSerializer,
 )
+from core_curate_app.rest.curate_data_structure.serializers import (
+    CurateDataStructureSerializer,
+)
+from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons import exceptions
-from django.http import Http404
 
 logger = logging.getLogger(__name__)
 

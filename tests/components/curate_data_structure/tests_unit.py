@@ -7,8 +7,8 @@ from mock import patch
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.commons import exceptions
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.components.template.models import Template
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 
 class TestCurateDataStructureGetById(TestCase):
@@ -25,13 +25,13 @@ class TestCurateDataStructureGetById(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             curate_data_structure_api.get_by_id(1, mock_user)
 
-    def test_data_structure_get_by_id_raises_model_error_if_not_found(self):
+    def test_data_structure_get_by_id_raises_doesnotexist_error_if_not_found(self):
 
         # Arrange
         mock_user = create_mock_user("1")
 
         # Act # Assert
-        with self.assertRaises(exceptions.ModelError):
+        with self.assertRaises(exceptions.DoesNotExist):
             curate_data_structure_api.get_by_id(1, mock_user)
 
     @patch.object(CurateDataStructure, "get_by_id")
@@ -133,12 +133,12 @@ class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
                 1, 1, "name_title_1"
             )
 
-    def test_data_structure_get_by_user_and_template_and_name_raises_model_error_if_not_found(
+    def test_data_structure_get_by_user_and_template_and_name_raises_doesnotexist_error_if_not_found(
         self,
     ):
 
         # Act # Assert
-        with self.assertRaises(exceptions.ModelError):
+        with self.assertRaises(exceptions.DoesNotExist):
             curate_data_structure_api.get_by_user_id_and_template_id_and_name(
                 1, 1, "name_title_1"
             )

@@ -1,7 +1,7 @@
 """ Curate data Structure api
 """
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.access_control.api import can_read, can_write, can_change_owner
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.api import has_perm_administration
 from core_main_app.access_control.decorators import access_control
 
@@ -17,7 +17,8 @@ def upsert(curate_data_structure, user):
     Returns:
 
     """
-    return curate_data_structure.save_object()
+    curate_data_structure.save_object()
+    return curate_data_structure
 
 
 def get_none():
@@ -183,7 +184,9 @@ def update_data_structure_root(curate_data_structure, root_element, user):
     curate_data_structure.data_structure_element_root = root_element
 
     # save the data structure
-    return upsert(curate_data_structure, user)
+    upsert(curate_data_structure, user)
+
+    return curate_data_structure
 
 
 @access_control(can_read)

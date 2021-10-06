@@ -4,19 +4,19 @@ from django.test import SimpleTestCase
 from mock.mock import patch
 from rest_framework import status
 
+import core_curate_app.components.curate_data_structure.api as data_structure_api
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.rest.curate_data_structure import (
     views as data_structure_rest_views,
-)
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from core_curate_app.rest.curate_data_structure.serializers import (
-    CurateDataStructureSerializer,
 )
 from core_curate_app.rest.curate_data_structure.admin_serializers import (
     CurateDataStructureAdminSerializer,
 )
-import core_curate_app.components.curate_data_structure.api as data_structure_api
+from core_curate_app.rest.curate_data_structure.serializers import (
+    CurateDataStructureSerializer,
+)
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
 
 
 class TestDataStructureListAdminPostPermissions(SimpleTestCase):
@@ -114,7 +114,7 @@ class TestDataStructureListGetPermissions(SimpleTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    @patch.object(CurateDataStructure, "get_all")
+    @patch.object(CurateDataStructure, "get_all_by_user")
     def test_authenticated_returns_http_200(self, get_all):
         get_all.return_value = {}
         mock_user = create_mock_user("1")
@@ -125,7 +125,7 @@ class TestDataStructureListGetPermissions(SimpleTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    @patch.object(CurateDataStructure, "get_all")
+    @patch.object(CurateDataStructure, "get_all_by_user")
     def test_superuser_returns_http_200(self, get_all):
         get_all.return_value = {}
         mock_user = create_mock_user("1", is_staff=True, is_superuser=True)

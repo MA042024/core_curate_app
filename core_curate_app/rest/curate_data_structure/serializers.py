@@ -1,7 +1,6 @@
 """Curate Data Structure Serializers
 """
-
-from rest_framework_mongoengine.serializers import DocumentSerializer
+from rest_framework.serializers import ModelSerializer
 
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
@@ -9,7 +8,7 @@ from core_curate_app.components.curate_data_structure import (
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 
-class CurateDataStructureSerializer(DocumentSerializer):
+class CurateDataStructureSerializer(ModelSerializer):
     """CurateDataStructure Serializer"""
 
     class Meta(object):
@@ -36,9 +35,10 @@ class CurateDataStructureSerializer(DocumentSerializer):
             else None,
         )
 
-        return curate_data_structure_api.upsert(
+        curate_data_structure_api.upsert(
             curate_data_structure, self.context["request"].user
         )
+        return curate_data_structure
 
     def update(self, instance, validated_data):
         """
@@ -51,4 +51,5 @@ class CurateDataStructureSerializer(DocumentSerializer):
         )
         instance.data = validated_data.get("data", instance.data)
 
-        return curate_data_structure_api.upsert(instance, self.context["request"].user)
+        curate_data_structure_api.upsert(instance, self.context["request"].user)
+        return instance

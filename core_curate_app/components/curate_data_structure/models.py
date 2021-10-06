@@ -1,23 +1,20 @@
 """Curate Data Structure models
 """
-
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-from mongoengine.errors import NotUniqueError
-from mongoengine.queryset.base import CASCADE
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models, IntegrityError
+from django.db.models.signals import pre_delete
 
 from core_curate_app.permissions import rights
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
-from signals_utils.signals.mongo import connector, signals
 
 
 class CurateDataStructure(DataStructure):
     """Curate data structure."""
 
-    form_string = fields.StringField(blank=True)
-    data = fields.ReferenceField(Data, blank=True, reverse_delete_rule=CASCADE)
+    form_string = models.TextField(blank=True)
+    data = models.ForeignKey(Data, blank=True, on_delete=models.CASCADE, null=True)
 
     @staticmethod
     def get_permission():
@@ -31,7 +28,7 @@ class CurateDataStructure(DataStructure):
         """
         try:
             return self.save()
-        except NotUniqueError:
+        except IntegrityError:
             raise exceptions.ModelError("Unable to save the document: not unique.")
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -49,7 +46,7 @@ class CurateDataStructure(DataStructure):
         """
         try:
             return CurateDataStructure.objects.get(pk=str(data_structure_id))
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -61,7 +58,7 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects().none()
+        return CurateDataStructure.objects.none()
 
     @staticmethod
     def get_all():
@@ -79,7 +76,7 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(
+        return CurateDataStructure.objects.filter(
             user=str(user_id), template=str(template_id)
         ).all()
 
@@ -94,7 +91,7 @@ class CurateDataStructure(DataStructure):
             return CurateDataStructure.objects.get(
                 user=str(user_id), template=str(template_id), name=name
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -107,7 +104,9 @@ class CurateDataStructure(DataStructure):
         Args: user_id:
         Return:
         """
-        return CurateDataStructure.objects(user=str(user_id), data__exists=False).all()
+        return CurateDataStructure.objects.filter(
+            user=str(user_id), data__isnull=True
+        ).all()
 
     @staticmethod
     def get_all_except_user_id_with_no_data(user_id):
@@ -116,9 +115,11 @@ class CurateDataStructure(DataStructure):
         Args: user_id:
         Return:
         """
-        return CurateDataStructure.objects(
-            user__ne=str(user_id), data__exists=False
-        ).all()
+        return (
+            CurateDataStructure.objects.exclude(user=str(user_id))
+            .filter(data__isnull=True)
+            .all()
+        )
 
     @staticmethod
     def get_all_by_user_id_and_template_id_with_no_data(user_id, template_id):
@@ -131,8 +132,8 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(
-            user=str(user_id), template=str(template_id), data__exists=False
+        return CurateDataStructure.objects.filter(
+            user=str(user_id), template=str(template_id), data__isnull=True
         ).all()
 
     @staticmethod
@@ -144,7 +145,7 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(data__exists=False).all()
+        return CurateDataStructure.objects.filter(data__isnull=True).all()
 
     @staticmethod
     def get_all_by_user(user_id):
@@ -153,7 +154,7 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return CurateDataStructure.objects(user=str(user_id)).all()
+        return CurateDataStructure.objects.filter(user=str(user_id)).all()
 
     @staticmethod
     def get_by_data_id(data_id):
@@ -167,7 +168,7 @@ class CurateDataStructure(DataStructure):
         """
         try:
             return CurateDataStructure.objects.get(data=str(data_id))
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
@@ -186,11 +187,11 @@ class CurateDataStructure(DataStructure):
             return CurateDataStructure.objects.get(
                 data_structure_element_root=str(data_structure_element_root.id)
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
 
 # Connect signals
-connector.connect(DataStructure.pre_delete, signals.pre_delete, CurateDataStructure)
+pre_delete.connect(DataStructure.pre_delete, sender=CurateDataStructure)

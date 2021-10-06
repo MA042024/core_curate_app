@@ -13,7 +13,6 @@ from lxml.etree import XMLSyntaxError
 
 import core_curate_app.common.exceptions as exceptions
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
-from core_main_app.components.template import api as template_api
 import core_curate_app.permissions.rights as rights
 import core_curate_app.views.user.forms as users_forms
 import core_main_app.utils.decorators as decorators
@@ -24,6 +23,7 @@ from core_curate_app.views.user.views import generate_form, render_form, render_
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
+from core_main_app.components.template import api as template_api
 from core_main_app.utils.labels import get_data_label, get_form_label
 from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
 from core_main_app.views.common.views import read_xsd_file
@@ -87,7 +87,7 @@ def generate_choice(request, curate_data_structure_id):
             curate_data_structure_id, request.user
         )
         xsd_parser = get_parser(request=request)
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         html_form = xsd_parser.generate_choice_absent(
@@ -120,7 +120,7 @@ def generate_element(request, curate_data_structure_id):
             curate_data_structure_id, request.user
         )
         xsd_parser = get_parser(request=request)
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         html_form = xsd_parser.generate_element_absent(
@@ -148,21 +148,15 @@ def remove_element(request):
 
     """
     element_id = request.POST["id"]
-    element_list = data_structure_element_api.get_all_by_child_id(element_id, request)
-
-    if len(element_list) == 0:
-        raise ValueError("No Data Structure Element found")
-    elif len(element_list) > 1:
-        raise ValueError("More than one Data Structure Element found")
 
     # Removing the element from the data structure
-    data_structure_element = element_list[0]
     data_structure_element_to_pull = data_structure_element_api.get_by_id(
         element_id, request
     )
+    data_structure_element = data_structure_element_to_pull.parent
 
     # number of children after deletion
-    children_number = len(data_structure_element.children) - 1
+    children_number = data_structure_element.children.count() - 1
 
     data_structure_element = remove_child_element(
         data_structure_element, data_structure_element_to_pull, request
@@ -207,7 +201,7 @@ def clear_fields(request):
         )
 
         # generate form
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         root_element = generate_form(
@@ -261,7 +255,7 @@ def cancel_changes(request):
             xml_data = None
 
         # generate form
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         root_element = generate_form(
@@ -399,7 +393,7 @@ def validate_form(request):
         )
 
         # build trees
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
         xsd_tree = XSDTree.build_tree(template.content)
@@ -465,7 +459,7 @@ def save_data(request):
             # create new data
             data = Data()
             data.title = curate_data_structure.name
-            template = template_api.get(
+            template = template_api.get_by_id(
                 str(curate_data_structure.template.id), request=request
             )
             data.template = template
@@ -511,7 +505,9 @@ def _start_curate_post(request):
             if new_form.is_valid():
                 name = new_form.data["document_name"]
                 curate_data_structure = CurateDataStructure(
-                    user=user_id, template=template_id, name=name
+                    user=user_id,
+                    template=template_api.get_by_id(template_id, request=request),
+                    name=name,
                 )
             else:
                 raise CurateAjaxError(

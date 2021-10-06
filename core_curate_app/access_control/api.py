@@ -1,7 +1,9 @@
 """ Set of functions to define the common rules for access control across collections
 """
 import logging
+
 from django.contrib.auth.models import User, AnonymousUser
+
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.exceptions import AccessControlError
 
