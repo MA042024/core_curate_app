@@ -528,7 +528,7 @@ def _start_curate_post(request):
                 else:
                     curate_data_structure = CurateDataStructure(
                         user=user_id,
-                        template=template_id,
+                        template=template_api.get_by_id(template_id, request=request),
                         name=name,
                         form_string=xml_data,
                     )
