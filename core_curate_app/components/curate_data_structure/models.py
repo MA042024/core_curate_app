@@ -29,7 +29,7 @@ class CurateDataStructure(DataStructure):
         try:
             return self.save()
         except IntegrityError:
-            raise exceptions.ModelError("Unable to save the document: not unique.")
+            raise exceptions.NotUniqueError("Unable to save the document: not unique.")
         except Exception as ex:
             raise exceptions.ModelError(str(ex))
 
