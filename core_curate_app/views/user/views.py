@@ -29,6 +29,8 @@ from core_parser_app.components.data_structure_element import (
 )
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
+from core_main_app.utils.boolean import to_bool
+from core_main_app.utils.xml import format_content_xml
 
 logger = logging.getLogger(__name__)
 
@@ -103,11 +105,13 @@ class EnterDataView(View):
                 {"path": "core_curate_app/user/js/buttons.raw.js", "is_raw": True},
                 {"path": "core_parser_app/js/choice.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/choice.raw.js", "is_raw": True},
+                {"path": "core_curate_app/user/js/download.js", "is_raw": False},
             ],
             "css": [
                 "core_curate_app/user/css/common.css",
                 "core_curate_app/user/css/xsd_form.css",
                 "core_parser_app/css/use.css",
+                "core_main_app/common/css/switch.css",
             ],
         }
 
@@ -356,6 +360,13 @@ def download_current_xml(request, curate_data_structure_id):
     # generate xml string
     xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
 
+    # get format bool
+    format = request.GET.get("format", False)
+
+    # format content
+    if to_bool(format):
+        xml_data = format_content_xml(xml_data)
+
     # build response with file
     return get_file_http_response(
         file_content=xml_data,
@@ -387,9 +398,20 @@ def download_xsd(request, curate_data_structure_id):
 
     # get the template
     template = template_api.get(str(curate_data_structure.template.id), request=request)
+
+    # get the template content
+    content = template.content
+
+    # get format bool
+    format = request.GET.get("format", False)
+
+    # format content
+    if to_bool(format):
+        content = format_content_xml(content)
+
     # return the file
     return get_file_http_response(
-        file_content=template.content,
+        file_content=content,
         file_name=template.filename,
         content_type="application/xsd",
         extension=".xsd",
