@@ -11,6 +11,9 @@ $(document).ready(function() {
 var saveToRepository = function()
 {
    var objectID = $("#curate_data_structure_id").html();
+   var icon = $(".btn.save-to-repo > i").attr("class");
+   // Show loading spinner
+   showSpinner($(".btn.save-to-repo > i"))
 
    $.ajax({
         url : saveDataUrl,
@@ -24,6 +27,8 @@ var saveToRepository = function()
         },
         error: function(data){
             XMLDataSavedError(data.responseText);
+            // get old button icon
+            hideSpinner.attr($(".btn.save-to-repo > i"),icon);
         }
     });
 };

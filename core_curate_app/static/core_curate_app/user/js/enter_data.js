@@ -17,6 +17,11 @@ var clearFields = function() {
  */
 var clear_fields = function() {
     var objectID = $("#curate_data_structure_id").html();
+    var icon = $("[id^='btn-clear-fields'] > i").attr("class");
+
+    // Show loading spinner
+    showSpinner($("[id^='btn-clear-fields'] > i"))
+
     $.ajax({
         url: clearFieldsUrl,
         type: "POST",
@@ -37,8 +42,12 @@ var clear_fields = function() {
 
             initModules();
         }
+    }).always(function(data) {
+        // get old button icon
+        hideSpinner($("[id^='btn-clear-fields'] > i"), icon)
+        $("#clear-fields-modal").modal("hide");
     });
-    $("#clear-fields-modal").modal("hide");
+
 };
 
 
@@ -55,6 +64,9 @@ var cancelChanges = function() {
  */
 var cancel_changes = function() {
     var objectID = $("#curate_data_structure_id").html();
+    var icon = $("[id^='btn-cancel-changes'] > i").attr("class");
+    // Show loading spinner
+    showSpinner($("[id^='btn-cancel-changes'] > i"))
     $.ajax({
         url: cancelChangesUrl,
         type: "POST",
@@ -75,8 +87,12 @@ var cancel_changes = function() {
 
             initModules();
         }
+    }).always(function() {
+        // get old button icon
+        hideSpinner($("[id^='btn-cancel-changes'] > i"), icon)
+        $("#cancel-changes-modal").modal("hide");
     });
-    $("#cancel-changes-modal").modal("hide");
+
 };
 
 
@@ -92,7 +108,10 @@ var cancelForm = function() {
  * AJAX call, cancel form
  */
 var cancel_form = function() {
+    // Show loading spinner
+    showSpinner($("[id^='btn-cancel-form'] > i"))
     $("#cancel-form-modal").modal("hide");
+
     var objectID = $("#curate_data_structure_id").html();
     $.ajax({
         url: cancelFormUrl,
@@ -122,7 +141,11 @@ var saveForm = function() {
  * Save the form in the database
  */
 var sendSaveRequest = function() {
-    $("#save-form-modal").modal("hide");
+
+    var icon = $("[id^='btn-save-form'] > i").attr("class");
+    // Show loading spinner
+    showSpinner($("[id^='btn-save-form'] > i"))
+
     var objectID = $("#curate_data_structure_id").html();
     $.ajax({
         url: saveFormUrl,
@@ -137,6 +160,10 @@ var sendSaveRequest = function() {
         error: function() {
 
         }
+    }).always(function(data) {
+        // get old button icon
+        hideSpinner($("[id^='btn-save-form'] > i"), icon)
+        $("#save-form-modal").modal("hide");
     });
 };
 
@@ -154,9 +181,11 @@ var downloadOptions = function() {
  */
 var validateXML = function() {
     var objectID = $("#curate_data_structure_id").html();
-
+    var icon = $(".validate > i").attr("class");
     clearPreviousWarning();
 
+    // Show loading spinner
+    showSpinner($(".validate > i"))
     $.ajax({
         url: validateFormUrl,
         type: "POST",
@@ -184,6 +213,9 @@ var validateXML = function() {
                     displayWarningInValidModal(' This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
             }
         }
+    }).always(function(data) {
+        // get old button icon
+        hideSpinner($(".validate > i"), icon)
     });
 };
 
