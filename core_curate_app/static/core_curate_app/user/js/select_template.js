@@ -88,6 +88,10 @@ load_start_form = function(templateID){
 displayTemplateProcess = function ()
 {
     if (validateStartCurate()){
+       var icon = $("[id^='btn-display-data'] > i").attr("class");
+       showSpinner($("[id^='btn-display-data'] > i"))
+
+
        var formData = new FormData($( "#form_select_template" )[0]);
        $.ajax({
             url: startCurate,
@@ -100,6 +104,8 @@ displayTemplateProcess = function ()
                 window.location = data;
             },
             error: function(data){
+                // get old button icon
+                hideSpinner($("[id^='btn-display-data']"), icon)
                 // FIXME: temp fix for safari support
                 $( "#id_file" ).prop('disabled', false);
                 // FIXME: temp fix for chrome support (click twice on start raise an error)
@@ -109,7 +115,8 @@ displayTemplateProcess = function ()
                     $("#banner_errors").show(500);
                 }
             },
-        });
+       })
+
    }
 }
 
