@@ -71,6 +71,7 @@ load_start_form = function(templateID){
         success: function(data){
             $("#banner_errors").hide()
             $("#form_start_content").html(data.template);
+            initSaveButton();
             syncRadioButtons();
         },
         error:function(data){
@@ -114,6 +115,8 @@ displayTemplateProcess = function ()
                     $("#form_start_errors").html(data.responseText);
                     $("#banner_errors").show(500);
                 }
+                // uncheck direct upload checkbox
+                $("#id_direct_upload").prop("checked", false);
             },
        })
 
@@ -167,7 +170,32 @@ validateStartCurate = function(){
 syncRadioButtons =function()
 {
 	// auto set radio buttons value according to what option the user is choosing
-	$("#id_document_name").on("click", function(){$("input:radio[name=curate_form][value='new']").prop("checked", true)});
-	$("#id_forms").on("change", function(){$("input:radio[name=curate_form][value='open']").prop("checked", true)});
-	$("#id_file").on("change", function(){$("input:radio[name=curate_form][value='upload']").prop("checked", true)});
+	$("#id_document_name").on("click", function(){
+	    $("input:radio[name=curate_form][value='new']").prop("checked", true),
+	    $("#btn-save-data").attr('hidden', true)
+	});
+	$("#id_forms").on("change", function(){
+	    $("input:radio[name=curate_form][value='open']").prop("checked", true),
+	    $("#btn-save-data").attr('hidden', true)
+    });
+	$("#id_file").on("change", function(){
+	    $("input:radio[name=curate_form][value='upload']").prop("checked", true);
+	    $("#btn-save-data").attr('hidden', false)
+	});
+	$("#curate_form_new").on("change", function(){$("#btn-save-data").attr('hidden', true)});
+	$("#curate_form_open").on("change", function(){$("#btn-save-data").attr('hidden', true)});
+	$("#curate_form_upload").on("change", function(){$("#btn-save-data").attr('hidden', false)});
+}
+
+/**
+* Initialize the save data button
+*/
+initSaveButton = function(){
+    $("#id_direct_upload").prop("checked", false);
+    $("#btn-save-data").on("click", function(){
+        // check hidden direct upload checkbox
+        $("#id_direct_upload").prop("checked", true);
+        // start regular form processing
+        displayTemplateProcess();
+    });
 }
