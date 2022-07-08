@@ -57,6 +57,9 @@ class UploadForm(forms.Form):
         label="",
         widget=forms.FileInput(attrs={"class": "form-control", "accept": ".xml"}),
     )
+    direct_upload = forms.BooleanField(
+        label="", widget=forms.CheckboxInput(attrs={"hidden": "true"}), required=False
+    )
 
 
 class CancelChangesForm(forms.Form):
