@@ -53,7 +53,11 @@ displayTemplateSelectedDialog = function()
     $("#select-template-modal").modal("show");
     // before create a new listener delete all the previous listeners
     $('#btn-display-data').off('click');
-    $('#btn-display-data').on('click', displayTemplateProcess);
+    $('#btn-display-data').on('click', function(){
+        // start regular form processing
+        displayTemplateProcess($("#btn-display-data > i"));
+
+    });
 }
 
 
@@ -86,12 +90,12 @@ load_start_form = function(templateID){
     });
 }
 
-displayTemplateProcess = function ()
+displayTemplateProcess = function (iconSelector)
 {
     if (validateStartCurate()){
-       var icon = $("[id^='btn-display-data'] > i").attr("class");
-       showSpinner($("[id^='btn-display-data'] > i"))
+       var icon = iconSelector.attr("class");
 
+       showSpinner(iconSelector)
 
        var formData = new FormData($( "#form_select_template" )[0]);
        $.ajax({
@@ -106,7 +110,7 @@ displayTemplateProcess = function ()
             },
             error: function(data){
                 // get old button icon
-                hideSpinner($("[id^='btn-display-data']"), icon)
+                hideSpinner(iconSelector, icon)
                 // FIXME: temp fix for safari support
                 $( "#id_file" ).prop('disabled', false);
                 // FIXME: temp fix for chrome support (click twice on start raise an error)
@@ -196,6 +200,6 @@ initSaveButton = function(){
         // check hidden direct upload checkbox
         $("#id_direct_upload").prop("checked", true);
         // start regular form processing
-        displayTemplateProcess();
+        displayTemplateProcess($("#btn-save-data > i"));
     });
 }
