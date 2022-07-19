@@ -1,6 +1,9 @@
 """ ACL Test Data Structure
 """
 from django.contrib.auth.models import AnonymousUser
+from tests.components.curate_data_structure.fixtures.fixtures import (
+    DataStructureFixtures,
+)
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
@@ -10,9 +13,6 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_parser_app.components.data_structure.models import DataStructureElement
-from tests.components.curate_data_structure.fixtures.fixtures import (
-    DataStructureFixtures,
-)
 
 fixture_data_structure = DataStructureFixtures()
 
@@ -125,7 +125,6 @@ class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
 
     def test_delete_others_data_structure_as_anonymous_user_raises_error(self):
         data_structure = self.fixture.data_structure_3
-        mock_user = create_mock_user(self.fixture.data_structure_1.user)
         with self.assertRaises(AccessControlError):
             curate_data_structure_api.delete(data_structure, AnonymousUser())
 

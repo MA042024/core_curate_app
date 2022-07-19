@@ -2,6 +2,9 @@
 """
 
 from rest_framework import status
+from tests.components.curate_data_structure.fixtures.fixtures import (
+    DataStructureFixtures,
+)
 
 from core_curate_app.rest.curate_data_structure import (
     views as data_structure_rest_views,
@@ -11,9 +14,6 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
-from tests.components.curate_data_structure.fixtures.fixtures import (
-    DataStructureFixtures,
-)
 
 fixture_data_structure = DataStructureFixtures()
 
@@ -268,20 +268,6 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_delete_other_user_blob_returns_http_403(self):
-        # Arrange
-        user = create_mock_user("2")
-
-        # Act
-        response = RequestMock.do_request_patch(
-            data_structure_rest_views.CurateDataStructureDetail.as_view(),
-            user,
-            param={"pk": str(self.fixture.data_structure_1.id)},
-        )
-
-        # Assert
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_patch_returns_updated_name(self):
         # Arrange
