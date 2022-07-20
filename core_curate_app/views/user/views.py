@@ -9,17 +9,17 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 import core_curate_app.permissions.rights as rights
-import core_main_app.components.template.api as template_api
 import core_main_app.components.template_version_manager.api as template_version_manager_api
+import core_main_app.components.template.api as template_api
 import core_main_app.utils.decorators as decorators
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
 from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
 from core_curate_app.utils.parser import get_parser
-from core_main_app.access_control.api import check_can_write
-from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.access_control.api import check_can_write
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.labels import get_form_label
@@ -29,6 +29,8 @@ from core_parser_app.components.data_structure_element import (
 )
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
+from core_main_app.utils.boolean import to_bool
+from core_main_app.utils.xml import format_content_xml
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +105,9 @@ class EnterDataView(View):
                 {"path": "core_curate_app/user/js/buttons.raw.js", "is_raw": True},
                 {"path": "core_parser_app/js/choice.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/choice.raw.js", "is_raw": True},
+                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
+                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
             ],
             "css": [
                 "core_curate_app/user/css/common.css",
@@ -123,7 +128,7 @@ class EnterDataView(View):
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
             "core_curate_app/user/data-entry/modals/cancel-form.html",
             "core_curate_app/user/data-entry/modals/clear-fields.html",
-            "core_curate_app/user/data-entry/modals/download-options.html",
+            "core_main_app/common/modals/download-options.html",
             "core_curate_app/user/data-entry/modals/save-form.html",
             "core_curate_app/user/data-entry/modals/use-validation.html",
             "core_curate_app/user/data-entry/modals/xml-error.html",
@@ -262,12 +267,16 @@ class ViewDataView(View):
                 {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/view_data.raw.js", "is_raw": True},
                 {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
+                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
             ],
             "css": ["core_main_app/common/css/XMLTree.css"],
         }
 
         self.modals = [
             "core_curate_app/user/data-review/modals/save-error.html",
+            "core_main_app/common/modals/download-options.html",
         ]
 
     def build_context(self, request, curate_data_structure):
@@ -356,6 +365,13 @@ def download_current_xml(request, curate_data_structure_id):
     # generate xml string
     xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
 
+    # get format bool
+    format = request.GET.get("pretty_print", False)
+
+    # format content
+    if to_bool(format):
+        xml_data = format_content_xml(xml_data)
+
     # build response with file
     return get_file_http_response(
         file_content=xml_data,
@@ -389,9 +405,20 @@ def download_xsd(request, curate_data_structure_id):
     template = template_api.get_by_id(
         str(curate_data_structure.template.id), request=request
     )
+
+    # get the template content
+    content = template.content
+
+    # get format bool
+    format = request.GET.get("pretty_print", False)
+
+    # format content
+    if to_bool(format):
+        content = format_content_xml(content)
+
     # return the file
     return get_file_http_response(
-        file_content=template.content,
+        file_content=content,
         file_name=template.filename,
         content_type="application/xsd",
         extension=".xsd",
