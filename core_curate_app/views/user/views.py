@@ -105,7 +105,9 @@ class EnterDataView(View):
                 {"path": "core_curate_app/user/js/buttons.raw.js", "is_raw": True},
                 {"path": "core_parser_app/js/choice.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/choice.raw.js", "is_raw": True},
-                {"path": "core_curate_app/user/js/download.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
+                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
             ],
             "css": [
                 "core_curate_app/user/css/common.css",
@@ -127,7 +129,7 @@ class EnterDataView(View):
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
             "core_curate_app/user/data-entry/modals/cancel-form.html",
             "core_curate_app/user/data-entry/modals/clear-fields.html",
-            "core_curate_app/user/data-entry/modals/download-options.html",
+            "core_main_app/common/modals/download-options.html",
             "core_curate_app/user/data-entry/modals/save-form.html",
             "core_curate_app/user/data-entry/modals/use-validation.html",
             "core_curate_app/user/data-entry/modals/xml-error.html",
@@ -266,12 +268,16 @@ class ViewDataView(View):
                 {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
                 {"path": "core_curate_app/user/js/view_data.raw.js", "is_raw": True},
                 {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
+                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
+                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
+                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
             ],
             "css": ["core_main_app/common/css/XMLTree.css"],
         }
 
         self.modals = [
             "core_curate_app/user/data-review/modals/save-error.html",
+            "core_main_app/common/modals/download-options.html",
         ]
 
     def build_context(self, request, curate_data_structure):
@@ -361,7 +367,7 @@ def download_current_xml(request, curate_data_structure_id):
     xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
 
     # get format bool
-    format = request.GET.get("format", False)
+    format = request.GET.get("pretty_print", False)
 
     # format content
     if to_bool(format):
@@ -403,7 +409,7 @@ def download_xsd(request, curate_data_structure_id):
     content = template.content
 
     # get format bool
-    format = request.GET.get("format", False)
+    format = request.GET.get("pretty_print", False)
 
     # format content
     if to_bool(format):

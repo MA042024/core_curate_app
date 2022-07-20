@@ -167,15 +167,6 @@ var sendSaveRequest = function() {
     });
 };
 
-
-/**
- * Shows a dialog to choose dialog options
- */
-var downloadOptions = function() {
-    $("#download-modal").modal("show");
-};
-
-
 /**
  * Validate the current data to curate.
  */
@@ -345,7 +336,6 @@ $(document).on('click', '.btn.clear-fields', clearFields);
 $(document).on('click', '.btn.cancel-changes', cancelChanges);
 $(document).on('click', '.btn.cancel-form', cancelForm);
 $(document).on('click', '.btn.save-form', saveForm);
-$(document).on('click', '.btn.download', downloadOptions);
 $(document).on('click', '.btn.validate', validateXML);
 
 $(document).on('click', '#btn-cancel-changes', cancel_changes);
