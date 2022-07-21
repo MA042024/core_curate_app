@@ -317,6 +317,11 @@ var reviewDataDialog = function() {
     $("#xml-valid-modal").modal("show");
 };
 
+var proceedToReview = function() {
+    // Show loading spinner
+     showSpinner($(".proceed-review > i"))
+};
+
 /**
  * Show / Hide
  */
@@ -337,6 +342,7 @@ $(document).on('click', '.btn.cancel-changes', cancelChanges);
 $(document).on('click', '.btn.cancel-form', cancelForm);
 $(document).on('click', '.btn.save-form', saveForm);
 $(document).on('click', '.btn.validate', validateXML);
+$(document).on('click', '.btn.proceed-review', proceedToReview);
 
 $(document).on('click', '#btn-cancel-changes', cancel_changes);
 $(document).on('click', '#btn-clear-fields', clear_fields);

@@ -16,7 +16,7 @@ Some <span style="color:red;">required</span> or <span style="color:blue;">recom
 
 {% block modal_footer %}
 <a class="btn btn-secondary pull-left" data-dismiss="modal" href="#"><i class="fas fa-times"></i> Cancel</a>
-<a href="{% url 'core_curate_view_data' data.data_structure.id %}" class="btn btn-primary">
+<a href="{% url 'core_curate_view_data' data.data_structure.id %}" class="btn btn-primary proceed-review">
     <i class="fas fa-check"></i> Proceed to Review
 </a>
 {% endblock %}
