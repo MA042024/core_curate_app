@@ -11,7 +11,7 @@ The {% trans "form_label" %} is valid. You can now proceed to the Review page.
 
 {% block modal_footer %}
 <a class="btn btn-secondary pull-left" data-dismiss="modal" href="#"><i class="fas fa-times"></i> Cancel</a>
-<a class="btn btn-primary" href="{% url 'core_curate_view_data' data.data_structure.id %}">
+<a class="btn btn-primary proceed-review" href="{% url 'core_curate_view_data' data.data_structure.id %}">
     <i class="fas fa-check"></i> Proceed to Review
 </a>
 {% endblock %}
