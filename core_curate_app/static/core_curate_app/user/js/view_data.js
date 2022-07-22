@@ -27,10 +27,12 @@ var saveToRepository = function()
         },
         error: function(data){
             XMLDataSavedError(data.responseText);
-            // get old button icon
-            hideSpinner.attr($(".btn.save-to-repo > i"),icon);
+
         }
-    });
+   }).always(function() {
+        // get old button icon
+        hideSpinner.attr($(".btn.save-to-repo > i"),icon);
+   });
 };
 
 /**
