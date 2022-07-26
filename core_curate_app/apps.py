@@ -9,6 +9,7 @@ class CurateAppConfig(AppConfig):
     """Core application settings."""
 
     name = "core_curate_app"
+    verbose_name = "Core Curate App"
 
     def ready(self):
         """Run when the app is ready.
