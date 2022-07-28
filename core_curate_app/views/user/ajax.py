@@ -508,7 +508,9 @@ def _start_curate_post(request):
             )
         name = new_form.data["document_name"]
         curate_data_structure = CurateDataStructure(
-            user=user_id, template=template_id, name=name
+            user=user_id,
+            template=template_api.get_by_id(template_id, request=request),
+            name=name,
         )
         curate_data_structure_api.upsert(curate_data_structure, request.user)
         url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
