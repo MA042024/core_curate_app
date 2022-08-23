@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons import exceptions
 from core_curate_app.components.curate_data_structure import api as data_structure_api
 from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.rest.curate_data_structure.admin_serializers import (
@@ -17,8 +19,6 @@ from core_curate_app.rest.curate_data_structure.admin_serializers import (
 from core_curate_app.rest.curate_data_structure.serializers import (
     CurateDataStructureSerializer,
 )
-from core_main_app.access_control.exceptions import AccessControlError
-from core_main_app.commons import exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -106,8 +106,9 @@ class AdminCurateDataStructureList(APIView):
 
             # Return the serialized data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as access_control_exception:
+            content = {"message": str(access_control_exception)}
+            return Response(content, status=status.HTTP_403_FORBIDDEN)
         except ValidationError as validation_exception:
             content = {"message": validation_exception.detail}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
@@ -256,8 +257,8 @@ class CurateDataStructureDetail(APIView):
 
             # Return response
             return Response(serializer.data)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as access_control_exception:
+            content = {"message": str(access_control_exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Http404:
             content = {"message": "Data structure not found."}
@@ -292,8 +293,8 @@ class CurateDataStructureDetail(APIView):
 
             # Return response
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as access_control_exception:
+            content = {"message": str(access_control_exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Http404:
             content = {"message": "Data structure not found."}
@@ -348,8 +349,8 @@ class CurateDataStructureDetail(APIView):
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as access_control_exception:
+            content = {"message": str(access_control_exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except ValidationError as validation_exception:
             content = {"message": validation_exception.detail}

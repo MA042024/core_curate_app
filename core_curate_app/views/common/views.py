@@ -3,8 +3,8 @@
 """
 from django.utils.translation import ugettext as _
 
-from core_curate_app.views.user.views import _get_curate_data_structure_by_id
 from core_main_app.views.common.views import CommonView
+from core_curate_app.views.user.views import _get_curate_data_structure_by_id
 
 
 class FormView(CommonView):
@@ -15,6 +15,13 @@ class FormView(CommonView):
     template = "core_curate_app/user/detail.html"
 
     def get(self, request, *args, **kwargs):
+        """Get the web page of a given form
+
+        Args:
+            request:
+
+        Returns:
+        """
         try:
             # get data structure
             curate_data_structure = _get_curate_data_structure_by_id(
@@ -46,7 +53,7 @@ class FormView(CommonView):
             return self.common_render(
                 request, self.template, assets=assets, context=context
             )
-        except Exception as e:
+        except Exception as exception:
             assets = {
                 "js": [
                     {
@@ -60,5 +67,5 @@ class FormView(CommonView):
                 template = "core_main_app/admin/commons/errors/errors_wrapper.html"
 
             return self.common_render(
-                request, template, context={"error": str(e)}, assets=assets
+                request, template, context={"error": str(exception)}, assets=assets
             )

@@ -18,6 +18,6 @@ class CurateAppConfig(AppConfig):
 
         """
         if "migrate" not in sys.argv:
-            import core_curate_app.permissions.discover as discover
+            from core_curate_app.permissions import discover
 
             discover.init_permissions()

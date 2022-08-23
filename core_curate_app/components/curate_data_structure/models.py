@@ -3,11 +3,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, IntegrityError
 from django.db.models.signals import pre_delete
-
-from core_curate_app.permissions import rights
 from core_main_app.commons import exceptions
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
+from core_curate_app.permissions import rights
 
 
 class CurateDataStructure(DataStructure):
@@ -18,7 +17,12 @@ class CurateDataStructure(DataStructure):
 
     @staticmethod
     def get_permission():
-        return f"{rights.curate_content_type}.{rights.curate_data_structure_access}"
+        """get_permission
+
+        Returns:
+
+        """
+        return f"{rights.CURATE_CONTENT_TYPE}.{rights.CURATE_DATA_STRUCTURE_ACCESS}"
 
     def save_object(self):
         """Custom save
@@ -30,8 +34,8 @@ class CurateDataStructure(DataStructure):
             return self.save()
         except IntegrityError:
             raise exceptions.NotUniqueError("Unable to save the document: not unique.")
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_id(data_structure_id):
@@ -46,10 +50,10 @@ class CurateDataStructure(DataStructure):
         """
         try:
             return CurateDataStructure.objects.get(pk=str(data_structure_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_none():
@@ -91,10 +95,10 @@ class CurateDataStructure(DataStructure):
             return CurateDataStructure.objects.get(
                 user=str(user_id), template=str(template_id), name=name
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all_by_user_id_with_no_data(user_id):
@@ -168,10 +172,10 @@ class CurateDataStructure(DataStructure):
         """
         try:
             return CurateDataStructure.objects.get(data=str(data_id))
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_data_structure_element_root(data_structure_element_root):
@@ -187,10 +191,10 @@ class CurateDataStructure(DataStructure):
             return CurateDataStructure.objects.get(
                 data_structure_element_root=str(data_structure_element_root.id)
             )
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
 
 # Connect signals

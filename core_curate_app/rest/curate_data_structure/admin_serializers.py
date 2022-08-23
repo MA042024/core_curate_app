@@ -11,7 +11,7 @@ from core_curate_app.components.curate_data_structure.models import CurateDataSt
 class CurateDataStructureAdminSerializer(ModelSerializer):
     """CurateDataStructure Serializer"""
 
-    class Meta(object):
+    class Meta:
         """Meta"""
 
         model = CurateDataStructure

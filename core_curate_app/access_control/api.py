@@ -3,9 +3,8 @@
 import logging
 
 from django.contrib.auth.models import User, AnonymousUser
-
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.exceptions import AccessControlError
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +22,7 @@ def can_read(func, *args, **kwargs):
     """
     # get the User in the args list
     user = next(
-        (
-            arg
-            for arg in args
-            if isinstance(arg, User) or isinstance(arg, AnonymousUser)
-        ),
+        (arg for arg in args if isinstance(arg, (User, AnonymousUser))),
         None,
     )
 
@@ -40,7 +35,7 @@ def can_read(func, *args, **kwargs):
         return func(*args, **kwargs)
 
     document = func(*args, **kwargs)
-    if type(document) is list:
+    if isinstance(document, list):
         document_list = document
     elif isinstance(document, CurateDataStructure):
         document_list = [document]
@@ -83,11 +78,7 @@ def can_write(func, *args, **kwargs):
 
     """
     user = next(
-        (
-            arg
-            for arg in args
-            if isinstance(arg, User) or isinstance(arg, AnonymousUser)
-        ),
+        (arg for arg in args if isinstance(arg, (User, AnonymousUser))),
         None,
     )
 

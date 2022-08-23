@@ -1,9 +1,9 @@
 """ Fixtures files for Data Structure
 """
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 
 class DataStructureFixtures(FixtureInterface):

@@ -1,9 +1,9 @@
 """ Curate data Structure api
 """
-from core_curate_app.access_control.api import can_read, can_write, can_change_owner
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_main_app.access_control.api import has_perm_administration
 from core_main_app.access_control.decorators import access_control
+from core_curate_app.access_control.api import can_read, can_write, can_change_owner
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 
 
 @access_control(can_write)
