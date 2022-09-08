@@ -224,7 +224,7 @@ class EnterDataView(View):
                 assets={},
                 context={"errors": str(ex)},
             )
-        except Exception:
+        except Exception as exception:
             try:
                 # Unlock from database
                 if (
@@ -244,7 +244,7 @@ class EnterDataView(View):
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(lock_exc)},
+                context={"errors": str(exception)},
             )
 
 
