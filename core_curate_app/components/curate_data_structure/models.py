@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, IntegrityError
 from django.db.models.signals import pre_delete
 from core_main_app.commons import exceptions
+from core_main_app.utils.validation.regex_validation import not_empty_or_whitespaces
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
 from core_curate_app.permissions import rights
@@ -31,6 +32,7 @@ class CurateDataStructure(DataStructure):
 
         """
         try:
+            self.clean()
             return self.save()
         except IntegrityError:
             raise exceptions.NotUniqueError("Unable to save the document: not unique.")
@@ -195,6 +197,15 @@ class CurateDataStructure(DataStructure):
             raise exceptions.DoesNotExist(str(exception))
         except Exception as exception:
             raise exceptions.ModelError(str(exception))
+
+    def clean(self):
+        """Clean before saving
+
+        Returns:
+
+        """
+        not_empty_or_whitespaces(self.name)
+        self.name = self.name.strip()
 
 
 # Connect signals
