@@ -1,9 +1,8 @@
 """ User curate forms
 """
 from django import forms
-
-import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 from core_main_app.utils.labels import get_form_label
+import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
 
 class NewForm(forms.Form):
@@ -43,11 +42,11 @@ class OpenForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         if "forms" in kwargs:
-            qs = kwargs.pop("forms")
+            queryset = kwargs.pop("forms")
         else:
-            qs = curate_data_structure_api.get_none()
-        super(OpenForm, self).__init__(*args, **kwargs)
-        self.fields["forms"].queryset = qs
+            queryset = curate_data_structure_api.get_none()
+        super().__init__(*args, **kwargs)
+        self.fields["forms"].queryset = queryset
 
 
 class UploadForm(forms.Form):
@@ -84,5 +83,5 @@ class HiddenFieldsForm(forms.Form):
         value = ""
         if "hidden_value" in kwargs:
             value = kwargs.pop("hidden_value")
-        super(HiddenFieldsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["hidden_value"].initial = value

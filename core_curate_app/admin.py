@@ -5,6 +5,11 @@ from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import re_path
 
+from core_main_app.admin import core_admin_site
+from core_curate_app.components.curate_data_structure.admin_site import (
+    CustomCurateDataStructureAdmin,
+)
+from core_curate_app.components.curate_data_structure.models import CurateDataStructure
 from core_curate_app.views.common import views as common_views
 
 admin_urls = [
@@ -20,6 +25,6 @@ admin_urls = [
     )
 ]
 
-
-urls = admin.site.get_urls()
-admin.site.get_urls = lambda: admin_urls + urls
+admin.site.register(CurateDataStructure, CustomCurateDataStructureAdmin)
+urls = core_admin_site.get_urls()
+core_admin_site.get_urls = lambda: admin_urls + urls

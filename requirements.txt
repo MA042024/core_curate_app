@@ -1,5 +1,2 @@
 Django
-django-mongoengine
 django-simple-menu
-mock
-mongoengine

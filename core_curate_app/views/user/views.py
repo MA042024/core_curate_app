@@ -8,29 +8,31 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 
-import core_curate_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.components.template.api as template_api
-import core_main_app.utils.decorators as decorators
-from core_curate_app.components.curate_data_structure import (
-    api as curate_data_structure_api,
-)
-from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
-from core_curate_app.utils.parser import get_parser
+from core_main_app.components.lock import api as lock_api
+from core_main_app.utils import decorators
 from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.access_control.api import check_can_write
-from core_main_app.components.lock import api as lock_api
+
 from core_main_app.utils.file import get_file_http_response
 from core_main_app.utils.labels import get_form_label
 from core_main_app.utils.rendering import render
+from core_main_app.utils.boolean import to_bool
+from core_main_app.utils.xml import format_content_xml
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-from core_main_app.utils.boolean import to_bool
-from core_main_app.utils.xml import format_content_xml
+
+from core_curate_app.components.curate_data_structure import (
+    api as curate_data_structure_api,
+)
+from core_curate_app.permissions import rights
+from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
+from core_curate_app.utils.parser import get_parser
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +40,8 @@ logger = logging.getLogger(__name__)
 
 
 @decorators.permission_required(
-    content_type=rights.curate_content_type,
-    permission=rights.curate_access,
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
     login_url=reverse_lazy("core_main_app_login"),
 )
 def index(request):
@@ -88,8 +90,10 @@ def index(request):
 # FIXME: allow reopening a form with unsaved changes (may be temporary until
 #  curate workflow redesign)
 class EnterDataView(View):
+    """Page that allows to enter a data view."""
+
     def __init__(self):
-        super(EnterDataView, self).__init__()
+        super().__init__()
         self.assets = {
             "js": [
                 {"path": "core_main_app/common/js/debounce.js", "is_raw": False},
@@ -113,7 +117,6 @@ class EnterDataView(View):
                 "core_curate_app/user/css/common.css",
                 "core_curate_app/user/css/xsd_form.css",
                 "core_parser_app/css/use.css",
-                "core_main_app/common/css/switch.css",
             ],
         }
 
@@ -147,12 +150,6 @@ class EnterDataView(View):
         Returns:
 
         """
-        # get xsd string from the template
-        template = template_api.get(
-            str(curate_data_structure.template.id), request=request
-        )
-        xsd_string = template.content
-
         if reload_unsaved_changes:
             # get root element from the data structure
             root_element = curate_data_structure.data_structure_element_root
@@ -160,17 +157,8 @@ class EnterDataView(View):
             # if form string provided, use it to generate the form
             xml_string = curate_data_structure.form_string
 
-            # get the root element
-            root_element = generate_form(
-                xsd_string,
-                xml_string,
-                data_structure=curate_data_structure,
-                request=request,
-            )
-
-            # save the root element in the data structure
-            curate_data_structure_api.update_data_structure_root(
-                curate_data_structure, root_element, request.user
+            root_element = generate_root_element(
+                request, curate_data_structure, xml_string
             )
 
         # renders the form
@@ -184,8 +172,8 @@ class EnterDataView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.curate_content_type,
-            permission=rights.curate_access,
+            content_type=rights.CURATE_CONTENT_TYPE,
+            permission=rights.CURATE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -236,7 +224,7 @@ class EnterDataView(View):
                 assets={},
                 context={"errors": str(ex)},
             )
-        except Exception as e:
+        except Exception as exception:
             try:
                 # Unlock from database
                 if (
@@ -249,20 +237,30 @@ class EnterDataView(View):
             except Exception as lock_exc:
                 # CurateDataStructure not found, continue search
                 logger.warning(
-                    "'EnterDataView.get' threw an exception: {0}".format(str(lock_exc))
+                    "'EnterDataView.get' threw an exception:%s", str(lock_exc)
                 )
 
             return render(
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
 
 class ViewDataView(View):
+    """
+    Page that allows to view a data.
+
+    Args:
+        View:
+
+    Returns:
+
+    """
+
     def __init__(self):
-        super(ViewDataView, self).__init__()
+        super().__init__()
         self.assets: Dict[str, List[any]] = {
             "js": [
                 {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
@@ -301,12 +299,20 @@ class ViewDataView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.curate_content_type,
-            permission=rights.curate_access,
+            content_type=rights.CURATE_CONTENT_TYPE,
+            permission=rights.CURATE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, curate_data_structure_id):
+        """Get data view
+
+        Args:
+            request:
+            curate_data_structure_id:
+
+        Returns:
+        """
 
         try:
             curate_data_structure = _get_curate_data_structure_by_id(
@@ -334,18 +340,18 @@ class ViewDataView(View):
                 context=self.build_context(request, curate_data_structure),
                 modals=self.modals,
             )
-        except Exception as e:
+        except Exception as exception:
             return render(
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
 
 @decorators.permission_required(
-    content_type=rights.curate_content_type,
-    permission=rights.curate_access,
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
     login_url=reverse_lazy("core_main_app_login"),
 )
 def download_current_xml(request, curate_data_structure_id):
@@ -366,11 +372,11 @@ def download_current_xml(request, curate_data_structure_id):
     # generate xml string
     xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
 
-    # get format bool
-    format = request.GET.get("pretty_print", False)
+    # get pretty print bool
+    prettify = request.GET.get("pretty_print", False)
 
-    # format content
-    if to_bool(format):
+    # prettify content
+    if to_bool(prettify):
         xml_data = format_content_xml(xml_data)
 
     # build response with file
@@ -383,8 +389,8 @@ def download_current_xml(request, curate_data_structure_id):
 
 
 @decorators.permission_required(
-    content_type=rights.curate_content_type,
-    permission=rights.curate_access,
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
     login_url=reverse_lazy("core_main_app_login"),
 )
 def download_xsd(request, curate_data_structure_id):
@@ -403,16 +409,18 @@ def download_xsd(request, curate_data_structure_id):
     )
 
     # get the template
-    template = template_api.get(str(curate_data_structure.template.id), request=request)
+    template = template_api.get_by_id(
+        str(curate_data_structure.template.id), request=request
+    )
 
     # get the template content
     content = template.content
 
-    # get format bool
-    format = request.GET.get("pretty_print", False)
+    # get pretty print bool
+    prettify = request.GET.get("pretty_print", False)
 
-    # format content
-    if to_bool(format):
+    # prettify content
+    if to_bool(prettify):
         content = format_content_xml(content)
 
     # return the file
@@ -464,6 +472,38 @@ def render_form(request, root_element):
     xsd_form = renderer.render()
 
     return xsd_form
+
+
+def generate_root_element(request, curate_data_structure, xml_string):
+    """Render the updated form.
+
+    Args:
+        request:
+        curate_data_structure:
+        xml_string:
+
+    Returns:
+
+    """
+    # get xsd string from the template
+    template = template_api.get_by_id(
+        str(curate_data_structure.template.id), request=request
+    )
+
+    # get the root element
+    root_element = generate_form(
+        template.content,
+        xml_string,
+        data_structure=curate_data_structure,
+        request=request,
+    )
+
+    # save the root element in the data structure
+    curate_data_structure_api.update_data_structure_root(
+        curate_data_structure, root_element, request.user
+    )
+
+    return root_element
 
 
 def render_xml(request, root_element):
@@ -545,5 +585,5 @@ def _check_can_write_data(request, accessed_object):
         # Super user can access everything
         if not request.user.is_superuser:
             check_can_write(accessed_object.data, request.user)
-    except Exception as e:
-        raise AccessControlError(str(e))
+    except AccessControlError as ace:
+        raise ace

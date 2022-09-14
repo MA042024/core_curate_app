@@ -1,6 +1,6 @@
 """Parser util for curate app
 """
-
+from core_parser_app.tools.parser.parser import XSDParser
 from core_curate_app.settings import (
     PARSER_MIN_TREE,
     PARSER_IGNORE_MODULES,
@@ -9,7 +9,6 @@ from core_curate_app.settings import (
     PARSER_IMPLICIT_EXTENSION_BASE,
     PARSER_DOWNLOAD_DEPENDENCIES,
 )
-from core_parser_app.tools.parser.parser import XSDParser
 
 
 def get_parser(request=None):
