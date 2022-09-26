@@ -2,8 +2,12 @@
 """
 from core_main_app.components.data.models import Data
 from core_main_app.components.template.models import Template
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_main_app.utils.integration_tests.fixture_interface import (
+    FixtureInterface,
+)
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 
 
 class DataStructureFixtures(FixtureInterface):
@@ -35,12 +39,18 @@ class DataStructureFixtures(FixtureInterface):
 
         # NOTE: no xml_content to avoid using unsupported GridFS mock
         self.data = Data(
-            template=self.template, user_id="1", dict_content=None, title="title"
+            template=self.template,
+            user_id="1",
+            dict_content=None,
+            title="title",
         )
         self.data.save()
 
         self.data_structure_1 = CurateDataStructure(
-            user="1", template=self.template, name="data_structure_1", data=self.data
+            user="1",
+            template=self.template,
+            name="data_structure_1",
+            data=self.data,
         )
         self.data_structure_1.save()
 

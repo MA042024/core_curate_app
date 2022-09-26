@@ -12,7 +12,11 @@ import core_main_app.components.template_version_manager.api as template_version
 import core_main_app.components.template.api as template_api
 from core_main_app.components.lock import api as lock_api
 from core_main_app.utils import decorators
-from core_main_app.commons.exceptions import LockError, ModelError, DoesNotExist
+from core_main_app.commons.exceptions import (
+    LockError,
+    ModelError,
+    DoesNotExist,
+)
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.access_control.api import check_can_write
 
@@ -31,7 +35,10 @@ from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
 from core_curate_app.permissions import rights
-from core_curate_app.settings import INSTALLED_APPS, ENABLE_XML_ENTITIES_TOOLTIPS
+from core_curate_app.settings import (
+    INSTALLED_APPS,
+    ENABLE_XML_ENTITIES_TOOLTIPS,
+)
 from core_curate_app.utils.parser import get_parser
 
 logger = logging.getLogger(__name__)
@@ -55,8 +62,14 @@ def index(request):
     """
     assets = {
         "js": [
-            {"path": "core_curate_app/user/js/select_template.js", "is_raw": False},
-            {"path": "core_curate_app/user/js/select_template.raw.js", "is_raw": True},
+            {
+                "path": "core_curate_app/user/js/select_template.js",
+                "is_raw": False,
+            },
+            {
+                "path": "core_curate_app/user/js/select_template.raw.js",
+                "is_raw": True,
+            },
         ],
         "css": [
             "core_curate_app/user/css/common.css",
@@ -65,7 +78,9 @@ def index(request):
     }
 
     global_active_template_list = (
-        template_version_manager_api.get_active_global_version_manager(request=request)
+        template_version_manager_api.get_active_global_version_manager(
+            request=request
+        )
     )
     user_active_template_list = (
         template_version_manager_api.get_active_version_manager_by_user_id(
@@ -96,22 +111,52 @@ class EnterDataView(View):
         super().__init__()
         self.assets = {
             "js": [
-                {"path": "core_main_app/common/js/debounce.js", "is_raw": False},
-                {"path": "core_main_app/common/js/elementViewport.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/enter_data.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/enter_data.raw.js", "is_raw": True},
+                {
+                    "path": "core_main_app/common/js/debounce.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "core_main_app/common/js/elementViewport.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "core_curate_app/user/js/enter_data.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "core_curate_app/user/js/enter_data.raw.js",
+                    "is_raw": True,
+                },
                 {"path": "core_parser_app/js/modules.js", "is_raw": False},
                 {"path": "core_parser_app/js/modules.raw.js", "is_raw": True},
-                {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
+                {
+                    "path": "core_main_app/common/js/XMLTree.js",
+                    "is_raw": False,
+                },
                 {"path": "core_parser_app/js/autosave.js", "is_raw": False},
                 {"path": "core_parser_app/js/autosave.raw.js", "is_raw": True},
                 {"path": "core_parser_app/js/buttons.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/buttons.raw.js", "is_raw": True},
+                {
+                    "path": "core_curate_app/user/js/buttons.raw.js",
+                    "is_raw": True,
+                },
                 {"path": "core_parser_app/js/choice.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/choice.raw.js", "is_raw": True},
-                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
-                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
-                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
+                {
+                    "path": "core_curate_app/user/js/choice.raw.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_curate_app/user/js/download.raw.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_main_app/common/js/modals/download.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_main_app/common/js/data_detail.js",
+                    "is_raw": False,
+                },
             ],
             "css": [
                 "core_curate_app/user/css/common.css",
@@ -139,7 +184,9 @@ class EnterDataView(View):
             "core_curate_app/user/data-entry/modals/xml-valid.html",
         ]
 
-    def build_context(self, request, curate_data_structure, reload_unsaved_changes):
+    def build_context(
+        self, request, curate_data_structure, reload_unsaved_changes
+    ):
         """Build the context of the view
 
         Args:
@@ -177,7 +224,9 @@ class EnterDataView(View):
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
-    def get(self, request, curate_data_structure_id, reload_unsaved_changes=False):
+    def get(
+        self, request, curate_data_structure_id, reload_unsaved_changes=False
+    ):
         """Load view to enter data.
 
         Args:
@@ -198,7 +247,9 @@ class EnterDataView(View):
 
             # Lock from database
             if curate_data_structure.data is not None:
-                lock_api.set_lock_object(curate_data_structure.data, request.user)
+                lock_api.set_lock_object(
+                    curate_data_structure.data, request.user
+                )
 
             # Check if we need to change the user. Code executed only if the
             # data is unlocked. set_lock_object() raises LockError.
@@ -263,12 +314,30 @@ class ViewDataView(View):
         super().__init__()
         self.assets: Dict[str, List[any]] = {
             "js": [
-                {"path": "core_curate_app/user/js/view_data.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/view_data.raw.js", "is_raw": True},
-                {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
-                {"path": "core_curate_app/user/js/download.raw.js", "is_raw": True},
-                {"path": "core_main_app/common/js/modals/download.js", "is_raw": True},
-                {"path": "core_main_app/common/js/data_detail.js", "is_raw": False},
+                {
+                    "path": "core_curate_app/user/js/view_data.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "core_curate_app/user/js/view_data.raw.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_main_app/common/js/XMLTree.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "core_curate_app/user/js/download.raw.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_main_app/common/js/modals/download.js",
+                    "is_raw": True,
+                },
+                {
+                    "path": "core_main_app/common/js/data_detail.js",
+                    "is_raw": False,
+                },
             ],
             "css": ["core_main_app/common/css/XMLTree.css"],
         }
@@ -331,7 +400,9 @@ class ViewDataView(View):
                 self.assets["css"].append(
                     "core_file_preview_app/user/css/file_preview.css"
                 )
-                self.modals.append("core_file_preview_app/user/file_preview_modal.html")
+                self.modals.append(
+                    "core_file_preview_app/user/file_preview_modal.html"
+                )
 
             return render(
                 request,
@@ -370,7 +441,9 @@ def download_current_xml(request, curate_data_structure_id):
     )
 
     # generate xml string
-    xml_data = render_xml(request, curate_data_structure.data_structure_element_root)
+    xml_data = render_xml(
+        request, curate_data_structure.data_structure_element_root
+    )
 
     # get pretty print bool
     prettify = request.GET.get("pretty_print", False)
@@ -432,7 +505,9 @@ def download_xsd(request, curate_data_structure_id):
     )
 
 
-def generate_form(xsd_string, xml_string=None, data_structure=None, request=None):
+def generate_form(
+    xsd_string, xml_string=None, data_structure=None, request=None
+):
     """Generate the form using the parser, returns the root element.
 
     Args:
@@ -451,7 +526,9 @@ def generate_form(xsd_string, xml_string=None, data_structure=None, request=None
         xsd_string, xml_string, data_structure, request=request
     )
     # get the root element
-    root_element = data_structure_element_api.get_by_id(root_element_id, request)
+    root_element = data_structure_element_api.get_by_id(
+        root_element_id, request
+    )
 
     return root_element
 

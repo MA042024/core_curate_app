@@ -54,10 +54,14 @@ class UploadForm(forms.Form):
 
     file = forms.FileField(
         label="",
-        widget=forms.FileInput(attrs={"class": "form-control", "accept": ".xml"}),
+        widget=forms.FileInput(
+            attrs={"class": "form-control", "accept": ".xml"}
+        ),
     )
     direct_upload = forms.BooleanField(
-        label="", widget=forms.CheckboxInput(attrs={"hidden": "true"}), required=False
+        label="",
+        widget=forms.CheckboxInput(attrs={"hidden": "true"}),
+        required=False,
     )
 
 

@@ -48,7 +48,8 @@ class TestDataStructureListAdmin(MongoIntegrationBaseTestCase):
         """
         # Act
         response = RequestMock.do_request_get(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), self.user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            self.user,
         )
 
         # Assert
@@ -128,7 +129,9 @@ class TestDataStructureList(MongoIntegrationBaseTestCase):
         """setUp"""
         super().setUp()
 
-        self.superuser = create_mock_user("1", is_staff=True, is_superuser=True)
+        self.superuser = create_mock_user(
+            "1", is_staff=True, is_superuser=True
+        )
 
         self.user = create_mock_user("2")
 
@@ -148,7 +151,8 @@ class TestDataStructureList(MongoIntegrationBaseTestCase):
         """
         # Act
         response = RequestMock.do_request_get(
-            data_structure_rest_views.CurateDataStructureList.as_view(), self.superuser
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            self.superuser,
         )
 
         # Assert
@@ -163,7 +167,8 @@ class TestDataStructureList(MongoIntegrationBaseTestCase):
         """
         # Act
         response = RequestMock.do_request_get(
-            data_structure_rest_views.CurateDataStructureList.as_view(), self.user
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            self.user,
         )
 
         # Assert
@@ -273,7 +278,9 @@ class TestDataStructureDetail(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertEqual(response.data["name"], self.fixture.data_structure_1.name)
+        self.assertEqual(
+            response.data["name"], self.fixture.data_structure_1.name
+        )
 
     def test_get_other_user_data_structure_returns_http_403(self):
         """

@@ -4,7 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, IntegrityError
 from django.db.models.signals import pre_delete
 from core_main_app.commons import exceptions
-from core_main_app.utils.validation.regex_validation import not_empty_or_whitespaces
+from core_main_app.utils.validation.regex_validation import (
+    not_empty_or_whitespaces,
+)
 from core_main_app.components.data.models import Data
 from core_parser_app.components.data_structure.models import DataStructure
 from core_curate_app.permissions import rights
@@ -14,7 +16,9 @@ class CurateDataStructure(DataStructure):
     """Curate data structure."""
 
     form_string = models.TextField(blank=True)
-    data = models.ForeignKey(Data, blank=True, on_delete=models.CASCADE, null=True)
+    data = models.ForeignKey(
+        Data, blank=True, on_delete=models.CASCADE, null=True
+    )
 
     @staticmethod
     def get_permission():
@@ -35,7 +39,9 @@ class CurateDataStructure(DataStructure):
             self.clean()
             return self.save()
         except IntegrityError:
-            raise exceptions.NotUniqueError("Unable to save the document: not unique.")
+            raise exceptions.NotUniqueError(
+                "Unable to save the document: not unique."
+            )
         except Exception as exception:
             raise exceptions.ModelError(str(exception))
 

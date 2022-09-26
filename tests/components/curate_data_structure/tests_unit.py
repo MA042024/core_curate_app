@@ -8,7 +8,9 @@ from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 
 
 class TestCurateDataStructureGetById(TestCase):
@@ -34,7 +36,9 @@ class TestCurateDataStructureGetById(TestCase):
         with self.assertRaises(exceptions.DoesNotExist):
             curate_data_structure_api.get_by_id(1, mock_user)
 
-    def test_data_structure_get_by_id_raises_does_not_exist_error_if_not_found(self):
+    def test_data_structure_get_by_id_raises_does_not_exist_error_if_not_found(
+        self,
+    ):
         """
         test_data_structure_get_by_id_raises_does_not_exist_error_if_not_found
 
@@ -49,7 +53,9 @@ class TestCurateDataStructureGetById(TestCase):
             curate_data_structure_api.get_by_id(1, mock_user)
 
     @patch.object(CurateDataStructure, "get_by_id")
-    def test_curate_data_structure_get_by_id_return_data_if_found(self, mock_get):
+    def test_curate_data_structure_get_by_id_return_data_if_found(
+        self, mock_get
+    ):
         """
         test_curate_data_structure_get_by_id_return_data_if_found
 
@@ -90,7 +96,9 @@ class TestCurateDataStructureUpsert(TestCase):
         mock_save.return_value = mock_data_structure
         mock_user = create_mock_user("1")
         # Act
-        result = curate_data_structure_api.upsert(mock_data_structure, mock_user)
+        result = curate_data_structure_api.upsert(
+            mock_data_structure, mock_user
+        )
         # Assert
         self.assertIsInstance(result, CurateDataStructure)
 
@@ -101,7 +109,9 @@ class TestCurateDataStructureGetAll(TestCase):
     """
 
     @patch.object(CurateDataStructure, "get_all")
-    def test_curate_data_get_all_return_collection_of_curate_data(self, mock_list):
+    def test_curate_data_get_all_return_collection_of_curate_data(
+        self, mock_list
+    ):
         """
         test_curate_data_get_all_return_collection_of_curate_data
 
@@ -121,7 +131,9 @@ class TestCurateDataStructureGetAll(TestCase):
             create_mock_user("1", is_staff=True, is_superuser=True)
         )
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 class TestCurateDataStructureGetByUserIdAndTemplateId(TestCase):
@@ -149,9 +161,13 @@ class TestCurateDataStructureGetByUserIdAndTemplateId(TestCase):
         mock_list.return_value = [mock_data_1, mock_data_2]
 
         # Act
-        result = curate_data_structure_api.get_all_by_user_id_and_template_id(1, 1)
+        result = curate_data_structure_api.get_all_by_user_id_and_template_id(
+            1, 1
+        )
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
@@ -159,7 +175,9 @@ class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
     Test Curate Data Structure Get By User Id And Template Id And Name
     """
 
-    @patch.object(CurateDataStructure, "get_by_user_id_and_template_id_and_name")
+    @patch.object(
+        CurateDataStructure, "get_by_user_id_and_template_id_and_name"
+    )
     def test_curate_data_structure_get_by_user_and_template_and_name_return_curate_data_structure(
         self, mock_get
     ):
@@ -175,13 +193,17 @@ class TestCurateDataStructureGetByUserIdAndTemplateIdAndName(TestCase):
         )
         mock_get.return_value = mock_data_1
         # Act
-        result = curate_data_structure_api.get_by_user_id_and_template_id_and_name(
-            1, 1, "name_title_1"
+        result = (
+            curate_data_structure_api.get_by_user_id_and_template_id_and_name(
+                1, 1, "name_title_1"
+            )
         )
         # Assert
         self.assertIsInstance(result, CurateDataStructure)
 
-    @patch.object(CurateDataStructure, "get_by_user_id_and_template_id_and_name")
+    @patch.object(
+        CurateDataStructure, "get_by_user_id_and_template_id_and_name"
+    )
     def test_curate_data_structure_get_by_user_and_template_and_name_raises_error_if_not_found(
         self, mock_get
     ):
@@ -242,7 +264,9 @@ class TestCurateDataStructureGetAllByUserIdWithNoData(TestCase):
         # Act
         result = curate_data_structure_api.get_all_by_user_id_with_no_data(1)
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 class TestCurateDataStructureGetAllExceptUserIdWithNoData(TestCase):
@@ -275,7 +299,9 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(TestCase):
             2, mock_user
         )
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 class TestCurateDataStructureGetAllByUserIdAndTemplateIdWithNoData(TestCase):
@@ -306,13 +332,13 @@ class TestCurateDataStructureGetAllByUserIdAndTemplateIdWithNoData(TestCase):
         )
         mock_list.return_value = [mock_data_1, mock_data_2]
         # Act
-        result = (
-            curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
-                "1", template.id
-            )
+        result = curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(
+            "1", template.id
         )
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 class TestCurateDataStructureGetByUserId(TestCase):
@@ -341,7 +367,9 @@ class TestCurateDataStructureGetByUserId(TestCase):
         # Act
         result = curate_data_structure_api.get_all_by_user(create_mock_user(1))
         # Assert
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
 
 def _get_template():

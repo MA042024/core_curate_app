@@ -19,7 +19,9 @@ PARSER_AUTO_KEY_KEYREF = getattr(settings, "PARSER_AUTO_KEY_KEYREF", False)
 PARSER_IMPLICIT_EXTENSION_BASE = getattr(
     settings, "PARSER_IMPLICIT_EXTENSION_BASE", False
 )
-PARSER_DOWNLOAD_DEPENDENCIES = getattr(settings, "PARSER_DOWNLOAD_DEPENDENCIES", False)
+PARSER_DOWNLOAD_DEPENDENCIES = getattr(
+    settings, "PARSER_DOWNLOAD_DEPENDENCIES", False
+)
 
 # MENU
 CURATE_MENU_NAME = getattr(settings, "CURATE_MENU_NAME", "Curator")
@@ -27,6 +29,8 @@ CURATE_MENU_NAME = getattr(settings, "CURATE_MENU_NAME", "Curator")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = (os.path.join(BASE_DIR, "core_curate_app/locale"),)
 
-ENABLE_XML_ENTITIES_TOOLTIPS = getattr(settings, "ENABLE_XML_ENTITIES_TOOLTIPS", True)
+ENABLE_XML_ENTITIES_TOOLTIPS = getattr(
+    settings, "ENABLE_XML_ENTITIES_TOOLTIPS", True
+)
 """ boolean: enable the xml entities warning tooltip on the GUI.
 """

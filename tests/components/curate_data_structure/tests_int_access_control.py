@@ -6,8 +6,12 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_parser_app.components.data_structure.models import DataStructureElement
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_parser_app.components.data_structure.models import (
+    DataStructureElement,
+)
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
 from tests.components.curate_data_structure.fixtures.fixtures import (
@@ -34,7 +38,9 @@ class TestCurateDataStructureGetById(MongoIntegrationBaseTestCase):
         """
         data_structure_id = self.fixture.data_structure_1.id
         mock_user = create_mock_user(
-            self.fixture.data_structure_1.user, is_staff=True, is_superuser=True
+            self.fixture.data_structure_1.user,
+            is_staff=True,
+            is_superuser=True,
         )
         data_structure = curate_data_structure_api.get_by_id(
             data_structure_id, mock_user
@@ -76,7 +82,9 @@ class TestCurateDataStructureGetById(MongoIntegrationBaseTestCase):
         """
         data_structure_id = self.fixture.data_structure_1.id
         with self.assertRaises(AccessControlError):
-            curate_data_structure_api.get_by_id(data_structure_id, AnonymousUser())
+            curate_data_structure_api.get_by_id(
+                data_structure_id, AnonymousUser()
+            )
 
 
 class TestCurateDataStructureGetAll(MongoIntegrationBaseTestCase):
@@ -95,7 +103,9 @@ class TestCurateDataStructureGetAll(MongoIntegrationBaseTestCase):
         """
         mock_user = create_mock_user("1", is_staff=True, is_superuser=True)
         result = curate_data_structure_api.get_all(mock_user)
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
 
     def test_get_all_as_user_raises_error(self):
         """
@@ -119,7 +129,9 @@ class TestCurateDataStructureGetAll(MongoIntegrationBaseTestCase):
             curate_data_structure_api.get_all(AnonymousUser())
 
 
-class TestCurateDataStructureGetAllExceptUserIdWithNoData(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureGetAllExceptUserIdWithNoData(
+    MongoIntegrationBaseTestCase
+):
     """
     Test Curate Data Structure Get All Except User Id With No Data
     """
@@ -140,9 +152,14 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(MongoIntegrationBaseTe
         result = curate_data_structure_api.get_all_except_user_id_with_no_data(
             user_id, mock_user
         )
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
         self.assertTrue(
-            all((item.user != self.fixture.data_structure_3.user) for item in result)
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
+        self.assertTrue(
+            all(
+                (item.user != self.fixture.data_structure_3.user)
+                for item in result
+            )
         )
         self.assertTrue(all((item.data is None) for item in result))
 
@@ -160,7 +177,9 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(MongoIntegrationBaseTe
                 user_id, mock_user
             )
 
-    def test_get_all_except_user_id_with_no_data_as_anonymous_user_raises_error(self):
+    def test_get_all_except_user_id_with_no_data_as_anonymous_user_raises_error(
+        self,
+    ):
         """
         test_get_all_except_user_id_with_no_data_as_anonymous_user_raises_error
 
@@ -181,7 +200,9 @@ class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
 
     fixture = fixture_data_structure
 
-    def test_delete_others_data_structure_as_superuser_deletes_data_structure(self):
+    def test_delete_others_data_structure_as_superuser_deletes_data_structure(
+        self,
+    ):
         """
         test_delete_others_data_structure_as_superuser_deletes_data_structure
 
@@ -190,7 +211,9 @@ class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
         """
         data_structure = self.fixture.data_structure_3
         mock_user = create_mock_user(
-            self.fixture.data_structure_1.user, is_staff=True, is_superuser=True
+            self.fixture.data_structure_1.user,
+            is_staff=True,
+            is_superuser=True,
         )
         curate_data_structure_api.delete(data_structure, mock_user)
 
@@ -229,7 +252,9 @@ class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
             curate_data_structure_api.delete(data_structure, AnonymousUser())
 
 
-class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureUpdateDataStructureRoot(
+    MongoIntegrationBaseTestCase
+):
     """
     Test Curate Data Structure Update Data Structure Root
     """
@@ -250,7 +275,9 @@ class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCas
             self.fixture.data_structure_3.user, self.fixture.data_structure_3
         )
         mock_user = create_mock_user(
-            self.fixture.data_structure_2.user, is_staff=True, is_superuser=True
+            self.fixture.data_structure_2.user,
+            is_staff=True,
+            is_superuser=True,
         )
         result = curate_data_structure_api.update_data_structure_root(
             data_structure, new_data_structure_element_root, mock_user
@@ -295,7 +322,9 @@ class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCas
                 data_structure, new_data_structure_element_root, mock_user
             )
 
-    def test_update_others_data_structure_root_as_anonymous_user_raises_error(self):
+    def test_update_others_data_structure_root_as_anonymous_user_raises_error(
+        self,
+    ):
         """
         test_update_others_data_structure_root_as_anonymous_user_raises_error
 
@@ -306,7 +335,9 @@ class TestCurateDataStructureUpdateDataStructureRoot(MongoIntegrationBaseTestCas
         new_data_structure_element_root = self.fixture.data_structure_2.id
         with self.assertRaises(AccessControlError):
             curate_data_structure_api.update_data_structure_root(
-                data_structure, new_data_structure_element_root, AnonymousUser()
+                data_structure,
+                new_data_structure_element_root,
+                AnonymousUser(),
             )
 
 
@@ -317,7 +348,9 @@ class TestCurateDataStructureCreateOrUpdate(MongoIntegrationBaseTestCase):
 
     fixture = fixture_data_structure
 
-    def test_upsert_others_data_structure_as_superuser_updates_data_structure(self):
+    def test_upsert_others_data_structure_as_superuser_updates_data_structure(
+        self,
+    ):
         """
         test_upsert_others_data_structure_as_superuser_updates_data_structure
 
@@ -327,7 +360,9 @@ class TestCurateDataStructureCreateOrUpdate(MongoIntegrationBaseTestCase):
         data_structure = self.fixture.data_structure_3
         data_structure.name = "new_name_3"
         mock_user = create_mock_user(
-            self.fixture.data_structure_1.user, is_staff=True, is_superuser=True
+            self.fixture.data_structure_1.user,
+            is_staff=True,
+            is_superuser=True,
         )
         result = curate_data_structure_api.upsert(data_structure, mock_user)
         self.assertTrue(isinstance(result, CurateDataStructure))
@@ -391,7 +426,9 @@ class TestCurateDataStructureGetAllWithNoData(MongoIntegrationBaseTestCase):
         """
         mock_user = create_mock_user("4", is_staff=True, is_superuser=True)
         result = curate_data_structure_api.get_all_with_no_data(mock_user)
-        self.assertTrue(all(isinstance(item, CurateDataStructure) for item in result))
+        self.assertTrue(
+            all(isinstance(item, CurateDataStructure) for item in result)
+        )
         self.assertTrue(len(result), 3)
 
     def test_get_all_with_no_data_as_user_raises_error(self):
@@ -432,7 +469,9 @@ class TestCurateDataStructureGetByDataId(MongoIntegrationBaseTestCase):
         """
 
         mock_user = create_mock_user(
-            self.fixture.data_structure_3.user, is_staff=True, is_superuser=True
+            self.fixture.data_structure_3.user,
+            is_staff=True,
+            is_superuser=True,
         )
         data_structure = curate_data_structure_api.get_by_data_id(
             self.fixture.data.id, mock_user
@@ -463,7 +502,9 @@ class TestCurateDataStructureGetByDataId(MongoIntegrationBaseTestCase):
         """
         mock_user = create_mock_user(self.fixture.data_structure_3.user)
         with self.assertRaises(AccessControlError):
-            curate_data_structure_api.get_by_data_id(self.fixture.data.id, mock_user)
+            curate_data_structure_api.get_by_data_id(
+                self.fixture.data.id, mock_user
+            )
 
     def test_get_by_data_id_as_anonymous_user_raises_error(self):
         """

@@ -39,8 +39,14 @@ class FormView(CommonView):
             # Set the assets
             assets = {
                 "js": [
-                    {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
-                    {"path": "core_main_app/user/js/data/detail.js", "is_raw": False},
+                    {
+                        "path": "core_main_app/common/js/XMLTree.js",
+                        "is_raw": False,
+                    },
+                    {
+                        "path": "core_main_app/user/js/data/detail.js",
+                        "is_raw": False,
+                    },
                 ],
                 "css": ["core_main_app/common/css/XMLTree.css"],
             }
@@ -64,8 +70,13 @@ class FormView(CommonView):
             }
             template = "core_main_app/common/commons/error.html"
             if self.administration:
-                template = "core_main_app/admin/commons/errors/errors_wrapper.html"
+                template = (
+                    "core_main_app/admin/commons/errors/errors_wrapper.html"
+                )
 
             return self.common_render(
-                request, template, context={"error": str(exception)}, assets=assets
+                request,
+                template,
+                context={"error": str(exception)},
+                assets=assets,
             )

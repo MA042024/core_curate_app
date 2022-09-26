@@ -31,7 +31,9 @@ import core_curate_app.components.curate_data_structure.api as curate_data_struc
 from core_curate_app.permissions import rights as rights
 import core_curate_app.views.user.forms as users_forms
 from core_curate_app.common.exceptions import CurateAjaxError
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 from core_curate_app.utils.parser import get_parser
 from core_curate_app.views.user.views import (
     generate_form,
@@ -212,7 +214,9 @@ def clear_fields(request):
             str(curate_data_structure.template.id), request=request
         )
         root_element = generate_form(
-            template.content, data_structure=curate_data_structure, request=request
+            template.content,
+            data_structure=curate_data_structure,
+            request=request,
         )
 
         # save the root element in the data structure
@@ -224,7 +228,8 @@ def clear_fields(request):
         xsd_form = render_form(request, root_element)
 
         return HttpResponse(
-            json.dumps({"xsdForm": xsd_form}), content_type="application/javascript"
+            json.dumps({"xsdForm": xsd_form}),
+            content_type="application/javascript",
         )
     except Exception as exception:
         return HttpResponseBadRequest(escape(str(exception)))
@@ -261,13 +266,16 @@ def cancel_changes(request):
             # no saved data, load new form
             xml_data = None
 
-        root_element = generate_root_element(request, curate_data_structure, xml_data)
+        root_element = generate_root_element(
+            request, curate_data_structure, xml_data
+        )
 
         # renders the form
         xsd_form = render_form(request, root_element)
 
         return HttpResponse(
-            json.dumps({"xsdForm": xsd_form}), content_type="application/javascript"
+            json.dumps({"xsdForm": xsd_form}),
+            content_type="application/javascript",
         )
     except Exception as exception:
         return HttpResponseBadRequest(escape(str(exception)))
@@ -295,7 +303,9 @@ def cancel_form(request):
         )
         # unlock from database
         if curate_data_structure.data is not None:
-            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+            lock_api.remove_lock_on_object(
+                curate_data_structure.data, request.user
+            )
         curate_data_structure_api.delete(curate_data_structure, request.user)
 
         # add success message
@@ -305,7 +315,9 @@ def cancel_form(request):
             get_form_label().capitalize() + " deleted with success.",
         )
 
-        return HttpResponse(json.dumps({}), content_type="application/javascript")
+        return HttpResponse(
+            json.dumps({}), content_type="application/javascript"
+        )
     except Exception as exception:
         return HttpResponseBadRequest(
             "An unexpected error has occured: %s",
@@ -348,7 +360,8 @@ def save_form(request):
 
         # add success message
         message = Message(
-            messages.SUCCESS, get_form_label().capitalize() + " saved with success."
+            messages.SUCCESS,
+            get_form_label().capitalize() + " saved with success.",
         )
 
         return HttpResponse(
@@ -400,9 +413,9 @@ def validate_form(request):
             response_dict["errors"] = errors
 
     except XMLSyntaxError as xml_syntax_error:
-        response_dict["errors"] = "Your XML data is not well formatted. " + str(
-            xml_syntax_error
-        )
+        response_dict[
+            "errors"
+        ] = "Your XML data is not well formatted. " + str(xml_syntax_error)
     except Exception as exception:
         message = (
             str(exception).replace('"', "'")
@@ -439,7 +452,9 @@ def save_data(request):
 
         # unlock from database
         if curate_data_structure.data is not None:
-            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+            lock_api.remove_lock_on_object(
+                curate_data_structure.data, request.user
+            )
 
         # generate the XML
         xml_data = render_xml(
@@ -473,11 +488,13 @@ def save_data(request):
         )
     except Exception as exception:
         return HttpResponseBadRequest(
-            str(exception).replace('"', "'"), content_type="application/javascript"
+            str(exception).replace('"', "'"),
+            content_type="application/javascript",
         )
 
     return HttpResponse(
-        json.dumps({"data_id": str(data.id)}), content_type="application/javascript"
+        json.dumps({"data_id": str(data.id)}),
+        content_type="application/javascript",
     )
 
 
@@ -507,7 +524,9 @@ def _start_curate_post(request):
             name=name,
         )
         curate_data_structure_api.upsert(curate_data_structure, request.user)
-        url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
+        url = reverse(
+            "core_curate_enter_data", args=(curate_data_structure.id,)
+        )
     elif selected_option == "upload":
         upload_form = users_forms.UploadForm(request.POST, request.FILES)
         if not upload_form.is_valid():
@@ -523,14 +542,19 @@ def _start_curate_post(request):
                 "An error occurred during the file upload: the file is "
                 "not well formed XML"
             )
-        if "direct_upload" in upload_form.data and upload_form.data["direct_upload"]:
+        if (
+            "direct_upload" in upload_form.data
+            and upload_form.data["direct_upload"]
+        ):
             # get template
             template = template_api.get_by_id(
                 template_id,
                 request=request,
             )
             # create data
-            data = Data(title=name, template=template, user_id=str(request.user.id))
+            data = Data(
+                title=name, template=template, user_id=str(request.user.id)
+            )
             # set content
             data.xml_content = xml_data
             # save data
@@ -548,15 +572,21 @@ def _start_curate_post(request):
                 name=name,
                 form_string=xml_data,
             )
-            curate_data_structure_api.upsert(curate_data_structure, request.user)
-            url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
+            curate_data_structure_api.upsert(
+                curate_data_structure, request.user
+            )
+            url = reverse(
+                "core_curate_enter_data", args=(curate_data_structure.id,)
+            )
     else:
         open_form = users_forms.OpenForm(request.POST)
         curate_data_structure = curate_data_structure_api.get_by_id(
             open_form.data["forms"], request.user
         )
 
-        url = reverse("core_curate_enter_data", args=(curate_data_structure.id,))
+        url = reverse(
+            "core_curate_enter_data", args=(curate_data_structure.id,)
+        )
     return HttpResponse(url)
 
 
@@ -572,7 +602,9 @@ def _start_curate_get(request):
     try:
         context_params = dict()
         template_id = request.GET["template_id"]
-        template = loader.get_template("core_curate_app/user/curate_start.html")
+        template = loader.get_template(
+            "core_curate_app/user/curate_start.html"
+        )
 
         open_form = users_forms.OpenForm(
             forms=curate_data_structure_api.get_all_by_user_id_and_template_id_with_no_data(

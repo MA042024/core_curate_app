@@ -2,8 +2,14 @@
 """
 from core_main_app.access_control.api import has_perm_administration
 from core_main_app.access_control.decorators import access_control
-from core_curate_app.access_control.api import can_read, can_write, can_change_owner
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.access_control.api import (
+    can_read,
+    can_write,
+    can_change_owner,
+)
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 
 
 @access_control(can_write)
@@ -64,7 +70,9 @@ def get_all_by_user_id_and_template_id(user_id, template_id):
     Returns:
 
     """
-    return CurateDataStructure.get_all_by_user_id_and_template_id(user_id, template_id)
+    return CurateDataStructure.get_all_by_user_id_and_template_id(
+        user_id, template_id
+    )
 
 
 def get_by_user_id_and_template_id_and_name(user_id, template_id, name):

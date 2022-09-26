@@ -38,4 +38,6 @@ def init_permissions():
         )
 
     except Exception as exception:
-        logger.error("Impossible to init curate permissions: %s", str(exception))
+        logger.error(
+            "Impossible to init curate permissions: %s", str(exception)
+        )

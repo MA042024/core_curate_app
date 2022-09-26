@@ -4,7 +4,9 @@ import logging
 
 from django.contrib.auth.models import User, AnonymousUser
 from core_main_app.access_control.exceptions import AccessControlError
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +92,9 @@ def can_write(func, *args, **kwargs):
     if user.is_superuser:
         return func(*args, **kwargs)
 
-    document = next((arg for arg in args if isinstance(arg, CurateDataStructure)), None)
+    document = next(
+        (arg for arg in args if isinstance(arg, CurateDataStructure)), None
+    )
     if document.user != str(user.id):
         raise AccessControlError(
             "The user doesn't have enough rights to access this document."

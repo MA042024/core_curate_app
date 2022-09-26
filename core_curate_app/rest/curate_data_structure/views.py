@@ -11,8 +11,12 @@ from rest_framework.views import APIView
 
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons import exceptions
-from core_curate_app.components.curate_data_structure import api as data_structure_api
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure import (
+    api as data_structure_api,
+)
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 from core_curate_app.rest.curate_data_structure.admin_serializers import (
     CurateDataStructureAdminSerializer,
 )
@@ -59,7 +63,9 @@ class AdminCurateDataStructureList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def post(self, request):
         """Create a Curate Data Structure
@@ -117,7 +123,9 @@ class AdminCurateDataStructureList(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class CurateDataStructureList(APIView):
@@ -153,7 +161,9 @@ class CurateDataStructureList(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def post(self, request):
         """Create a Curate Data Structure
@@ -205,7 +215,9 @@ class CurateDataStructureList(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class CurateDataStructureDetail(APIView):
@@ -265,7 +277,9 @@ class CurateDataStructureDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def delete(self, request, pk):
         """Delete a Curate Data Structure
@@ -301,7 +315,9 @@ class CurateDataStructureDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def patch(self, request, pk):
         """Update a  Curate Data Structure
@@ -360,4 +376,6 @@ class CurateDataStructureDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

@@ -7,7 +7,9 @@ from rest_framework import status
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 import core_curate_app.components.curate_data_structure.api as data_structure_api
-from core_curate_app.components.curate_data_structure.models import CurateDataStructure
+from core_curate_app.components.curate_data_structure.models import (
+    CurateDataStructure,
+)
 from core_curate_app.rest.curate_data_structure import (
     views as data_structure_rest_views,
 )
@@ -31,7 +33,8 @@ class TestDataStructureListAdminPostPermissions(SimpleTestCase):
         """
 
         response = RequestMock.do_request_post(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), None
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            None,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -46,7 +49,8 @@ class TestDataStructureListAdminPostPermissions(SimpleTestCase):
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_post(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -61,7 +65,8 @@ class TestDataStructureListAdminPostPermissions(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True)
 
         response = RequestMock.do_request_post(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -88,7 +93,8 @@ class TestDataStructureListAdminPostPermissions(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True, is_superuser=True)
 
         response = RequestMock.do_request_post(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -107,7 +113,8 @@ class TestDataStructureListAdminGetPermissions(SimpleTestCase):
 
         """
         response = RequestMock.do_request_get(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), None
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            None,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -122,7 +129,8 @@ class TestDataStructureListAdminGetPermissions(SimpleTestCase):
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -137,7 +145,8 @@ class TestDataStructureListAdminGetPermissions(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True)
 
         response = RequestMock.do_request_get(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -154,7 +163,8 @@ class TestDataStructureListAdminGetPermissions(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True, is_superuser=True)
 
         response = RequestMock.do_request_get(
-            data_structure_rest_views.AdminCurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.AdminCurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -190,7 +200,8 @@ class TestDataStructureListGetPermissions(SimpleTestCase):
         mock_user = create_mock_user("1")
 
         response = RequestMock.do_request_get(
-            data_structure_rest_views.CurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -207,7 +218,8 @@ class TestDataStructureListGetPermissions(SimpleTestCase):
         mock_user = create_mock_user("1", is_staff=True, is_superuser=True)
 
         response = RequestMock.do_request_get(
-            data_structure_rest_views.CurateDataStructureList.as_view(), mock_user
+            data_structure_rest_views.CurateDataStructureList.as_view(),
+            mock_user,
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
