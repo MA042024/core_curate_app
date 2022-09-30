@@ -100,7 +100,7 @@ class AdminCurateDataStructureList(APIView):
             )
 
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
 
@@ -191,7 +191,7 @@ class CurateDataStructureList(APIView):
             )
 
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
 
@@ -344,7 +344,7 @@ class CurateDataStructureDetail(APIView):
             )
 
             # Validate data
-            serializer.is_valid(True)
+            serializer.is_valid(raise_exception=True)
             # Save data
             serializer.save()
 
