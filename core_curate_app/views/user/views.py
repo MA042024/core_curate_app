@@ -93,6 +93,9 @@ def index(request):
         "userTemplates": user_active_template_list,
     }
 
+    # Set page title
+    context.update({"page_title": "Curate"})
+
     return render(
         request,
         "core_curate_app/user/curate.html",
@@ -259,13 +262,18 @@ class EnterDataView(View):
                     curate_data_structure, request.user
                 )
 
+            # Build context
+            context = self.build_context(
+                request, curate_data_structure, reload_unsaved_changes
+            )
+            # Set page title
+            context.update({"page_title": "Enter Data"})
+
             return render(
                 request,
                 "core_curate_app/user/data-entry/enter_data.html",
                 assets=self.assets,
-                context=self.build_context(
-                    request, curate_data_structure, reload_unsaved_changes
-                ),
+                context=context,
                 modals=self.modals,
             )
         except (LockError, AccessControlError, ModelError, DoesNotExist) as ex:
@@ -273,7 +281,7 @@ class EnterDataView(View):
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(ex)},
+                context={"errors": str(ex), "page_title": "Error"},
             )
         except Exception as exception:
             try:
@@ -295,7 +303,7 @@ class EnterDataView(View):
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(exception)},
+                context={"errors": str(exception), "page_title": "Error"},
             )
 
 
@@ -404,11 +412,16 @@ class ViewDataView(View):
                     "core_file_preview_app/user/file_preview_modal.html"
                 )
 
+            # Build Context
+            context = self.build_context(request, curate_data_structure)
+            # Set page title
+            context.update({"page_title": "View Data"})
+
             return render(
                 request,
                 "core_curate_app/user/data-review/view_data.html",
                 assets=self.assets,
-                context=self.build_context(request, curate_data_structure),
+                context=context,
                 modals=self.modals,
             )
         except Exception as exception:
@@ -416,7 +429,7 @@ class ViewDataView(View):
                 request,
                 "core_curate_app/user/errors.html",
                 assets={},
-                context={"errors": str(exception)},
+                context={"errors": str(exception), "page_title": "Error"},
             )
 
 

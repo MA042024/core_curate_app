@@ -3,8 +3,8 @@
 """
 from django.utils.translation import ugettext as _
 
-from core_main_app.views.common.views import CommonView
 from core_curate_app.views.user.views import _get_curate_data_structure_by_id
+from core_main_app.views.common.views import CommonView
 
 
 class FormView(CommonView):
@@ -54,6 +54,7 @@ class FormView(CommonView):
             # Set the context
             context = {
                 "data_structure": curate_data_structure,
+                "page_title": "View Form",
             }
 
             return self.common_render(
@@ -77,6 +78,6 @@ class FormView(CommonView):
             return self.common_render(
                 request,
                 template,
-                context={"error": str(exception)},
+                context={"error": str(exception), "page_title": "Error"},
                 assets=assets,
             )
