@@ -524,9 +524,7 @@ def _start_curate_post(request):
             name=name,
         )
         curate_data_structure_api.upsert(curate_data_structure, request.user)
-        url = reverse(
-            "core_curate_enter_data", args=(curate_data_structure.id,)
-        )
+        url = _get_reverse_url(new_form, curate_data_structure.id)
     elif selected_option == "upload":
         upload_form = users_forms.UploadForm(request.POST, request.FILES)
         if not upload_form.is_valid():
@@ -575,19 +573,36 @@ def _start_curate_post(request):
             curate_data_structure_api.upsert(
                 curate_data_structure, request.user
             )
-            url = reverse(
-                "core_curate_enter_data", args=(curate_data_structure.id,)
-            )
+            url = _get_reverse_url(upload_form, curate_data_structure.id)
     else:
         open_form = users_forms.OpenForm(request.POST)
         curate_data_structure = curate_data_structure_api.get_by_id(
             open_form.data["forms"], request.user
         )
-
-        url = reverse(
-            "core_curate_enter_data", args=(curate_data_structure.id,)
-        )
+        url = _get_reverse_url(open_form, curate_data_structure.id)
     return HttpResponse(url)
+
+
+def _get_reverse_url(form, curate_data_structure_id):
+    """get reverse url.
+
+    Args:
+        form:
+        curate_data_structure_id
+
+    Returns:
+        url:
+    """
+    if "text_editor" in form.data:
+        url = (
+            reverse("core_curate_app_xml_text_editor_view")
+            + f"?id={str(curate_data_structure_id)}"
+        )
+    else:
+        url = reverse(
+            "core_curate_enter_data", args=(curate_data_structure_id,)
+        )
+    return url
 
 
 def _start_curate_get(request):

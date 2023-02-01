@@ -121,6 +121,7 @@ displayTemplateProcess = function (iconSelector)
                 }
                 // uncheck direct upload checkbox
                 $("#id_direct_upload").prop("checked", false);
+                $("#id_text_editor").prop("checked", false);
             },
        })
 
@@ -196,10 +197,17 @@ syncRadioButtons =function()
 */
 initSaveButton = function(){
     $("#id_direct_upload").prop("checked", false);
+    $("#id_text_editor").prop("checked", false);
     $("#btn-save-data").on("click", function(){
         // check hidden direct upload checkbox
         $("#id_direct_upload").prop("checked", true);
         // start regular form processing
         displayTemplateProcess($("#btn-save-data > i"));
+    });
+    $("#btn-open-data").on("click", function(){
+        // check hidden text editor checkbox
+        $("#id_text_editor").prop("checked", true);
+        // start regular form processing
+        displayTemplateProcess($("#btn-open-data > i"));
     });
 }

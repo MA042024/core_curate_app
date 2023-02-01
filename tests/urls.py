@@ -2,6 +2,7 @@
 """
 from django.conf.urls import include
 from django.urls import re_path, reverse_lazy
+from django.contrib.auth.decorators import login_required
 from core_main_app.utils.decorators import permission_required
 from core_curate_app.permissions import rights
 import core_curate_app.views.user.ajax as user_ajax
@@ -71,11 +72,10 @@ urlpatterns = [
     ),
     re_path(
         r"^xml-editor/form",
-        permission_required(
-            content_type=rights.CURATE_CONTENT_TYPE,
-            permission=rights.CURATE_DATA_STRUCTURE_ACCESS,
+        login_required(
+            common_views.DraftContentEditor.as_view(),
             login_url=reverse_lazy("core_main_app_login"),
-        )(common_views.DraftContentEditor.as_view()),
+        ),
         name="core_curate_app_xml_text_editor_view",
     ),
     re_path(r"^save-form$", user_ajax.save_form, name="core_curate_save_form"),
@@ -95,4 +95,5 @@ urlpatterns = [
         name="core_curate_view_form",
     ),
     re_path(r"^rest/", include("core_curate_app.rest.urls")),
+    re_path(r"^tz_detect/", include("tz_detect.urls")),
 ]

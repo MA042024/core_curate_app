@@ -63,6 +63,11 @@ class UploadForm(forms.Form):
         widget=forms.CheckboxInput(attrs={"hidden": "true"}),
         required=False,
     )
+    text_editor = forms.BooleanField(
+        label="",
+        widget=forms.CheckboxInput(attrs={"hidden": "true"}),
+        required=False,
+    )
 
 
 class CancelChangesForm(forms.Form):

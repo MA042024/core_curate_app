@@ -11,6 +11,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.sites",
+    # Extra apps
+    "tz_detect",
     # Local apps
     "tests",
     "core_main_app",
@@ -34,6 +36,7 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "tz_detect.middleware.TimezoneMiddleware",
 )
 
 TEMPLATES = [
@@ -53,7 +56,7 @@ TEMPLATES = [
     },
 ]
 
-ROOT_URLCONF = "core_curate_app.urls"
+ROOT_URLCONF = "tests.urls"
 LOGIN_URL = "/login"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -61,3 +64,4 @@ CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 MONGODB_INDEXING = False
 MONGODB_ASYNC_SAVE = False
+USE_TZ = True

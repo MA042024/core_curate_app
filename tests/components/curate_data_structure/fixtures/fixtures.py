@@ -5,6 +5,7 @@ from core_main_app.components.template.models import Template
 from core_main_app.utils.integration_tests.fixture_interface import (
     FixtureInterface,
 )
+from django.core.files.uploadedfile import SimpleUploadedFile
 from core_curate_app.components.curate_data_structure.models import (
     CurateDataStructure,
 )
@@ -82,6 +83,10 @@ class DataStructureFixtures(FixtureInterface):
             '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">'
             '<xs:element name="tag"></xs:element></xs:schema>'
         )
+        self.template.file = SimpleUploadedFile(
+            "user1_template.xsd", xsd.encode("utf-8")
+        )
+        self.template.user = "1"
         self.template.content = xsd
         self.template.hash = ""
         self.template.filename = "filename"
