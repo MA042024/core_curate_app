@@ -113,6 +113,7 @@ class DraftContentEditor(XmlEditor):
         """
 
         try:
+
             data_structure = data_structure_api.get_by_id(
                 request.GET["id"], request.user
             )
