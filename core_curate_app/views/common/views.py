@@ -9,6 +9,7 @@ from django.http import (
 )
 import json
 from django.utils.html import escape as html_escape
+from django.urls import reverse
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons.exceptions import DoesNotExist
 from core_curate_app.components.curate_data_structure import (
@@ -21,7 +22,7 @@ from core_main_app.components.data.models import Data
 from core_main_app.components.template import api as template_api
 from core_main_app.components.data import api as data_api
 from django.contrib import messages
-from core_main_app.utils.labels import get_data_label, get_form_label
+from core_main_app.utils.labels import get_data_label
 
 
 class FormView(CommonView):
@@ -117,7 +118,7 @@ class DraftContentEditor(XmlEditor):
             data_structure = data_structure_api.get_by_id(
                 request.GET["id"], request.user
             )
-            context = self._get_context(
+            context = self.get_context(
                 data_structure, data_structure.name, data_structure.form_string
             )
             assets = self._get_assets()
@@ -193,12 +194,8 @@ class DraftContentEditor(XmlEditor):
                 messages.SUCCESS,
                 get_data_label() + " saved with success.",
             )
-            response = {
-                "data_id": str(data.id),
-                "message": get_form_label() + " deleted with success.",
-            }
             return HttpResponse(
-                json.dumps(response),
+                json.dumps({"url": reverse(self.save_redirect)}),
                 "application/javascript",
             )
         except AccessControlError as ace:
