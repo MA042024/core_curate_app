@@ -10,30 +10,15 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
-from core_main_app.components.data import api as data_api
-from core_main_app.components.data.models import Data
-from core_main_app.components.lock import api as lock_api
-from core_main_app.components.template import api as template_api
-from core_main_app.utils.labels import get_data_label, get_form_label
-from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
-from core_main_app.utils import decorators
-from core_main_app.views.common.views import read_xsd_file
 
-from core_parser_app.components.data_structure_element import (
-    api as data_structure_element_api,
-)
-from core_parser_app.tools.parser.parser import remove_child_element
-from core_parser_app.tools.parser.renderer.list import ListRenderer
-from xml_utils.xsd_tree.xsd_tree import XSDTree
-
-from core_curate_app.common import exceptions as exceptions
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
-from core_curate_app.permissions import rights as rights
 import core_curate_app.views.user.forms as users_forms
+from core_curate_app.common import exceptions as exceptions
 from core_curate_app.common.exceptions import CurateAjaxError
 from core_curate_app.components.curate_data_structure.models import (
     CurateDataStructure,
 )
+from core_curate_app.permissions import rights as rights
 from core_curate_app.utils.parser import get_parser
 from core_curate_app.views.user.views import (
     generate_form,
@@ -41,6 +26,20 @@ from core_curate_app.views.user.views import (
     render_xml,
     generate_root_element,
 )
+from core_main_app.components.data import api as data_api
+from core_main_app.components.data.models import Data
+from core_main_app.components.lock import api as lock_api
+from core_main_app.components.template import api as template_api
+from core_main_app.utils import decorators
+from core_main_app.utils.labels import get_data_label, get_form_label
+from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
+from core_main_app.views.common.views import read_xsd_file
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
+from core_parser_app.tools.parser.parser import remove_child_element
+from core_parser_app.tools.parser.renderer.list import ListRenderer
+from xml_utils.xsd_tree.xsd_tree import XSDTree
 
 logger = logging.getLogger(__name__)
 
@@ -529,7 +528,7 @@ def _start_curate_post(request):
         upload_form = users_forms.UploadForm(request.POST, request.FILES)
         if not upload_form.is_valid():
             raise CurateAjaxError(
-                "An error occurred during the validation " + get_form_label()
+                f"An error occurred during the file upload: {upload_form.errors.as_text()}"
             )
         xml_file = request.FILES["file"]
         xml_data = read_xsd_file(xml_file)

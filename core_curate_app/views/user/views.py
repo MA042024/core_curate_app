@@ -4,7 +4,9 @@ import logging
 from builtins import any
 from typing import Dict, List
 
-from django.urls import reverse_lazy
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -28,6 +30,7 @@ from core_main_app.utils.xml import format_content_xml
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
+from core_parser_app.tools.parser.exceptions import ParserError
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
@@ -254,14 +257,6 @@ class EnterDataView(View):
                     curate_data_structure.data, request.user
                 )
 
-            # Check if we need to change the user. Code executed only if the
-            # data is unlocked. set_lock_object() raises LockError.
-            if str(request.user.id) != curate_data_structure.user:
-                curate_data_structure.user = str(request.user.id)
-                curate_data_structure = curate_data_structure_api.upsert(
-                    curate_data_structure, request.user
-                )
-
             # Build context
             context = self.build_context(
                 request, curate_data_structure, reload_unsaved_changes
@@ -283,6 +278,17 @@ class EnterDataView(View):
                 assets={},
                 context={"errors": str(ex), "page_title": "Error"},
             )
+        except ParserError as parser_exception:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                str(parser_exception),
+            )
+            url = (
+                reverse("core_curate_app_xml_text_editor_view")
+                + f"?id={str(curate_data_structure_id)}"
+            )
+            return HttpResponseRedirect(url)
         except Exception as exception:
             try:
                 # Unlock from database

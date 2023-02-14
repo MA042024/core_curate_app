@@ -1,8 +1,11 @@
 """ User curate forms
 """
 from django import forms
+
+from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
 from core_main_app.utils.labels import get_form_label
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
+from django.core.exceptions import ValidationError
 
 
 class NewForm(forms.Form):
@@ -49,6 +52,21 @@ class OpenForm(forms.Form):
         self.fields["forms"].queryset = queryset
 
 
+def _file_size_validator(value):
+    """Check size of uploaded file
+
+    Args:
+        value:
+
+    Returns:
+
+    """
+    if value.size > MAX_DOCUMENT_EDITING_SIZE:
+        raise ValidationError(
+            "The file is too large (MAX_DOCUMENT_EDITING_SIZE)."
+        )
+
+
 class UploadForm(forms.Form):
     """Form to start curating from a file."""
 
@@ -57,6 +75,7 @@ class UploadForm(forms.Form):
         widget=forms.FileInput(
             attrs={"class": "form-control", "accept": ".xml"}
         ),
+        validators=[_file_size_validator],
     )
     direct_upload = forms.BooleanField(
         label="",

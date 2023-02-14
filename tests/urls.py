@@ -8,7 +8,7 @@ from core_curate_app.permissions import rights
 import core_curate_app.views.user.ajax as user_ajax
 import core_curate_app.views.user.views as user_views
 from core_curate_app.views.common import views as common_views
-
+from core_main_app.views.user import views as main_user_views
 
 urlpatterns = [
     re_path(r"^$", user_views.index, name="core_curate_index"),
@@ -99,4 +99,7 @@ urlpatterns = [
     ),
     re_path(r"^rest/", include("core_curate_app.rest.urls")),
     re_path(r"^tz_detect/", include("tz_detect.urls")),
+    re_path(
+        r"^login", main_user_views.custom_login, name="core_main_app_login"
+    ),
 ]

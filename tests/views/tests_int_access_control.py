@@ -1,21 +1,20 @@
 """ Test access to views
 """
+
 from django.contrib.auth.models import AnonymousUser
-from django.test import RequestFactory
-
-from core_curate_app.views.common.views import DraftContentEditor
-
-from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
-)
 from django.contrib.messages.storage.fallback import FallbackStorage
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import RequestFactory
 from tests.components.curate_data_structure.fixtures.fixtures import (
     DataStructureFixtures,
 )
-from django.core.files.uploadedfile import SimpleUploadedFile
+
+from core_curate_app.views.common.views import DraftContentEditor
 from core_curate_app.views.user import ajax as curate_ajax
+from core_main_app.utils.integration_tests.integration_base_test_case import (
+    MongoIntegrationBaseTestCase,
+)
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 fixture_data_structure = DataStructureFixtures()
 

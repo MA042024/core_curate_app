@@ -1,28 +1,35 @@
 """
     Common views
 """
-from django.utils.translation import ugettext as _
+import json
+
+from django.contrib import messages
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
     HttpResponse,
 )
-import json
-from django.utils.html import escape as html_escape
 from django.urls import reverse
-from core_main_app.access_control.exceptions import AccessControlError
-from core_main_app.commons.exceptions import DoesNotExist
+from django.utils.html import escape as html_escape
+from django.utils.translation import ugettext as _
+
 from core_curate_app.components.curate_data_structure import (
     api as data_structure_api,
 )
 from core_curate_app.views.user.views import _get_curate_data_structure_by_id
-from core_main_app.views.common.views import CommonView, XmlEditor
-from core_main_app.utils.rendering import render
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons.exceptions import (
+    DoesNotExist,
+    DocumentEditingSizeError,
+)
+from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.template import api as template_api
-from core_main_app.components.data import api as data_api
-from django.contrib import messages
+from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
+from core_main_app.utils import file as main_file_utils
 from core_main_app.utils.labels import get_data_label
+from core_main_app.utils.rendering import render
+from core_main_app.views.common.views import CommonView, XmlEditor
 
 
 class FormView(CommonView):
@@ -118,6 +125,15 @@ class DraftContentEditor(XmlEditor):
             data_structure = data_structure_api.get_by_id(
                 request.GET["id"], request.user
             )
+            if (
+                main_file_utils.get_byte_size_from_string(
+                    data_structure.form_string
+                )
+                > MAX_DOCUMENT_EDITING_SIZE
+            ):
+                raise DocumentEditingSizeError(
+                    "The file is too large (MAX_DOCUMENT_EDITING_SIZE)."
+                )
             context = self.get_context(
                 data_structure, data_structure.name, data_structure.form_string
             )
