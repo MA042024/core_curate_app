@@ -160,6 +160,7 @@ validateStartCurate = function(){
 	if (errors != ""){
 		$("#form_start_errors").html(errors);
 		$("#banner_errors").show(500)
+		$("#id_text_editor").prop("checked", false);
 		return (false);
 	}else{
 	    // FIXME: temp fix for safari support
