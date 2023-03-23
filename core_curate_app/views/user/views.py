@@ -6,34 +6,12 @@ from typing import Dict, List
 
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.components.template.api as template_api
-from core_main_app.components.lock import api as lock_api
-from core_main_app.utils import decorators
-from core_main_app.commons.exceptions import (
-    LockError,
-    ModelError,
-    DoesNotExist,
-)
-from core_main_app.access_control.exceptions import AccessControlError
-from core_main_app.access_control.api import check_can_write
-
-from core_main_app.utils.file import get_file_http_response
-from core_main_app.utils.labels import get_form_label
-from core_main_app.utils.rendering import render
-from core_main_app.utils.boolean import to_bool
-from core_main_app.utils.xml import format_content_xml
-from core_parser_app.components.data_structure_element import (
-    api as data_structure_element_api,
-)
-from core_parser_app.tools.parser.exceptions import ParserError
-from core_parser_app.tools.parser.renderer.list import ListRenderer
-from core_parser_app.tools.parser.renderer.xml import XmlRenderer
-
+import core_main_app.components.template_version_manager.api as template_version_manager_api
 from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
@@ -43,6 +21,26 @@ from core_curate_app.settings import (
     ENABLE_XML_ENTITIES_TOOLTIPS,
 )
 from core_curate_app.utils.parser import get_parser
+from core_main_app.access_control.api import check_can_write
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons.exceptions import (
+    LockError,
+    ModelError,
+    DoesNotExist,
+)
+from core_main_app.components.lock import api as lock_api
+from core_main_app.utils import decorators
+from core_main_app.utils.boolean import to_bool
+from core_main_app.utils.file import get_file_http_response
+from core_main_app.utils.labels import get_form_label
+from core_main_app.utils.rendering import render
+from core_main_app.utils.xml import format_content_xml
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
+from core_parser_app.tools.parser.exceptions import ParserError
+from core_parser_app.tools.parser.renderer.list import ListRenderer
+from core_parser_app.tools.parser.renderer.xml import XmlRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +50,6 @@ logger = logging.getLogger(__name__)
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
-    login_url=reverse_lazy("core_main_app_login"),
 )
 def index(request):
     """Page that allows to select a template to start curating.
@@ -227,7 +224,6 @@ class EnterDataView(View):
         decorators.permission_required(
             content_type=rights.CURATE_CONTENT_TYPE,
             permission=rights.CURATE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(
@@ -384,7 +380,6 @@ class ViewDataView(View):
         decorators.permission_required(
             content_type=rights.CURATE_CONTENT_TYPE,
             permission=rights.CURATE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, curate_data_structure_id):
@@ -442,7 +437,6 @@ class ViewDataView(View):
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
-    login_url=reverse_lazy("core_main_app_login"),
 )
 def download_current_xml(request, curate_data_structure_id):
     """Make the current XML document available for download.
@@ -483,7 +477,6 @@ def download_current_xml(request, curate_data_structure_id):
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
-    login_url=reverse_lazy("core_main_app_login"),
 )
 def download_xsd(request, curate_data_structure_id):
     """Make the current XSD available for download.

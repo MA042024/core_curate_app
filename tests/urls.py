@@ -1,13 +1,14 @@
 """ Url router for the curate application
 """
 from django.conf.urls import include
-from django.urls import re_path, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from core_main_app.utils.decorators import permission_required
-from core_curate_app.permissions import rights
+from django.urls import re_path
+
 import core_curate_app.views.user.ajax as user_ajax
 import core_curate_app.views.user.views as user_views
+from core_curate_app.permissions import rights
 from core_curate_app.views.common import views as common_views
+from core_main_app.utils.decorators import permission_required
 from core_main_app.views.user import views as main_user_views
 
 urlpatterns = [
@@ -74,7 +75,6 @@ urlpatterns = [
         r"^xml-editor/form",
         login_required(
             common_views.DraftContentEditor.as_view(),
-            login_url=reverse_lazy("core_main_app_login"),
         ),
         name="core_curate_app_xml_text_editor_view",
     ),
@@ -93,7 +93,6 @@ urlpatterns = [
         permission_required(
             content_type=rights.CURATE_CONTENT_TYPE,
             permission=rights.CURATE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )(common_views.FormView.as_view()),
         name="core_curate_view_form",
     ),
