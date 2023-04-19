@@ -3,7 +3,7 @@
 
 from rest_framework import status
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -19,7 +19,7 @@ from core_curate_app.rest.curate_data_structure import (
 fixture_data_structure = DataStructureFixtures()
 
 
-class TestDataStructureListAdmin(MongoIntegrationBaseTestCase):
+class TestDataStructureListAdmin(IntegrationBaseTestCase):
     """
     Test Data Structure List Admin
     """
@@ -118,7 +118,7 @@ class TestDataStructureListAdmin(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class TestDataStructureList(MongoIntegrationBaseTestCase):
+class TestDataStructureList(IntegrationBaseTestCase):
     """
     Test Data Structure List
     """
@@ -233,7 +233,7 @@ class TestDataStructureList(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class TestDataStructureDetail(MongoIntegrationBaseTestCase):
+class TestDataStructureDetail(IntegrationBaseTestCase):
     """
     Test Data Structure Detail
     """

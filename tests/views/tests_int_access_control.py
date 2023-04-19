@@ -12,14 +12,14 @@ from tests.components.curate_data_structure.fixtures.fixtures import (
 from core_curate_app.views.common.views import DraftContentEditor
 from core_curate_app.views.user import ajax as curate_ajax
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
 fixture_data_structure = DataStructureFixtures()
 
 
-class TestDraftContentEditorView(MongoIntegrationBaseTestCase):
+class TestDraftContentEditorView(IntegrationBaseTestCase):
     """Test Draft Content Editor View"""
 
     def setUp(self):
@@ -176,7 +176,7 @@ class TestDraftContentEditorView(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class TestStartCuratePost(MongoIntegrationBaseTestCase):
+class TestStartCuratePost(IntegrationBaseTestCase):
     """Test Start Curate Post"""
 
     def setUp(self):

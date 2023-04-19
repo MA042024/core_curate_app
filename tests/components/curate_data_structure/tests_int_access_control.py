@@ -3,7 +3,7 @@
 from django.contrib.auth.models import AnonymousUser
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_parser_app.components.data_structure.models import (
@@ -22,7 +22,7 @@ from tests.components.curate_data_structure.fixtures.fixtures import (
 fixture_data_structure = DataStructureFixtures()
 
 
-class TestCurateDataStructureGetById(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureGetById(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Get ById
     """
@@ -87,7 +87,7 @@ class TestCurateDataStructureGetById(MongoIntegrationBaseTestCase):
             )
 
 
-class TestCurateDataStructureGetAll(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureGetAll(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Get All
     """
@@ -130,7 +130,7 @@ class TestCurateDataStructureGetAll(MongoIntegrationBaseTestCase):
 
 
 class TestCurateDataStructureGetAllExceptUserIdWithNoData(
-    MongoIntegrationBaseTestCase
+    IntegrationBaseTestCase
 ):
     """
     Test Curate Data Structure Get All Except User Id With No Data
@@ -193,7 +193,7 @@ class TestCurateDataStructureGetAllExceptUserIdWithNoData(
             )
 
 
-class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureDelete(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Delete
     """
@@ -252,9 +252,7 @@ class TestCurateDataStructureDelete(MongoIntegrationBaseTestCase):
             curate_data_structure_api.delete(data_structure, AnonymousUser())
 
 
-class TestCurateDataStructureUpdateDataStructureRoot(
-    MongoIntegrationBaseTestCase
-):
+class TestCurateDataStructureUpdateDataStructureRoot(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Update Data Structure Root
     """
@@ -341,7 +339,7 @@ class TestCurateDataStructureUpdateDataStructureRoot(
             )
 
 
-class TestCurateDataStructureCreateOrUpdate(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureCreateOrUpdate(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Create Or Update
     """
@@ -408,7 +406,7 @@ class TestCurateDataStructureCreateOrUpdate(MongoIntegrationBaseTestCase):
             curate_data_structure_api.upsert(data_structure, AnonymousUser())
 
 
-class TestCurateDataStructureGetAllWithNoData(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureGetAllWithNoData(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Get All With No Data
     """
@@ -453,7 +451,7 @@ class TestCurateDataStructureGetAllWithNoData(MongoIntegrationBaseTestCase):
             curate_data_structure_api.get_all_with_no_data(AnonymousUser())
 
 
-class TestCurateDataStructureGetByDataId(MongoIntegrationBaseTestCase):
+class TestCurateDataStructureGetByDataId(IntegrationBaseTestCase):
     """
     Test Curate Data Structure Get ById
     """
@@ -519,7 +517,7 @@ class TestCurateDataStructureGetByDataId(MongoIntegrationBaseTestCase):
             )
 
 
-class TestDataStructureChangeOwner(MongoIntegrationBaseTestCase):
+class TestDataStructureChangeOwner(IntegrationBaseTestCase):
     """
     Test Data Structure Change Owner
     """
