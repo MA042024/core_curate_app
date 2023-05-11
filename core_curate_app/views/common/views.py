@@ -125,6 +125,7 @@ class DraftContentEditor(XmlEditor):
             data_structure = data_structure_api.get_by_id(
                 request.GET["id"], request.user
             )
+
             if (
                 main_file_utils.get_byte_size_from_string(
                     data_structure.form_string
@@ -189,20 +190,22 @@ class DraftContentEditor(XmlEditor):
             data_structure = data_structure_api.get_by_id(
                 data_structure_id, self.request.user
             )
-
-            # create new data
-            data = Data()
-            data.title = data_structure.name
-            template = template_api.get_by_id(
-                str(data_structure.template.id), request=self.request
-            )
-            data.template = template
-            data.user_id = str(self.request.user.id)
+            if data_structure.data is not None:
+                data = data_structure.data
+            else:
+                # create new data
+                data = Data()
+                data.title = data_structure.name
+                template = template_api.get_by_id(
+                    str(data_structure.template.id), request=self.request
+                )
+                data.template = template
+                data.user_id = str(self.request.user.id)
 
             # set content
             data.xml_content = content
             # save data
-            data = data_api.upsert(data, self.request)
+            data_api.upsert(data, self.request)
 
             data_structure_api.delete(data_structure, self.request.user)
             messages.add_message(

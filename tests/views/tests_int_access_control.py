@@ -97,8 +97,44 @@ class TestDraftContentEditorView(IntegrationBaseTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_user_can_access_to_data_draft_if_owner(self):
+        """test_user_can_access_to_data_draft_if_owner
+
+        Returns:
+
+        """
+        request = self.factory.get("core_curate_app_xml_text_editor_view")
+        request.GET = {"data_id": str(self.fixture.data.id)}
+        request.user = self.user1
+        response = DraftContentEditor.as_view()(
+            request,
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_user_can_save_xml_content(self):
         """test_user_can_save_xml_content
+
+        Returns:
+
+        """
+        data = {
+            "content": "<tag></tag>",
+            "action": "save",
+            "document_id": str(self.fixture.data_structure_2.id),
+            "id": str(self.fixture.data_structure_2.id),
+        }
+        request = self.factory.post(
+            "core_curate_app_xml_text_editor_view", data
+        )
+        setattr(request, "session", "session")
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+        request.user = self.user1
+        response = DraftContentEditor.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_can_save_data_draft_xml_content(self):
+        """test_user_can_save_data_draft_xml_content
 
         Returns:
 
