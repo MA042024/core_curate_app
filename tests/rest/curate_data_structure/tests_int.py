@@ -10,6 +10,7 @@ from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from tests.components.curate_data_structure.fixtures.fixtures import (
     DataStructureFixtures,
+    DataStructureFixtures2,
 )
 from core_curate_app.rest.curate_data_structure import (
     views as data_structure_rest_views,
@@ -17,6 +18,7 @@ from core_curate_app.rest.curate_data_structure import (
 
 
 fixture_data_structure = DataStructureFixtures()
+fixture_data_structure2 = DataStructureFixtures2()
 
 
 class TestDataStructureListAdmin(IntegrationBaseTestCase):

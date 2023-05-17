@@ -169,17 +169,20 @@ class CurateDataStructure(DataStructure):
         return CurateDataStructure.objects.filter(user=str(user_id)).all()
 
     @staticmethod
-    def get_by_data_id(data_id):
-        """Return the curate data structure with the given data id
+    def get_by_data_id_and_user(data_id, user_id):
+        """Return the curate data structure with the given data id and user
 
         Args:
             data_id:
+            user_id:
 
         Returns:
 
         """
         try:
-            return CurateDataStructure.objects.get(data=str(data_id))
+            return CurateDataStructure.objects.get(
+                data=str(data_id), user=str(user_id)
+            )
         except ObjectDoesNotExist as exception:
             raise exceptions.DoesNotExist(str(exception))
         except Exception as exception:
@@ -212,6 +215,18 @@ class CurateDataStructure(DataStructure):
         """
         not_empty_or_whitespaces(self.name)
         self.name = self.name.strip()
+
+    @staticmethod
+    def get_all_curate_data_structures_by_data(data):
+        """Get All Curate Data Structures By Data.
+
+        Args:
+            data:
+
+        Returns:
+
+        """
+        return data.curatedatastructure_set.all()
 
 
 # Connect signals

@@ -458,25 +458,6 @@ class TestCurateDataStructureGetByDataId(IntegrationBaseTestCase):
 
     fixture = fixture_data_structure
 
-    def test_get_by_data_id_as_superuser_returns_data_structure(self):
-        """
-        test_get_by_data_id_as_superuser_returns_data_structure
-
-        Returns:
-
-        """
-
-        mock_user = create_mock_user(
-            self.fixture.data_structure_3.user,
-            is_staff=True,
-            is_superuser=True,
-        )
-        data_structure = curate_data_structure_api.get_by_data_id(
-            self.fixture.data.id, mock_user
-        )
-        self.assertTrue(isinstance(data_structure, CurateDataStructure))
-        self.assertEquals(self.fixture.data.id, data_structure.data.id)
-
     def test_get_by_data_id_as_owner_returns_data_structure(self):
         """
         test_get_by_data_id_as_owner_returns_data_structure
@@ -485,24 +466,11 @@ class TestCurateDataStructureGetByDataId(IntegrationBaseTestCase):
 
         """
         mock_user = create_mock_user(self.fixture.data_structure_1.user)
-        data_structure = curate_data_structure_api.get_by_data_id(
+        data_structure = curate_data_structure_api.get_by_data_id_and_user(
             self.fixture.data.id, mock_user
         )
         self.assertTrue(isinstance(data_structure, CurateDataStructure))
         self.assertEquals(self.fixture.data.id, data_structure.data.id)
-
-    def test_get_by_data_id_as_user_non_owner_raises_error(self):
-        """
-        test_get_by_data_id_as_user_non_owner_raises_error
-
-        Returns:
-
-        """
-        mock_user = create_mock_user(self.fixture.data_structure_3.user)
-        with self.assertRaises(AccessControlError):
-            curate_data_structure_api.get_by_data_id(
-                self.fixture.data.id, mock_user
-            )
 
     def test_get_by_data_id_as_anonymous_user_raises_error(self):
         """
@@ -512,7 +480,7 @@ class TestCurateDataStructureGetByDataId(IntegrationBaseTestCase):
 
         """
         with self.assertRaises(AccessControlError):
-            curate_data_structure_api.get_by_data_id(
+            curate_data_structure_api.get_by_data_id_and_user(
                 self.fixture.data.id, AnonymousUser()
             )
 
@@ -598,6 +566,66 @@ class TestDataStructureChangeOwner(IntegrationBaseTestCase):
             new_user=mock_user,
             user=mock_user,
         )
+
+
+class TestGetAllCurateDataStructureByData(IntegrationBaseTestCase):
+    """
+    Test Get All Curate Data Structures By Data
+    """
+
+    fixture = fixture_data_structure
+
+    def test_get_all_curate_data_structures_by_data_as_superuser_returns_data_structures(
+        self,
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_as_superuser_returns_data_structures
+
+        Returns:
+
+        """
+
+        mock_user = create_mock_user(
+            self.fixture.data_structure_3.user,
+            is_staff=True,
+            is_superuser=True,
+        )
+        results = (
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                self.fixture.data, mock_user
+            )
+        )
+        for data_structure in results:
+            self.assertTrue(isinstance(data_structure, CurateDataStructure))
+
+    def test_get_all_curate_data_structures_by_data_as_user_raises_error(
+        self,
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_as_user_raises_error
+
+        Returns:
+
+        """
+        mock_user = create_mock_user(self.fixture.data_structure_3.user)
+        with self.assertRaises(AccessControlError):
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                self.fixture.data, mock_user
+            )
+
+    def test_get_all_curate_data_structures_by_data_as_anonymous_user_raises_error(
+        self,
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_as_anonymous_user_raises_error
+
+        Returns:
+
+        """
+        with self.assertRaises(AccessControlError):
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                self.fixture.data, AnonymousUser()
+            )
 
 
 def _get_data_structure_element(user, data_structure):

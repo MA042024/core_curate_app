@@ -149,16 +149,17 @@ def get_all_with_no_data(user):
 
 
 @access_control(can_read)
-def get_by_data_id(data_id, user):
-    """Return the curate data structure with the given data id
+def get_by_data_id_and_user(data_id, user):
+    """Return the curate data structure with the given data id and user
 
     Args:
         data_id:
+        user:
 
     Returns:
 
     """
-    return CurateDataStructure.get_by_data_id(data_id)
+    return CurateDataStructure.get_by_data_id_and_user(data_id, user.id)
 
 
 @access_control(can_read)
@@ -226,3 +227,36 @@ def change_owner(curate_data_structure, new_user, user):
     """
     curate_data_structure.user = str(new_user.id)
     curate_data_structure.save_object()
+
+
+@access_control(has_perm_administration)
+def get_all_curate_data_structures_by_data(data, user):
+    """Return all curate data structures with the given data.
+
+    Parameters:
+        data:
+        user:
+
+    Returns: curate data structure list
+    """
+
+    return CurateDataStructure.get_all_curate_data_structures_by_data(data)
+
+
+@access_control(has_perm_administration)
+def delete_curate_data_structures_by_data(data, user):
+    """delete curate data structures with the given data.
+
+    Parameters:
+        data:
+        user:
+
+    Returns
+    """
+
+    curate_data_structure_list = get_all_curate_data_structures_by_data(
+        data, user
+    )
+
+    for curate_data_structure in curate_data_structure_list:
+        delete(curate_data_structure, user)

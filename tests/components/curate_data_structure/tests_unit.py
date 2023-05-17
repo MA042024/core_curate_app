@@ -4,6 +4,10 @@ from unittest.case import TestCase
 
 from unittest.mock import patch
 
+from core_main_app.access_control.exceptions import AccessControlError
+
+from core_main_app.components.data.models import Data
+
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
@@ -11,6 +15,11 @@ import core_curate_app.components.curate_data_structure.api as curate_data_struc
 from core_curate_app.components.curate_data_structure.models import (
     CurateDataStructure,
 )
+from tests.components.curate_data_structure.fixtures.fixtures import (
+    DataStructureFixtures,
+)
+
+fixture_data_structure = DataStructureFixtures()
 
 
 class TestCurateDataStructureGetById(TestCase):
@@ -370,6 +379,92 @@ class TestCurateDataStructureGetByUserId(TestCase):
         self.assertTrue(
             all(isinstance(item, CurateDataStructure) for item in result)
         )
+
+
+class TestCurateDataStructuresGetByData(TestCase):
+    """
+    Test Curate Data Structures Get By Data
+    """
+
+    @patch.object(
+        CurateDataStructure, "get_all_curate_data_structures_by_data"
+    )
+    def test_get_all_curate_data_structures_by_data_returns_empty_list_if_not_found(
+        self, mock_get
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_returns_empty_list_if_not_found
+
+        Returns:
+
+        """
+        # Arrange
+        mock_get.return_value = []
+        mock_user = create_mock_user("1", is_superuser=True)
+
+        # Act
+        result = (
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                Data(), mock_user
+            )
+        )
+        # Assert
+        self.assertEqual(result, [])
+
+    @patch.object(
+        CurateDataStructure, "get_all_curate_data_structures_by_data"
+    )
+    def test_get_all_curate_data_structures_by_data_return_list(
+        self, mock_get
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_return_list
+
+        Returns:
+
+        """
+        # Arrange
+        data_structure_1 = CurateDataStructure(
+            user="1", template=Template(), name="name"
+        )
+
+        mock_get.return_value = [data_structure_1]
+        mock_user = create_mock_user("1", is_superuser=True)
+
+        # Act
+        result = (
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                Data(), mock_user
+            )
+        )
+        # Assert
+        self.assertEqual(len(result), 1)
+
+    @patch.object(
+        CurateDataStructure, "get_all_curate_data_structures_by_data"
+    )
+    def test_get_all_curate_data_structures_by_data_raises_error(
+        self, mock_get
+    ):
+        """
+        test_get_all_curate_data_structures_by_data_raises_error
+
+        Returns:
+
+        """
+        # Arrange
+        data_structure_1 = CurateDataStructure(
+            user="1", template=Template(), name="name"
+        )
+
+        mock_get.return_value = [data_structure_1]
+        mock_user = create_mock_user("0")
+
+        # Act # Assert
+        with self.assertRaises(AccessControlError):
+            curate_data_structure_api.get_all_curate_data_structures_by_data(
+                Data(), mock_user
+            )
 
 
 def _get_template():

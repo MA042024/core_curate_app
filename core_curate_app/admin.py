@@ -13,6 +13,7 @@ from core_curate_app.components.curate_data_structure.models import (
     CurateDataStructure,
 )
 from core_curate_app.views.common import views as common_views
+from core_curate_app.views.admin import ajax as admin_ajax
 
 admin_urls = [
     re_path(
@@ -24,7 +25,12 @@ admin_urls = [
             )
         ),
         name="core_curate_view_form",
-    )
+    ),
+    re_path(
+        r"^delete-record-drafts/(?P<pk>\w+)$",
+        admin_ajax.delete_record_drafts,
+        name="core_curate_app_delete_data_drafts",
+    ),
 ]
 
 admin.site.register(CurateDataStructure, CustomCurateDataStructureAdmin)
