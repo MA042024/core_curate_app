@@ -97,7 +97,6 @@ urlpatterns = [
         name="core_curate_view_form",
     ),
     re_path(r"^rest/", include("core_curate_app.rest.urls")),
-    re_path(r"^tz_detect/", include("tz_detect.urls")),
     re_path(
         r"^login", main_user_views.custom_login, name="core_main_app_login"
     ),
