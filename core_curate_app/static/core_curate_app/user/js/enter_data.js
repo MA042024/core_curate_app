@@ -124,7 +124,7 @@ var cancel_form = function() {
             window.location = curateIndexUrl;
         },
         error: function() {
-
+            $.notify("An error occurred while cancelling the "+formLabel, "danger");
         }
     });
 };
@@ -155,10 +155,10 @@ var sendSaveRequest = function() {
         },
         dataType: 'json',
         success: function(data) {
-            $.notify(data.message, { style: data.tags });
+            $.notify(data.message, "success");
         },
         error: function() {
-
+            $.notify("An error occurred while saving the "+formLabel, "danger");
         }
     }).always(function(data) {
         // get old button icon
