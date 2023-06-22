@@ -11,7 +11,7 @@ from django.http import (
 )
 from django.urls import reverse
 from django.utils.html import escape as html_escape
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from core_curate_app.components.curate_data_structure import (
     api as data_structure_api,
