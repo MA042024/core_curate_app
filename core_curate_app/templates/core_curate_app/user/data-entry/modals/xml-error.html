@@ -8,5 +8,7 @@
 {% endblock %}
 
 {% block modal_footer %}
-<button class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+<button class="btn btn-secondary"{% if BOOTSTRAP_VERSION == "4.6.2" %}data-dismiss{% elif BOOTSTRAP_VERSION == "5.1.3" %}data-bs-dismiss{% endif %}="modal">
+    <i class="fas fa-times"></i> Close
+</button>
 {% endblock %}
