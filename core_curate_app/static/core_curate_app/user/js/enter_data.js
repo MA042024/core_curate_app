@@ -120,11 +120,11 @@ var cancel_form = function() {
             'id': objectID
         },
         dataType: "json",
-        success: function(data) {
+        success: function() {
             window.location = curateIndexUrl;
         },
-        error: function() {
-            $.notify("An error occurred while cancelling the "+formLabel, "danger");
+        error: function(dataXHR){
+            $.notify(dataXHR.responseJSON.error, "danger");
         }
     });
 };
@@ -141,7 +141,6 @@ var saveForm = function() {
  * Save the form in the database
  */
 var sendSaveRequest = function() {
-
     var icon = $("[id^='btn-save-form'] > i").attr("class");
     // Show loading spinner
     showSpinner($("[id^='btn-save-form'] > i"))
@@ -157,8 +156,8 @@ var sendSaveRequest = function() {
         success: function(data) {
             $.notify(data.message, "success");
         },
-        error: function() {
-            $.notify("An error occurred while saving the "+formLabel, "danger");
+        error: function(dataXHR) {
+            $.notify(dataXHR.responseJSON.error, "danger");
         }
     }).always(function(data) {
         // get old button icon

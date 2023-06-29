@@ -4,7 +4,6 @@ import json
 import logging
 
 from django.contrib import messages
-from django.contrib.messages.storage.base import Message
 from django.http.response import HttpResponseBadRequest, HttpResponse
 from django.template import loader
 from django.urls import reverse
@@ -314,14 +313,17 @@ def cancel_form(request):
             get_form_label().capitalize() + " deleted with success.",
         )
 
-        return HttpResponse(
-            json.dumps({}), content_type="application/javascript"
-        )
+        return HttpResponse(json.dumps({}), content_type="application/json")
     except Exception as exception:
+        error_message = (
+            "An unexpected error has occurred while cancelling "
+            f"the {get_form_label()}"
+        )
+
+        logger.error("%s: %s", error_message, str(exception))
         return HttpResponseBadRequest(
-            "An unexpected error has occured: %s",
-            str(exception).replace('"', "'"),
-            content_type="application/javascript",
+            json.dumps({"error": error_message}),
+            content_type="application/json",
         )
 
 
@@ -357,18 +359,23 @@ def save_form(request):
         # save data structure
         curate_data_structure_api.upsert(curate_data_structure, request.user)
 
-        # add success message
-        message = Message(
-            messages.SUCCESS,
-            get_form_label().capitalize() + " saved with success.",
-        )
-
         return HttpResponse(
-            json.dumps({"message": message.message, "tags": message.tags}),
+            json.dumps(
+                {
+                    "message": f"{get_form_label().capitalize()} saved with success."
+                }
+            ),
             content_type="application/json",
         )
     except Exception as exception:
-        return HttpResponseBadRequest(escape(str(exception)))
+        error_message = (
+            f"An error occurred while saving the {get_form_label()}"
+        )
+        logger.error("%s: %s", error_message, str(exception))
+        return HttpResponseBadRequest(
+            json.dumps({"error": error_message}),
+            content_type="application/json",
+        )
 
 
 @decorators.permission_required(

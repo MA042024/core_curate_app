@@ -1,4 +1,4 @@
-""" Test forms
+""" Test forms from `views.user.forms`.
 """
 from unittest.case import TestCase
 from unittest.mock import MagicMock
