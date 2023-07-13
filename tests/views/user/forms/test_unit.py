@@ -3,9 +3,10 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 
+from django.test import override_settings
 from django.core.exceptions import ValidationError
 
-from core_curate_app.views.user.forms import _file_size_validator
+from core_curate_app.views.user.forms import _file_size_validator, OpenForm
 from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
 
 
@@ -36,3 +37,33 @@ class TestFileSizeValidator(TestCase):
         mock_field = MagicMock()
         mock_field.size = MAX_DOCUMENT_EDITING_SIZE - 1
         _file_size_validator(mock_field)
+
+
+class TestOpenForm(TestCase):
+    """Test Open Form"""
+
+    @override_settings(BOOTSTRAP_VERSION="4.6.2")
+    def test_open_form_bootstrap_v4(self):
+        """test_open_form_bootstrap_v4
+
+        Returns:
+
+        """
+        data = {"forms": "test"}
+        form = OpenForm(data)
+        self.assertEquals(
+            form.fields["forms"].widget.attrs["class"], "form-control"
+        )
+
+    @override_settings(BOOTSTRAP_VERSION="5.1.3")
+    def test_open_form_bootstrap_v5(self):
+        """test_open_form_bootstrap_v5
+
+        Returns:
+
+        """
+        data = {"forms": "test"}
+        form = OpenForm(data)
+        self.assertEquals(
+            form.fields["forms"].widget.attrs["class"], "form-select"
+        )

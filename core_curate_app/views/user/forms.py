@@ -1,6 +1,7 @@
 """ User curate forms
 """
 from django import forms
+from django.conf import settings
 
 from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
 from core_main_app.utils.labels import get_form_label
@@ -40,7 +41,7 @@ class OpenForm(forms.Form):
     forms = FormDataModelChoiceField(
         label="",
         queryset=curate_data_structure_api.get_none(),
-        widget=forms.Select(attrs={"class": "form-control"}),
+        widget=forms.Select(),
     )
 
     def __init__(self, *args, **kwargs):
@@ -50,6 +51,10 @@ class OpenForm(forms.Form):
             queryset = curate_data_structure_api.get_none()
         super().__init__(*args, **kwargs)
         self.fields["forms"].queryset = queryset
+        if settings.BOOTSTRAP_VERSION == "4.6.2":
+            self.fields["forms"].widget.attrs["class"] = "form-control"
+        elif settings.BOOTSTRAP_VERSION == "5.1.3":
+            self.fields["forms"].widget.attrs["class"] = "form-select"
 
 
 def _file_size_validator(value):

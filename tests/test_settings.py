@@ -62,3 +62,5 @@ CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 MONGODB_INDEXING = False
 MONGODB_ASYNC_SAVE = False
 USE_TZ = True
+
+BOOTSTRAP_VERSION = "4.6.2"
