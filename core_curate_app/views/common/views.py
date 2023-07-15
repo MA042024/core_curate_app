@@ -16,6 +16,7 @@ from django.utils.translation import ugettext as _
 from core_curate_app.components.curate_data_structure import (
     api as data_structure_api,
 )
+
 from core_curate_app.views.user.views import _get_curate_data_structure_by_id
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons.exceptions import (

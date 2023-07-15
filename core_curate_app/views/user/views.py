@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.conf import settings
 
 import core_main_app.components.template.api as template_api
 import core_main_app.components.template_version_manager.api as template_version_manager_api
@@ -16,10 +17,6 @@ from core_curate_app.components.curate_data_structure import (
     api as curate_data_structure_api,
 )
 from core_curate_app.permissions import rights
-from core_curate_app.settings import (
-    INSTALLED_APPS,
-    ENABLE_XML_ENTITIES_TOOLTIPS,
-)
 from core_curate_app.utils.parser import get_parser
 from core_main_app.access_control.api import check_can_write
 from core_main_app.access_control.exceptions import AccessControlError
@@ -168,13 +165,27 @@ class EnterDataView(View):
             ],
         }
 
-        if ENABLE_XML_ENTITIES_TOOLTIPS:
+        if settings.ENABLE_XML_ENTITIES_TOOLTIPS:
             self.assets["js"].append(
                 {
                     "path": "core_curate_app/user/js/xml_entities_tooltip.js",
                     "is_raw": False,
                 }
             )
+            if settings.BOOTSTRAP_VERSION == "4.6.2":
+                self.assets["js"].append(
+                    {
+                        "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs4.js",
+                        "is_raw": False,
+                    }
+                )
+            elif settings.BOOTSTRAP_VERSION == "5.3.1":
+                self.assets["js"].append(
+                    {
+                        "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs5.js",
+                        "is_raw": False,
+                    }
+                )
 
         self.modals = [
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
@@ -357,6 +368,22 @@ class ViewDataView(View):
             "core_main_app/common/modals/download-options.html",
         ]
 
+        if "core_file_preview_app" in settings.INSTALLED_APPS:
+            self.assets["js"].extend(
+                [
+                    {
+                        "path": "core_file_preview_app/user/js/file_preview.js",
+                        "is_raw": False,
+                    }
+                ]
+            )
+            self.assets["css"].append(
+                "core_file_preview_app/user/css/file_preview.css"
+            )
+            self.modals.append(
+                "core_file_preview_app/user/file_preview_modal.html"
+            )
+
     def build_context(self, request, curate_data_structure):
         """Build XML string from CurateDataStructure
 
@@ -396,22 +423,6 @@ class ViewDataView(View):
             curate_data_structure = _get_curate_data_structure_by_id(
                 curate_data_structure_id, request
             )
-
-            if "core_file_preview_app" in INSTALLED_APPS:
-                self.assets["js"].extend(
-                    [
-                        {
-                            "path": "core_file_preview_app/user/js/file_preview.js",
-                            "is_raw": False,
-                        }
-                    ]
-                )
-                self.assets["css"].append(
-                    "core_file_preview_app/user/css/file_preview.css"
-                )
-                self.modals.append(
-                    "core_file_preview_app/user/file_preview_modal.html"
-                )
 
             # Build Context
             context = self.build_context(request, curate_data_structure)

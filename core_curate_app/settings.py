@@ -34,3 +34,5 @@ ENABLE_XML_ENTITIES_TOOLTIPS = getattr(
 )
 """ boolean: enable the xml entities warning tooltip on the GUI.
 """
+
+BOOTSTRAP_VERSION = getattr(settings, "BOOTSTRAP_VERSION", "5.1.3")

@@ -6,10 +6,10 @@ from unittest.mock import patch, MagicMock
 from django.http import (
     HttpResponseRedirect,
 )
-from django.test import RequestFactory
+from django.test import RequestFactory, override_settings
 from django.urls import reverse
 
-from core_curate_app.views.user.views import EnterDataView
+from core_curate_app.views.user.views import EnterDataView, ViewDataView
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_parser_app.tools.parser.exceptions import ParserError
 
@@ -31,13 +31,7 @@ class TestEnterDataView(TestCase):
     def test_enter_data_view_get_returns_error_if_parser_error_occurs(
         self, mock_ds_get_by_id, mock_build_context
     ):
-        """test_enter_data_view_get_returns_error_if_parser_error_occurs
-
-
-        Returns:
-
-
-        """
+        """test_enter_data_view_get_returns_error_if_parser_error_occurs"""
         # Arrange
         mock_build_context.side_effect = ParserError("error")
         mock_ds = MagicMock()
@@ -55,4 +49,124 @@ class TestEnterDataView(TestCase):
             response.url.startswith(
                 reverse("core_curate_app_xml_text_editor_view")
             )
+        )
+
+    @override_settings(ENABLE_XML_ENTITIES_TOOLTIPS=True)
+    def test_enable_xml_entities_tootip_true_includes_base_js_asset(self):
+        """test_enable_xml_entities_tootip_true_includes_base_js_asset"""
+        result = EnterDataView()
+
+        self.assertIn(
+            {
+                "path": "core_curate_app/user/js/xml_entities_tooltip.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+    @override_settings(ENABLE_XML_ENTITIES_TOOLTIPS=False)
+    def test_enable_xml_entities_tootip_false_includes_no_extra_js(self):
+        """test_enable_xml_entities_tootip_false_includes_no_extra_js"""
+        result = EnterDataView()
+
+        self.assertNotIn(
+            {
+                "path": "core_curate_app/user/js/xml_entities_tooltip.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+    @override_settings(BOOTSTRAP_VERSION="4.6.2")
+    def test_bootstrap_4_6_2_includes_correct_tooltip_js_asset(self):
+        """test_bootstrap_4_6_2_includes_correct_tooltip_js_asset"""
+        result = EnterDataView()
+
+        self.assertIn(
+            {
+                "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs4.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+    @override_settings(BOOTSTRAP_VERSION="5.3.1")
+    def test_bootstrap_5_3_1_includes_correct_tooltip_js_asset(self):
+        """test_bootstrap_5_3_1_includes_correct_tooltip_js_asset"""
+        result = EnterDataView()
+
+        self.assertIn(
+            {
+                "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs5.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+
+class TestViewDataViewInit(TestCase):
+    """Unit tests for `ViewDataView.__init__` method."""
+
+    @override_settings(INSTALLED_APPS=["core_file_preview_app"])
+    def test_file_preview_app_installed_adds_correct_js_asset(self):
+        """test_file_preview_app_installed_adds_correct_js_asset"""
+        result = ViewDataView()
+
+        self.assertIn(
+            {
+                "path": "core_file_preview_app/user/js/file_preview.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+    @override_settings(INSTALLED_APPS=["core_file_preview_app"])
+    def test_file_preview_app_installed_adds_correct_css_asset(self):
+        """test_file_preview_app_installed_adds_correct_css_asset"""
+        result = ViewDataView()
+
+        self.assertIn(
+            "core_file_preview_app/user/css/file_preview.css",
+            result.assets["css"],
+        )
+
+    @override_settings(INSTALLED_APPS=["core_file_preview_app"])
+    def test_file_preview_app_installed_adds_correct_modal_asset(self):
+        """test_file_preview_app_installed_adds_correct_modal_asset"""
+        result = ViewDataView()
+
+        self.assertIn(
+            "core_file_preview_app/user/file_preview_modal.html", result.modals
+        )
+
+    @override_settings(INSTALLED_APPS=[])
+    def test_file_preview_app_not_installed_adds_no_js_asset(self):
+        """test_file_preview_app_not_installed_adds_no_js_asset"""
+        result = ViewDataView()
+
+        self.assertNotIn(
+            {
+                "path": "core_file_preview_app/user/js/file_preview.js",
+                "is_raw": False,
+            },
+            result.assets["js"],
+        )
+
+    @override_settings(INSTALLED_APPS=[])
+    def test_file_preview_app_not_installed_adds_no_css_asset(self):
+        """test_file_preview_app_not_installed_adds_no_css_asset"""
+        result = ViewDataView()
+
+        self.assertNotIn(
+            "core_file_preview_app/user/css/file_preview.css",
+            result.assets["css"],
+        )
+
+    @override_settings(INSTALLED_APPS=[])
+    def test_file_preview_app_not_installed_adds_no_modal_asset(self):
+        """test_file_preview_app_not_installed_adds_no_modal_asset"""
+        result = ViewDataView()
+
+        self.assertNotIn(
+            "core_file_preview_app/user/file_preview_modal.html", result.modals
         )

@@ -25,11 +25,26 @@
     margin: 20px;
 }
 
-.warning-tooltip-inner {
-    max-width: 400px !important;
-    background-color: #ea8d00;
+.warning-popover {
+    max-width: 395px !important;
+
+    border: none;
 }
 
-.warning-tooltip-arrow {
+.warning-popover-text {
+    background-color: #ea8d00;
+
+    border-bottom: none;
+    border-radius: 5px;
+
+    padding: 0.2rem;
+
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.warning-popover-arrow::after {
     border-right-color: #ea8d00 !important;
+    border: none;
 }
