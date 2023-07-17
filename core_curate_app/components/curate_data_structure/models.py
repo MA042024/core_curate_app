@@ -226,7 +226,8 @@ class CurateDataStructure(DataStructure):
         Returns:
 
         """
-        return data.curatedatastructure_set.all()
+
+        return CurateDataStructure.objects.filter(data=data.id).all()
 
 
 # Connect signals
