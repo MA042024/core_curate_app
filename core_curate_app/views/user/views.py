@@ -179,7 +179,7 @@ class EnterDataView(View):
                         "is_raw": False,
                     }
                 )
-            elif settings.BOOTSTRAP_VERSION == "5.3.1":
+            elif settings.BOOTSTRAP_VERSION == "5.1.3":
                 self.assets["js"].append(
                     {
                         "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs5.js",

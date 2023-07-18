@@ -90,9 +90,9 @@ class TestEnterDataView(TestCase):
             result.assets["js"],
         )
 
-    @override_settings(BOOTSTRAP_VERSION="5.3.1")
-    def test_bootstrap_5_3_1_includes_correct_tooltip_js_asset(self):
-        """test_bootstrap_5_3_1_includes_correct_tooltip_js_asset"""
+    @override_settings(BOOTSTRAP_VERSION="5.1.3")
+    def test_bootstrap_5_1_3_includes_correct_tooltip_js_asset(self):
+        """test_bootstrap_5_1_3_includes_correct_tooltip_js_asset"""
         result = EnterDataView()
 
         self.assertIn(
