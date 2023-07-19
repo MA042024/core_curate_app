@@ -10,7 +10,7 @@ $(document).ready(function() {
  * @return jquerySelectorCollection or undefined if no result
  */
 var findFormWarningTooltip = function() {
-    var tooltipSelector = $(".tooltip-inner.warning-tooltip-inner");
+    var tooltipSelector = $(".popover-header.warning-popover-text");
     return tooltipSelector.length > 0 ? tooltipSelector : undefined;
 }
 
