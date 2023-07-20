@@ -55,11 +55,14 @@ class FormView(CommonView):
             )
 
             # TODO: fix with the rework on the curate workflow
-            if curate_data_structure.form_string is None:
+            if (
+                curate_data_structure.form_string is None
+                or curate_data_structure.form_string == ""
+            ):
                 raise Exception(
                     "The "
                     + _("form_label")
-                    + " was not saved. We can't display the correct data."
+                    + " was not saved and cannot be displayed."
                 )
 
             # Set the assets
@@ -90,9 +93,9 @@ class FormView(CommonView):
             assets = {
                 "js": [
                     {
-                        "path": "core_main_app/common/js/backtoprevious.js",
-                        "is_raw": True,
-                    }
+                        "path": "core_main_app/user/js/data/detail.js",
+                        "is_raw": False,
+                    },
                 ]
             }
             template = "core_main_app/common/commons/error.html"
