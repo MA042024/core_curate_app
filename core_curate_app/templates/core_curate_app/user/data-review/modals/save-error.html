@@ -9,5 +9,5 @@
 
 {% block modal_footer %}
 <span class="pull-left">&nbsp;</span>
-<a class="btn btn-danger" {% if BOOTSTRAP_VERSION == "4.6.2" %}data-dismiss{% elif BOOTSTRAP_VERSION == "5.1.3" %}data-bs-dismiss{% endif %}="modal" href="#">OK</a>
+<a class="btn btn-danger" {% if BOOTSTRAP_VERSION|first == "4" %}data-dismiss{% elif BOOTSTRAP_VERSION|first == "5"  %}data-bs-dismiss{% endif %}="modal" href="#">OK</a>
 {% endblock %}

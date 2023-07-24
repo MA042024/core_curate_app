@@ -9,12 +9,12 @@ There are no validation on empty fields if no such constraint is defined in the 
 Thus, an empty string of characters may not raise a validation error, but an empty number will.
 
 <div class="toolbar">
-	<div class="{% if BOOTSTRAP_VERSION == "4.6.2" %}float-right{% elif BOOTSTRAP_VERSION == "5.1.3" %}float-end{% endif %}">
-		<button class="btn btn-danger clear-fields {% if BOOTSTRAP_VERSION == "4.6.2" %}mr-auto{% elif BOOTSTRAP_VERSION == "5.1.3" %}me-auto{% endif %}"><i class="fas fa-eraser"></i> Clear Fields </button>
-        <button class="btn btn-danger cancel-changes {% if BOOTSTRAP_VERSION == "4.6.2" %}mr-auto{% elif BOOTSTRAP_VERSION == "5.1.3" %}me-auto{% endif %}"><i class="fas fa-sync"></i> Cancel Changes </button>
-        <button class="btn btn-danger cancel-form {% if BOOTSTRAP_VERSION == "4.6.2" %}mr-auto{% elif BOOTSTRAP_VERSION == "5.1.3" %}me-auto{% endif %}"><i class="fas fa-trash"></i> Delete {% trans "form_label"|title %} </button>
-    	<button class="btn btn-secondary save-form {% if BOOTSTRAP_VERSION == "4.6.2" %}mr-auto{% elif BOOTSTRAP_VERSION == "5.1.3" %}me-auto{% endif %}"><i class="fas fa-save"></i> Save {% trans "form_label"|title %} </button>
-    	<button class="btn btn-secondary download {% if BOOTSTRAP_VERSION == "4.6.2" %}mr-auto{% elif BOOTSTRAP_VERSION == "5.1.3" %}me-auto{% endif %}"><i class="fas fa-download"></i> Download </button>
+	<div class="{% if BOOTSTRAP_VERSION|first == "4" %}float-right{% elif BOOTSTRAP_VERSION|first == "5"  %}float-end{% endif %}">
+		<button class="btn btn-danger clear-fields {% if BOOTSTRAP_VERSION|first == "4" %}mr-auto{% elif BOOTSTRAP_VERSION|first == "5"  %}me-auto{% endif %}"><i class="fas fa-eraser"></i> Clear Fields </button>
+        <button class="btn btn-danger cancel-changes {% if BOOTSTRAP_VERSION|first == "4" %}mr-auto{% elif BOOTSTRAP_VERSION|first == "5"  %}me-auto{% endif %}"><i class="fas fa-sync"></i> Cancel Changes </button>
+        <button class="btn btn-danger cancel-form {% if BOOTSTRAP_VERSION|first == "4" %}mr-auto{% elif BOOTSTRAP_VERSION|first == "5"  %}me-auto{% endif %}"><i class="fas fa-trash"></i> Delete {% trans "form_label"|title %} </button>
+    	<button class="btn btn-secondary save-form {% if BOOTSTRAP_VERSION|first == "4" %}mr-auto{% elif BOOTSTRAP_VERSION|first == "5"  %}me-auto{% endif %}"><i class="fas fa-save"></i> Save {% trans "form_label"|title %} </button>
+    	<button class="btn btn-secondary download {% if BOOTSTRAP_VERSION|first == "4" %}mr-auto{% elif BOOTSTRAP_VERSION|first == "5"  %}me-auto{% endif %}"><i class="fas fa-download"></i> Download </button>
         <button class="btn btn-primary validate"><i class="fas fa-check"></i> Validate </button>
 	</div>
     <br/><br/>
