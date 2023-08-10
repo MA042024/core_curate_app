@@ -41,6 +41,10 @@ var clear_fields = function() {
             });
 
             initModules();
+            $.notify("Fields cleared with success.", "success");
+        },
+        error: function() {
+            $.notify("An error occurred while clearing fields.", "danger");
         }
     }).always(function(data) {
         // get old button icon
@@ -86,6 +90,10 @@ var cancel_changes = function() {
             });
 
             initModules();
+            $.notify("Changes canceled  with success.", "success");
+        },
+        error: function() {
+            $.notify("An error occurred while canceling changes.", "danger");
         }
     }).always(function() {
         // get old button icon
