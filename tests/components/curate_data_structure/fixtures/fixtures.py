@@ -89,7 +89,7 @@ class DataStructureFixtures(FixtureInterface):
         self.template.user = "1"
         self.template.content = xsd
         self.template.hash = ""
-        self.template.filename = "filename"
+        self.template.filename = "filename.xsd"
         self.template.save()
 
 
@@ -197,5 +197,5 @@ class DataStructureFixtures2(FixtureInterface):
         self.template.user = "1"
         self.template.content = xsd
         self.template.hash = ""
-        self.template.filename = "filename"
+        self.template.filename = "filename.xsd"
         self.template.save()

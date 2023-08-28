@@ -9,6 +9,9 @@ import core_curate_app.views.user.views as user_views
 from core_curate_app.permissions import rights
 from core_curate_app.views.common import views as common_views
 from core_main_app.utils.decorators import permission_required
+from core_main_app.views.common import (
+    views as main_common_views,
+)
 from core_main_app.views.user import views as main_user_views
 
 urlpatterns = [
@@ -99,5 +102,10 @@ urlpatterns = [
     re_path(r"^rest/", include("core_curate_app.rest.urls")),
     re_path(
         r"^login", main_user_views.custom_login, name="core_main_app_login"
+    ),
+    re_path(
+        r"^data",
+        main_common_views.ViewData.as_view(),
+        name="core_main_app_data_detail",
     ),
 ]

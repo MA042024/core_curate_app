@@ -9,7 +9,13 @@ from django.http import (
 from django.test import RequestFactory, override_settings
 from django.urls import reverse
 
-from core_curate_app.views.user.views import EnterDataView, ViewDataView
+from core_curate_app.views.user.views import (
+    EnterDataView,
+    ViewDataView,
+    generate_root_element,
+)
+from core_main_app.commons.exceptions import XSDError
+from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_parser_app.tools.parser.exceptions import ParserError
 
@@ -170,3 +176,42 @@ class TestViewDataViewInit(TestCase):
         self.assertNotIn(
             "core_file_preview_app/user/file_preview_modal.html", result.modals
         )
+
+
+class TestGenerateRootElementView(TestCase):
+    """Unit tests for `generate_root_element` method."""
+
+    def setUp(self):
+        """setUp"""
+        factory = RequestFactory()
+        user1 = create_mock_user(user_id="1", has_perm=True)
+
+        self.request = factory.get("core_curate_cancel_changes")
+        self.request.POST = {"id": 1}
+        self.request.user = user1
+
+    @patch("core_main_app.components.template.api.get_by_id")
+    def test_generate_element_root_raises_xsd_error_if_not_xsd_template(
+        self, mock_template_get_by_id
+    ):
+        """test_generate_element_root_raises_xsd_error_if_not_xsd_template"""
+        mock_template = _get_json_template()
+        mock_curate_data_structure = MagicMock(template=mock_template)
+        mock_template_get_by_id.return_value = mock_template
+
+        with self.assertRaises(XSDError):
+            generate_root_element(self.request, mock_curate_data_structure, "")
+        self.assertTrue(mock_template_get_by_id.called)
+
+
+def _get_json_template():
+    """Get JSON template
+
+    Returns:
+
+    """
+    template = Template()
+    template.format = Template.JSON
+    template.id_field = 1
+    template.content = "{}"
+    return template

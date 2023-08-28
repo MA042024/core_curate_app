@@ -110,11 +110,18 @@ class CancelChangesForm(forms.Form):
 class HiddenFieldsForm(forms.Form):
     """Form for hidden fields."""
 
-    hidden_value = forms.CharField(widget=forms.HiddenInput(), required=True)
+    template_id = forms.CharField(widget=forms.HiddenInput(), required=True)
+    template_format = forms.CharField(
+        widget=forms.HiddenInput(), required=True
+    )
 
     def __init__(self, *args, **kwargs):
-        value = ""
-        if "hidden_value" in kwargs:
-            value = kwargs.pop("hidden_value")
+        template_id = ""
+        template_format = ""
+        if "template_id" in kwargs:
+            template_id = kwargs.pop("template_id")
+        if "template_format" in kwargs:
+            template_format = kwargs.pop("template_format")
         super().__init__(*args, **kwargs)
-        self.fields["hidden_value"].initial = value
+        self.fields["template_id"].initial = template_id
+        self.fields["template_format"].initial = template_format

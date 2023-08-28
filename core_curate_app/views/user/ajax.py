@@ -19,20 +19,16 @@ from core_curate_app.components.curate_data_structure.models import (
 )
 from core_curate_app.permissions import rights as rights
 from core_curate_app.utils.parser import get_parser
-from core_curate_app.views.user.views import (
-    generate_form,
-    render_form,
-    render_xml,
-    generate_root_element,
-)
+from core_curate_app.views.user import views as curate_user_views
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template.models import Template
 from core_main_app.utils import decorators
+from core_main_app.utils import xml as main_xml_utils
 from core_main_app.utils.labels import get_data_label, get_form_label
-from core_main_app.utils.xml import validate_xml_data, is_well_formed_xml
-from core_main_app.views.common.views import read_xsd_file
+from core_main_app.views.common import views as main_common_views
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
@@ -96,6 +92,9 @@ def generate_choice(request, curate_data_structure_id):
         template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
+        # check if xsd template
+        if template.format != Template.XSD:
+            return HttpResponseBadRequest("Template format not supported.")
         html_form = xsd_parser.generate_choice_absent(
             element_id, template.content, data_structure=curate_data_structure
         )
@@ -129,6 +128,9 @@ def generate_element(request, curate_data_structure_id):
         template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
+        # check if xsd template
+        if template.format != Template.XSD:
+            return HttpResponseBadRequest("Template format not supported.")
         html_form = xsd_parser.generate_element_absent(
             element_id, template.content, data_structure=curate_data_structure
         )
@@ -211,7 +213,11 @@ def clear_fields(request):
         template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
-        root_element = generate_form(
+        # check if xsd template
+        if template.format != Template.XSD:
+            return HttpResponseBadRequest("Template format not supported.")
+
+        root_element = curate_user_views.generate_form(
             template.content,
             data_structure=curate_data_structure,
             request=request,
@@ -223,7 +229,7 @@ def clear_fields(request):
         )
 
         # renders the form
-        xsd_form = render_form(request, root_element)
+        xsd_form = curate_user_views.render_form(request, root_element)
 
         return HttpResponse(
             json.dumps({"xsdForm": xsd_form}),
@@ -256,7 +262,7 @@ def cancel_changes(request):
 
         if curate_data_structure.data is not None:
             # data already saved, reload from data
-            xml_data = curate_data_structure.data.xml_content
+            xml_data = curate_data_structure.data.content
         elif curate_data_structure.form_string is not None:
             # form already saved, reload from saved form
             xml_data = curate_data_structure.form_string
@@ -264,12 +270,12 @@ def cancel_changes(request):
             # no saved data, load new form
             xml_data = None
 
-        root_element = generate_root_element(
+        root_element = curate_user_views.generate_root_element(
             request, curate_data_structure, xml_data
         )
 
         # renders the form
-        xsd_form = render_form(request, root_element)
+        xsd_form = curate_user_views.render_form(request, root_element)
 
         return HttpResponse(
             json.dumps({"xsdForm": xsd_form}),
@@ -349,7 +355,7 @@ def save_form(request):
         )
 
         # generate xml data
-        xml_data = render_xml(
+        xml_data = curate_user_views.render_xml(
             request, curate_data_structure.data_structure_element_root
         )
 
@@ -399,21 +405,26 @@ def validate_form(request):
         curate_data_structure = curate_data_structure_api.get_by_id(
             curate_data_structure_id, request.user
         )
-
-        # generate the XML
-        xml_data = render_xml(
-            request, curate_data_structure.data_structure_element_root
-        )
-
-        # build trees
+        # get template
         template = template_api.get_by_id(
             str(curate_data_structure.template.id), request=request
         )
+        # check if xsd template
+        if template.format != Template.XSD:
+            return HttpResponseBadRequest("Template format not supported.")
+
+        # generate the XML
+        xml_data = curate_user_views.render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
+        # build trees
         xsd_tree = XSDTree.build_tree(template.content)
         xml_tree = XSDTree.build_tree(xml_data)
 
         # validate XML document
-        errors = validate_xml_data(xsd_tree, xml_tree, request=request)
+        errors = main_xml_utils.validate_xml_data(
+            xsd_tree, xml_tree, request=request
+        )
 
         if errors is not None:
             response_dict["errors"] = errors
@@ -463,7 +474,7 @@ def save_data(request):
             )
 
         # generate the XML
-        xml_data = render_xml(
+        xml_data = curate_user_views.render_xml(
             request, curate_data_structure.data_structure_element_root
         )
 
@@ -481,7 +492,7 @@ def save_data(request):
             data.user_id = str(request.user.id)
 
         # set content
-        data.xml_content = xml_data
+        data.content = xml_data
         # save data
         data = data_api.upsert(data, request)
 
@@ -513,7 +524,7 @@ def _start_curate_post(request):
     Returns:
 
     """
-    template_id = str(request.POST["hidden_value"])
+    template_id = str(request.POST["template_id"])
     selected_option = request.POST["curate_form"]
     user_id = str(request.user.id)
 
@@ -524,9 +535,13 @@ def _start_curate_post(request):
                 "An error occurred during the validation " + get_form_label()
             )
         name = new_form.data["document_name"]
+        template = template_api.get_by_id(template_id, request=request)
+        # check template format
+        if template.format != Template.XSD:
+            return HttpResponseBadRequest("Template format not supported.")
         curate_data_structure = CurateDataStructure(
             user=user_id,
-            template=template_api.get_by_id(template_id, request=request),
+            template=template,
             name=name,
         )
         curate_data_structure_api.upsert(curate_data_structure, request.user)
@@ -538,8 +553,8 @@ def _start_curate_post(request):
                 f"An error occurred during the file upload: {upload_form.errors.as_text()}"
             )
         xml_file = request.FILES["file"]
-        xml_data = read_xsd_file(xml_file)
-        well_formed = is_well_formed_xml(xml_data)
+        xml_data = main_common_views.read_xsd_file(xml_file)
+        well_formed = main_xml_utils.is_well_formed_xml(xml_data)
         name = xml_file.name
         if not well_formed:
             raise CurateAjaxError(
@@ -560,7 +575,7 @@ def _start_curate_post(request):
                 title=name, template=template, user_id=str(request.user.id)
             )
             # set content
-            data.xml_content = xml_data
+            data.content = xml_data
             # save data
             data_api.upsert(data, request)
             messages.add_message(
@@ -634,7 +649,12 @@ def _start_curate_get(request):
         )
         new_form = users_forms.NewForm()
         upload_form = users_forms.UploadForm()
-        hidden_form = users_forms.HiddenFieldsForm(hidden_value=template_id)
+        hidden_form = users_forms.HiddenFieldsForm(
+            template_id=template_id,
+            template_format=template_api.get_by_id(
+                template_id, request=request
+            ).format,
+        )
         context_params["new_form"] = new_form
         context_params["open_form"] = open_form
         context_params["upload_form"] = upload_form

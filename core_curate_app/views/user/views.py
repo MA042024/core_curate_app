@@ -24,8 +24,10 @@ from core_main_app.commons.exceptions import (
     LockError,
     ModelError,
     DoesNotExist,
+    XSDError,
 )
 from core_main_app.components.lock import api as lock_api
+from core_main_app.components.template.models import Template
 from core_main_app.utils import decorators
 from core_main_app.utils.boolean import to_bool
 from core_main_app.utils.file import get_file_http_response
@@ -589,6 +591,9 @@ def generate_root_element(request, curate_data_structure, xml_string):
     template = template_api.get_by_id(
         str(curate_data_structure.template.id), request=request
     )
+    # check template format
+    if template.format != Template.XSD:
+        raise XSDError("Template format not supported.")
 
     # get the root element
     root_element = generate_form(

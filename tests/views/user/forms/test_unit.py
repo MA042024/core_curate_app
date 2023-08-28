@@ -3,10 +3,14 @@
 from unittest.case import TestCase
 from unittest.mock import MagicMock
 
-from django.test import override_settings
 from django.core.exceptions import ValidationError
+from django.test import override_settings
 
-from core_curate_app.views.user.forms import _file_size_validator, OpenForm
+from core_curate_app.views.user.forms import (
+    _file_size_validator,
+    OpenForm,
+    HiddenFieldsForm,
+)
 from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
 
 
@@ -67,3 +71,17 @@ class TestOpenForm(TestCase):
         self.assertEquals(
             form.fields["forms"].widget.attrs["class"], "form-select"
         )
+
+
+class TestHiddenFieldsForm(TestCase):
+    """Test Hidden Fields Form"""
+
+    def test_hidden_fields_form_sets_fields(self):
+        """test_hidden_fields_form_sets_fields
+
+        Returns:
+
+        """
+        form = HiddenFieldsForm(template_id="1", template_format="XSD")
+        self.assertEquals(form.fields["template_id"].initial, "1")
+        self.assertEquals(form.fields["template_format"].initial, "XSD")

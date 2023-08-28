@@ -207,7 +207,7 @@ class DraftContentEditor(XmlEditor):
                 data.user_id = str(self.request.user.id)
 
             # set content
-            data.xml_content = content
+            data.content = content
             # save data
             data_api.upsert(data, self.request)
 

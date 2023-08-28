@@ -40,7 +40,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "curate_form": "new",
             "document_name": "test",
             "forms": "",
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         request = self.factory.post("core_curate_start", data)
         request.user = self.user1
@@ -58,7 +58,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "document_name": "test",
             "forms": "",
             "text_editor": "on",
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         request = self.factory.post("core_curate_start", data)
         request.user = self.user1
@@ -75,7 +75,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "curate_form": "upload",
             "document_name": "",
             "forms": "",
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         content = "<tag></tag>"
         files = SimpleUploadedFile("test.xml", content.encode("utf-8"))
@@ -97,7 +97,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "document_name": "",
             "forms": "",
             "text_editor": "on",
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         content = "<tag></tag>"
         files = SimpleUploadedFile("test.xml", content.encode("utf-8"))
@@ -118,7 +118,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "curate_form": "open",
             "document_name": "test",
             "forms": str(self.fixture.data_structure_1.id),
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         request = self.factory.post("core_curate_start", data)
         request.user = self.user1
@@ -136,7 +136,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "document_name": "test",
             "forms": str(self.fixture.data_structure_1.id),
             "text_editor": "on",
-            "hidden_value": str(self.fixture.data_structure_1.template.id),
+            "template_id": str(self.fixture.data_structure_1.template.id),
         }
         request = self.factory.post("core_curate_start", data)
         request.user = self.user1

@@ -475,4 +475,5 @@ def _get_template():
         '<xs:element name="tag"></xs:element></xs:schema>'
     )
     template.content = xsd
+    template.format = Template.XSD
     return template
