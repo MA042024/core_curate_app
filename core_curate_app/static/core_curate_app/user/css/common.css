@@ -1,4 +1,4 @@
-.tooltip {
+.tooltip, .popover {
     z-index: 1 !important;
 }
 
