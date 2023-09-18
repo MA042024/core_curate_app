@@ -67,9 +67,12 @@ var checkPredefinedXmlEntities = function(selector) {
  * For the first render of the form check the predefined Xml entities in all the fields
  */
 var refreshTooltipPosition = function() {
-    var inputs = $('input.default');
-    for (var i = 0; i < inputs.length; ++i) {
-        if (isElementInViewport(inputs[i])) checkPredefinedXmlEntities($(inputs[i]));
+    const inputArray = $('input.default').toArray();
+    for(const index in inputArray) {
+        const $input = $(inputArray[index]);
+
+        if (isElementInViewport($input)) checkPredefinedXmlEntities($input);
+        else hideTooltip($input);
     }
 }
 
@@ -88,9 +91,18 @@ var checkCircleItem = function(element) {
 }
 
 $(document).on('blur', 'input.default', checkPredefinedXmlEntities);
-$(document).on('blur', 'textarea', function() { setTimeout(refreshTooltipPosition, 500) });
-$(document).on('click', '.add', function() { setTimeout(refreshTooltipPosition, 500) });
-$(document).on('click', '.remove', function() { setTimeout(refreshTooltipPosition, 500) });
+$(document).on('blur', 'textarea', function() { setTimeout(refreshTooltipPosition, 250) });
+$(document).on('click', '.add', function() { setTimeout(refreshTooltipPosition, 250) });
+$(document).on('click', '.remove', function(event) {
+    setTimeout(() => {
+        refreshTooltipPosition();
 
-$(document).scroll(debounce(function() { refreshTooltipPosition(); }, 300));
-$(window).resize(debounce(function() { refreshTooltipPosition(); }, 300));
+        // Delete all tooltips from child inputs.
+        const inputArray = $(event.target).parent().find("input").toArray();
+        for(const index in inputArray) {
+            hideTooltip($(inputArray[index]));
+        }
+    }, 250);
+});
+$(document).scroll(debounce(function() { refreshTooltipPosition(); }, 50));
+$(window).resize(debounce(function() { refreshTooltipPosition(); }, 50));
