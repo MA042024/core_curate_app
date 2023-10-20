@@ -74,8 +74,16 @@ urlpatterns = [
         permission_required(
             content_type=rights.CURATE_CONTENT_TYPE,
             permission=rights.CURATE_DATA_STRUCTURE_ACCESS,
-        )(common_views.DraftContentEditor.as_view()),
+        )(common_views.DataStructureXMLEditor.as_view()),
         name="core_curate_app_xml_text_editor_view",
+    ),
+    re_path(
+        r"^json-editor/form",
+        permission_required(
+            content_type=rights.CURATE_CONTENT_TYPE,
+            permission=rights.CURATE_DATA_STRUCTURE_ACCESS,
+        )(common_views.DataStructureJSONEditor.as_view()),
+        name="core_curate_app_json_text_editor_view",
     ),
     re_path(r"^save-form$", user_ajax.save_form, name="core_curate_save_form"),
     re_path(r"^save-data$", user_ajax.save_data, name="core_curate_save_data"),

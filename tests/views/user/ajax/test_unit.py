@@ -652,6 +652,7 @@ class TestStartCuratePostView(TestCase):
         self.request.POST = {
             "template_id": 1,
             "curate_form": "new",
+            "template_format": "XSD",
             "document_name": "test",
         }
         self.request.user = user1

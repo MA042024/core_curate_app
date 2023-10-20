@@ -68,6 +68,32 @@ def _check_can_read(document_list, user):
         raise AccessControlError("The user doesn't have enough rights.")
 
 
+def check_can_write(data_structure, user):
+    """Check that the user can write.
+
+    Args:
+        data_structure:
+        user:
+
+    Returns:
+
+    """
+
+    if user is None or user.is_anonymous:
+        raise AccessControlError(
+            "The user doesn't have enough rights to access this document."
+        )
+    if user.is_superuser:
+        return
+
+    if data_structure.user != str(user.id):
+        raise AccessControlError(
+            "The user doesn't have enough rights to access this document."
+        )
+
+    return
+
+
 def can_write(func, *args, **kwargs):
     """Can user write
 
@@ -83,23 +109,11 @@ def can_write(func, *args, **kwargs):
         (arg for arg in args if isinstance(arg, (User, AnonymousUser))),
         None,
     )
-
-    if user.is_anonymous or user is None:
-        raise AccessControlError(
-            "The user doesn't have enough rights to access this document."
-        )
-
-    if user.is_superuser:
-        return func(*args, **kwargs)
-
-    document = next(
+    data_structure = next(
         (arg for arg in args if isinstance(arg, CurateDataStructure)), None
     )
-    if document.user != str(user.id):
-        raise AccessControlError(
-            "The user doesn't have enough rights to access this document."
-        )
 
+    check_can_write(data_structure, user)
     return func(*args, **kwargs)
 
 

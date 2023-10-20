@@ -3,6 +3,9 @@
 from django import forms
 from django.conf import settings
 
+from core_main_app.commons.constants import (
+    DATA_FILE_EXTENSION_FOR_TEMPLATE_FORMAT,
+)
 from core_main_app.settings import MAX_DOCUMENT_EDITING_SIZE
 from core_main_app.utils.labels import get_form_label
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
@@ -78,7 +81,12 @@ class UploadForm(forms.Form):
     file = forms.FileField(
         label="",
         widget=forms.FileInput(
-            attrs={"class": "form-control", "accept": ".xml"}
+            attrs={
+                "class": "form-control",
+                "accept": ",".join(
+                    DATA_FILE_EXTENSION_FOR_TEMPLATE_FORMAT.values()
+                ),
+            }
         ),
         validators=[_file_size_validator],
     )

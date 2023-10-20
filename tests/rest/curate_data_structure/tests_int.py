@@ -38,7 +38,7 @@ class TestDataStructureListAdmin(IntegrationBaseTestCase):
             "user": "1",
             "name": "name",
             "form_string": "<tag></tag>",
-            "template": str(self.fixture.template.id),
+            "template": str(self.fixture.template_xsd.id),
         }
 
     def test_get_returns_all_user_data_structure(self):
@@ -55,7 +55,7 @@ class TestDataStructureListAdmin(IntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data), 5)
 
     def test_post_returns_data_structure(self):
         """
@@ -75,7 +75,9 @@ class TestDataStructureListAdmin(IntegrationBaseTestCase):
         # Assert
         self.assertEqual(response.data["user"], self.user.id)
 
-        self.assertEqual(response.data["template"], self.fixture.template.id)
+        self.assertEqual(
+            response.data["template"], self.fixture.template_xsd.id
+        )
 
         self.assertEqual(response.data["form_string"], "<tag></tag>")
 
@@ -141,7 +143,7 @@ class TestDataStructureList(IntegrationBaseTestCase):
             "user": "2",
             "name": "name",
             "form_string": "<tag></tag>",
-            "template": str(self.fixture.template.id),
+            "template": str(self.fixture.template_xsd.id),
         }
 
     def test_get_returns_all_user_data_structure_as_superuser(self):

@@ -27,6 +27,7 @@ from core_main_app.components.template import api as template_api
 from core_main_app.components.template.models import Template
 from core_main_app.utils import decorators
 from core_main_app.utils import xml as main_xml_utils
+from core_main_app.utils import json_utils as main_json_utils
 from core_main_app.utils.labels import get_data_label, get_form_label
 from core_main_app.views.common import views as main_common_views
 from core_parser_app.components.data_structure_element import (
@@ -537,7 +538,10 @@ def _start_curate_post(request):
         name = new_form.data["document_name"]
         template = template_api.get_by_id(template_id, request=request)
         # check template format
-        if template.format != Template.XSD:
+        if (
+            template.format != Template.XSD
+            and "text_editor" not in new_form.data
+        ):
             return HttpResponseBadRequest("Template format not supported.")
         curate_data_structure = CurateDataStructure(
             user=user_id,
@@ -552,30 +556,37 @@ def _start_curate_post(request):
             raise CurateAjaxError(
                 f"An error occurred during the file upload: {upload_form.errors.as_text()}"
             )
-        xml_file = request.FILES["file"]
-        xml_data = main_common_views.read_xsd_file(xml_file)
-        well_formed = main_xml_utils.is_well_formed_xml(xml_data)
-        name = xml_file.name
+        # get template
+        template = template_api.get_by_id(
+            template_id,
+            request=request,
+        )
+        file = request.FILES["file"]
+        name = file.name
+        # check template format
+        if template.format == Template.XSD:
+            content = main_common_views.read_xsd_file(file)
+            well_formed = main_xml_utils.is_well_formed_xml(content)
+        elif template.format == Template.JSON:
+            content = file.read().decode("utf-8")
+            well_formed = main_json_utils.is_well_formed_json(content)
+        else:
+            return HttpResponseBadRequest("Template format not supported.")
         if not well_formed:
-            raise CurateAjaxError(
+            return HttpResponseBadRequest(
                 "An error occurred during the file upload: the file is "
-                "not well formed XML"
+                "not well formed " + template.format
             )
         if (
             "direct_upload" in upload_form.data
             and upload_form.data["direct_upload"]
         ):
-            # get template
-            template = template_api.get_by_id(
-                template_id,
-                request=request,
-            )
             # create data
             data = Data(
                 title=name, template=template, user_id=str(request.user.id)
             )
             # set content
-            data.content = xml_data
+            data.content = content
             # save data
             data_api.upsert(data, request)
             messages.add_message(
@@ -589,7 +600,7 @@ def _start_curate_post(request):
                 user=user_id,
                 template=template_api.get_by_id(template_id, request=request),
                 name=name,
-                form_string=xml_data,
+                form_string=content,
             )
             curate_data_structure_api.upsert(
                 curate_data_structure, request.user
@@ -606,23 +617,28 @@ def _start_curate_post(request):
 
 def _get_reverse_url(form, curate_data_structure_id):
     """get reverse url.
-
     Args:
         form:
         curate_data_structure_id
-
     Returns:
         url:
     """
-    if "text_editor" in form.data:
+    if form.data["template_format"] == Template.JSON:
         url = (
-            reverse("core_curate_app_xml_text_editor_view")
+            reverse("core_curate_app_json_text_editor_view")
             + f"?id={str(curate_data_structure_id)}"
         )
     else:
-        url = reverse(
-            "core_curate_enter_data", args=(curate_data_structure_id,)
-        )
+        if "text_editor" in form.data:
+            url = (
+                reverse("core_curate_app_xml_text_editor_view")
+                + f"?id={str(curate_data_structure_id)}"
+            )
+
+        else:
+            url = reverse(
+                "core_curate_enter_data", args=(curate_data_structure_id,)
+            )
     return url
 
 
