@@ -134,7 +134,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
-user_1
+user_*
 xml_schemas
 
 # Translations
