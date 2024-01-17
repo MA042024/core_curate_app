@@ -10,3 +10,9 @@ this package (`requirements.*` files) and their dependencies.
 |-----------------------|---------------------------------------------------------|
 | Django                | BSD License                                             |
 | django-simple-menu    | BSD License                                             |
+
+## Javascript / CSS
+
+| Name                  | License                                                 |
+|-----------------------|---------------------------------------------------------|
+| json-editor             | MIT License                                             |

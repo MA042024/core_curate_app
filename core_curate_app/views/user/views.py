@@ -1,5 +1,6 @@
 """Curate app user views
 """
+import json
 import logging
 from builtins import any
 from typing import Dict, List
@@ -20,6 +21,12 @@ from core_curate_app.permissions import rights
 from core_curate_app.utils.parser import get_parser
 from core_main_app.access_control.api import check_can_write
 from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons.constants import (
+    DATA_FILE_CONTENT_TYPE_FOR_TEMPLATE_FORMAT,
+    DATA_FILE_EXTENSION_FOR_TEMPLATE_FORMAT,
+    TEMPLATE_FILE_EXTENSION_FOR_TEMPLATE_FORMAT,
+    TEMPLATE_FILE_CONTENT_TYPE_FOR_TEMPLATE_FORMAT,
+)
 from core_main_app.commons.exceptions import (
     LockError,
     ModelError,
@@ -102,7 +109,6 @@ def index(request):
     return render(
         request,
         "core_curate_app/user/curate.html",
-        # modals=modals,
         assets=assets,
         context=context,
     )
@@ -152,15 +158,13 @@ class EnterDataView(View):
                     "is_raw": True,
                 },
                 {
-                    "path": "core_curate_app/user/js/download.raw.js",
-                    "is_raw": True,
-                },
-                {
-                    "path": "core_main_app/common/js/modals/download.js",
-                    "is_raw": True,
-                },
-                {
                     "path": "core_main_app/common/js/data_detail.js",
+                    "is_raw": False,
+                },
+                {
+                    "path": "https://cdnjs.cloudflare.com/ajax/libs/json-editor/2.14.1/jsoneditor.js",
+                    "integrity": "sha512-G93wD4PAiaCg3T4BeJGXNUdwJ4jr6WL0dKUqz0UwZs0jVad7FnJ2r+SlJ50k6+ILkYcQBqt4M5YoFcBWujIH0A==",
+                    "is_external": True,
                     "is_raw": False,
                 },
             ],
@@ -200,8 +204,9 @@ class EnterDataView(View):
             "core_main_app/common/modals/download-options.html",
             "core_curate_app/user/data-entry/modals/save-form.html",
             "core_curate_app/user/data-entry/modals/use-validation.html",
-            "core_curate_app/user/data-entry/modals/xml-error.html",
+            "core_curate_app/user/data-entry/modals/validation-error.html",
             "core_curate_app/user/data-entry/modals/xml-valid.html",
+            "core_curate_app/user/data-entry/modals/switch_to_text_editor.html",
         ]
 
     def build_context(
@@ -217,23 +222,29 @@ class EnterDataView(View):
         Returns:
 
         """
-        if reload_unsaved_changes:
-            # get root element from the data structure
-            root_element = curate_data_structure.data_structure_element_root
+        if curate_data_structure.template.format == Template.XSD:
+            if reload_unsaved_changes:
+                # get root element from the data structure
+                root_element = (
+                    curate_data_structure.data_structure_element_root
+                )
+            else:
+                # if form string provided, use it to generate the form
+                xml_string = curate_data_structure.form_string
+
+                root_element = generate_root_element(
+                    request, curate_data_structure, xml_string
+                )
+
+            # renders the form
+            form = render_form(request, root_element)
+
         else:
-            # if form string provided, use it to generate the form
-            xml_string = curate_data_structure.form_string
-
-            root_element = generate_root_element(
-                request, curate_data_structure, xml_string
-            )
-
-        # renders the form
-        xsd_form = render_form(request, root_element)
+            form = None
 
         return {
             "edit": True if curate_data_structure.data is not None else False,
-            "xsd_form": xsd_form,
+            "form": form,
             "data_structure": curate_data_structure,
         }
 
@@ -354,14 +365,6 @@ class ViewDataView(View):
                     "is_raw": False,
                 },
                 {
-                    "path": "core_curate_app/user/js/download.raw.js",
-                    "is_raw": True,
-                },
-                {
-                    "path": "core_main_app/common/js/modals/download.js",
-                    "is_raw": True,
-                },
-                {
                     "path": "core_main_app/common/js/data_detail.js",
                     "is_raw": False,
                 },
@@ -391,7 +394,7 @@ class ViewDataView(View):
             )
 
     def build_context(self, request, curate_data_structure):
-        """Build XML string from CurateDataStructure
+        """Build form string from CurateDataStructure
 
         Args:
             request:
@@ -399,13 +402,16 @@ class ViewDataView(View):
 
         Returns:
         """
-        xml_string = render_xml(
-            request, curate_data_structure.data_structure_element_root
-        )
+        if curate_data_structure.template.format == Template.XSD:
+            content = render_xml(
+                request, curate_data_structure.data_structure_element_root
+            )
+        else:
+            content = curate_data_structure.form_string
 
         return {
             "edit": True if curate_data_structure.data is not None else False,
-            "xml_string": xml_string,
+            "form_string": content,
             "data_structure": curate_data_structure,
         }
 
@@ -455,8 +461,8 @@ class ViewDataView(View):
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
 )
-def download_current_xml(request, curate_data_structure_id):
-    """Make the current XML document available for download.
+def download_current_document(request, curate_data_structure_id):
+    """Make the current document available for download.
 
     Args:
         request:
@@ -469,25 +475,34 @@ def download_current_xml(request, curate_data_structure_id):
     curate_data_structure = _get_curate_data_structure_by_id(
         curate_data_structure_id, request
     )
-
-    # generate xml string
-    xml_data = render_xml(
-        request, curate_data_structure.data_structure_element_root
-    )
-
     # get pretty print bool
     prettify = request.GET.get("pretty_print", False)
 
-    # prettify content
-    if to_bool(prettify):
-        xml_data = format_content_xml(xml_data)
+    if curate_data_structure.template.format == Template.XSD:
+        # generate xml string
+        content = render_xml(
+            request, curate_data_structure.data_structure_element_root
+        )
+        # prettify content
+        if to_bool(prettify):
+            content = format_content_xml(content)
+
+    else:
+        content = curate_data_structure.form_string
+        # prettify content
+        if to_bool(prettify):
+            content = json.dumps(json.loads(content), indent=2)
 
     # build response with file
     return get_file_http_response(
-        file_content=xml_data,
+        file_content=content,
         file_name=curate_data_structure.name,
-        content_type="application/xml",
-        extension="xml",
+        content_type=DATA_FILE_CONTENT_TYPE_FOR_TEMPLATE_FORMAT[
+            curate_data_structure.template.format
+        ],
+        extension=DATA_FILE_EXTENSION_FOR_TEMPLATE_FORMAT[
+            curate_data_structure.template.format
+        ],
     )
 
 
@@ -495,8 +510,8 @@ def download_current_xml(request, curate_data_structure_id):
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
 )
-def download_xsd(request, curate_data_structure_id):
-    """Make the current XSD available for download.
+def download_template(request, curate_data_structure_id):
+    """Make the current template available for download.
 
     Args:
         request:
@@ -514,23 +529,27 @@ def download_xsd(request, curate_data_structure_id):
     template = template_api.get_by_id(
         str(curate_data_structure.template.id), request=request
     )
-
-    # get the template content
-    content = template.content
-
     # get pretty print bool
     prettify = request.GET.get("pretty_print", False)
 
-    # prettify content
-    if to_bool(prettify):
-        content = format_content_xml(content)
+    # get the template content
+    content = template.content
+    if template.format == Template.XSD:
+        # prettify content
+        if to_bool(prettify):
+            content = format_content_xml(content)
+    else:
+        if to_bool(prettify):
+            content = json.dumps(json.loads(content), indent=2)
 
     # return the file
     return get_file_http_response(
         file_content=content,
         file_name=template.filename,
-        content_type="application/xsd",
-        extension=".xsd",
+        content_type=TEMPLATE_FILE_CONTENT_TYPE_FOR_TEMPLATE_FORMAT[
+            template.format
+        ],
+        extension=TEMPLATE_FILE_EXTENSION_FOR_TEMPLATE_FORMAT[template.format],
     )
 
 

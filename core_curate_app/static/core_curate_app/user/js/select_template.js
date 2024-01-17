@@ -211,9 +211,4 @@ initSaveButton = function(){
         // start regular form processing
         displayTemplateProcess($("#btn-open-data > i"));
     });
-    if($("#id_template_format").val()  == "XSD"){
-        $("#btn-display-data").attr('hidden', false)
-    }else{
-        $("#btn-display-data").attr('hidden', true)
-    }
 }

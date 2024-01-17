@@ -32,14 +32,14 @@ urlpatterns = [
         name="core_curate_view_data",
     ),
     re_path(
-        r"^download-xml/(?P<curate_data_structure_id>\w+)$",
-        user_views.download_current_xml,
-        name="core_curate_download_xml",
+        r"^download-document/(?P<curate_data_structure_id>\w+)$",
+        user_views.download_current_document,
+        name="core_curate_download_document",
     ),
     re_path(
-        r"^download-xsd/(?P<curate_data_structure_id>\w+)$",
-        user_views.download_xsd,
-        name="core_curate_download_xsd",
+        r"^download-template/(?P<curate_data_structure_id>\w+)$",
+        user_views.download_template,
+        name="core_curate_download_template",
     ),
     re_path(
         r"^generate-choice/(?P<curate_data_structure_id>\w+)$",

@@ -169,6 +169,12 @@ class DataStructureMixin:
                 "is_raw": True,
             },
         )
+        assets["js"].append(
+            {
+                "path": "core_curate_app/user/js/switch_editor.js",
+                "is_raw": False,
+            },
+        )
 
         return assets
 
@@ -181,7 +187,10 @@ class DataStructureMixin:
         """
 
         # add modals relatives to the data structure editor
-        return ["core_main_app/common/modals/create_data_modal.html"]
+        return [
+            "core_main_app/common/modals/create_data_modal.html",
+            "core_curate_app/user/data-entry/modals/switch_to_form_editor.html",
+        ]
 
     def save(self, *args, **kwargs):
         """Save as data

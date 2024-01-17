@@ -263,23 +263,29 @@ def cancel_changes(request):
 
         if curate_data_structure.data is not None:
             # data already saved, reload from data
-            xml_data = curate_data_structure.data.content
+            content = curate_data_structure.data.content
         elif curate_data_structure.form_string is not None:
             # form already saved, reload from saved form
-            xml_data = curate_data_structure.form_string
+            content = curate_data_structure.form_string
         else:
             # no saved data, load new form
-            xml_data = None
+            content = None
 
-        root_element = curate_user_views.generate_root_element(
-            request, curate_data_structure, xml_data
-        )
+        if curate_data_structure.template.format == Template.XSD:
+            root_element = curate_user_views.generate_root_element(
+                request, curate_data_structure, content
+            )
 
-        # renders the form
-        xsd_form = curate_user_views.render_form(request, root_element)
+            # renders the form
+            xsd_form = curate_user_views.render_form(request, root_element)
+            result = {"xsdForm": xsd_form}
+        elif curate_data_structure.template.format == Template.JSON:
+            result = {"content": content}
+        else:
+            return HttpResponseBadRequest("Template format not supported.")
 
         return HttpResponse(
-            json.dumps({"xsdForm": xsd_form}),
+            json.dumps(result),
             content_type="application/javascript",
         )
     except Exception as exception:
@@ -355,13 +361,20 @@ def save_form(request):
             curate_data_structure_id, request.user
         )
 
-        # generate xml data
-        xml_data = curate_user_views.render_xml(
-            request, curate_data_structure.data_structure_element_root
-        )
+        if curate_data_structure.template.format == Template.XSD:
+            form_string = request.POST.get(
+                "form_string",
+                curate_user_views.render_xml(
+                    request, curate_data_structure.data_structure_element_root
+                ),
+            )
+        elif curate_data_structure.template.format == Template.JSON:
+            form_string = request.POST.get("form_string", "{}")
+        else:
+            return HttpResponseBadRequest("Template format not supported.")
 
         # update curate data structure data
-        curate_data_structure.form_string = xml_data
+        curate_data_structure.form_string = form_string
 
         # save data structure
         curate_data_structure_api.upsert(curate_data_structure, request.user)
@@ -411,24 +424,23 @@ def validate_form(request):
             str(curate_data_structure.template.id), request=request
         )
         # check if xsd template
-        if template.format != Template.XSD:
+        if template.format == Template.XSD:
+            # generate the XML
+            xml_data = curate_user_views.render_xml(
+                request, curate_data_structure.data_structure_element_root
+            )
+            # build trees
+            xsd_tree = XSDTree.build_tree(template.content)
+            form_string = XSDTree.build_tree(xml_data)
+
+            # validate XML document
+            errors = main_xml_utils.validate_xml_data(
+                xsd_tree, form_string, request=request
+            )
+            if errors is not None:
+                response_dict["errors"] = errors
+        else:
             return HttpResponseBadRequest("Template format not supported.")
-
-        # generate the XML
-        xml_data = curate_user_views.render_xml(
-            request, curate_data_structure.data_structure_element_root
-        )
-        # build trees
-        xsd_tree = XSDTree.build_tree(template.content)
-        xml_tree = XSDTree.build_tree(xml_data)
-
-        # validate XML document
-        errors = main_xml_utils.validate_xml_data(
-            xsd_tree, xml_tree, request=request
-        )
-
-        if errors is not None:
-            response_dict["errors"] = errors
 
     except XMLSyntaxError as xml_syntax_error:
         response_dict[
@@ -474,10 +486,15 @@ def save_data(request):
                 curate_data_structure.data, request.user
             )
 
-        # generate the XML
-        xml_data = curate_user_views.render_xml(
-            request, curate_data_structure.data_structure_element_root
-        )
+        if curate_data_structure.template.format == Template.XSD:
+            # generate the XML
+            form_string = curate_user_views.render_xml(
+                request, curate_data_structure.data_structure_element_root
+            )
+        elif curate_data_structure.template.format == Template.JSON:
+            form_string = curate_data_structure.form_string
+        else:
+            return HttpResponseBadRequest("Template format not supported.")
 
         if curate_data_structure.data is not None:
             # update existing data
@@ -493,7 +510,7 @@ def save_data(request):
             data.user_id = str(request.user.id)
 
         # set content
-        data.content = xml_data
+        data.content = form_string
         # save data
         data = data_api.upsert(data, request)
 
@@ -540,6 +557,7 @@ def _start_curate_post(request):
         # check template format
         if (
             template.format != Template.XSD
+            and template.format != Template.JSON
             and "text_editor" not in new_form.data
         ):
             return HttpResponseBadRequest("Template format not supported.")
@@ -623,22 +641,21 @@ def _get_reverse_url(form, curate_data_structure_id):
     Returns:
         url:
     """
-    if form.data["template_format"] == Template.JSON:
-        url = (
-            reverse("core_curate_app_json_text_editor_view")
-            + f"?id={str(curate_data_structure_id)}"
-        )
-    else:
-        if "text_editor" in form.data:
+    if "text_editor" in form.data:
+        if form.data["template_format"] == Template.JSON:
+            url = (
+                reverse("core_curate_app_json_text_editor_view")
+                + f"?id={str(curate_data_structure_id)}"
+            )
+        else:
             url = (
                 reverse("core_curate_app_xml_text_editor_view")
                 + f"?id={str(curate_data_structure_id)}"
             )
-
-        else:
-            url = reverse(
-                "core_curate_enter_data", args=(curate_data_structure_id,)
-            )
+    else:
+        url = reverse(
+            "core_curate_enter_data", args=(curate_data_structure_id,)
+        )
     return url
 
 

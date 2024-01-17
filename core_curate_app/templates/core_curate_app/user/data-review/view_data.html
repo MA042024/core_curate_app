@@ -1,5 +1,6 @@
 {% load xsl_transform_tag %}
 {% load blob_tags %}
+{% load format_json %}
 {% load i18n %}
 
 <h1>View Data</h1>
@@ -12,13 +13,21 @@
 
 
 <span>Title: {{data.data_structure.name}}</span>
-
-<div id="XMLHolder">
-{% xsl_transform_detail xml_content=data.xml_string request=request as xml_representation %}
-{% if 'core_file_preview_app' in INSTALLED_APPS %}
-    {% render_blob_links_in_span xml_string=xml_representation as xml_representation %}
+{% if data.data_structure.template.format == "XSD" %}
+    <div id="XMLHolder">
+    {% xsl_transform_detail xml_content=data.form_string request=request as xml_representation %}
+    {% if 'core_file_preview_app' in INSTALLED_APPS %}
+        {% render_blob_links_in_span xml_string=xml_representation as xml_representation %}
+    {% endif %}
+    {{ xml_representation|safe}}
+    </div>
+{% elif data.data_structure.template.format == "JSON" %}
+    <div id="JSONHolder" class="mb-1">
+        <pre class="display-detail"><code>{{data.form_string|format_json}}</code></pre>
+    </div>
+{% else %}
+    {{data.data_structure.form_string}}
 {% endif %}
-{{ xml_representation|safe}}
-</div>
 
-<div id="curate_data_structure_id" style="display: none;">{{ data.data_structure.id }}</div>
+<div id="template_format" class="hidden">{{data.data_structure.template.format}}</div>
+<div id="curate_data_structure_id" class="hidden">{{ data.data_structure.id }}</div>

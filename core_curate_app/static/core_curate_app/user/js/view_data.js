@@ -45,3 +45,20 @@ var XMLDataSavedError = function(errors)
     $("#saveErrorMessage").html(errors);
     $saved_error_modal.modal("show");
 };
+
+/**
+ * AJAX call, download document
+ * @param document
+ */
+download = function(document){
+    let toFormat = $('#format').is(':checked')
+
+    // Download form/template
+    if (document == "form")
+        window.location = downloadDocumentUrl+"?pretty_print="+toFormat
+    else
+        window.location = downloadTemplateUrl+"?pretty_print="+toFormat
+};
+
+$(document).on('click', '.download-document-btn', e=>download("form"));
+$(document).on('click', '.download-template-btn', e=>download("template"));

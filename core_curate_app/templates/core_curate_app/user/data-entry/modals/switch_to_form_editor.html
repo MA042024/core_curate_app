@@ -1,0 +1,17 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+{% load i18n %}
+
+{% block modal_id %}switch-to-form-editor{% endblock %}
+{% block modal_title %}Switch to form editor{% endblock %}
+
+{% block modal_body %}
+<p>Are you sure you want to switch to the form editor ? </p>
+<p>The {% trans "form_label" %} will be saved to perform this action.</p>
+{% endblock %}
+
+{% block modal_footer %}
+<button class="btn btn-secondary pull-left" {% if BOOTSTRAP_VERSION|first == "4" %}data-dismiss{% elif BOOTSTRAP_VERSION|first == "5"  %}data-bs-dismiss{% endif %}="modal"><i class="fas fa-times"></i> No</button>
+<button class="btn btn-primary save-and-switch-to-form-editor">
+    <i class="fas fa-save"></i> Yes, save {% trans "form_label" %} and go to form editor
+</button>
+{% endblock %}

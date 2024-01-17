@@ -1,8 +1,17 @@
+var editor = null;
+var schema = null;
+var form =  null
+var contentFormat =  null;
+
 /**
  * Load controllers for enter data
  */
 $(document).ready(function() {
-    initModules();
+    contentFormat = $("#template_format").html();
+    if(contentFormat == "XSD") initModules();
+    else if(contentFormat == "JSON") initJSONFormEditor($("#form_string").html());
+    else $.notify("Template format not supported.", "danger");
+
 });
 
 /**
@@ -21,36 +30,44 @@ var clear_fields = function() {
 
     // Show loading spinner
     showSpinner($("[id^='btn-clear-fields'] > i"))
+    if (contentFormat == "XSD"){
+        $.ajax({
+            url: clearFieldsUrl,
+            type: "POST",
+            data: {
+                'id': objectID
+            },
+            dataType: "json",
+            success: function(data) {
+                $("#xsdForm").html(data.xsdForm);
 
-    $.ajax({
-        url: clearFieldsUrl,
-        type: "POST",
-        data: {
-            'id': objectID
-        },
-        dataType: "json",
-        success: function(data) {
-            $("#xsdForm").html(data.xsdForm);
+                $('link.module').each(function(index, item) {
+                    item.remove();
+                });
 
-            $('link.module').each(function(index, item) {
-                item.remove();
-            });
+                $('script.module').each(function(index, item) {
+                    item.remove();
+                });
 
-            $('script.module').each(function(index, item) {
-                item.remove();
-            });
-
-            initModules();
-            $.notify("Fields cleared with success.", "success");
-        },
-        error: function() {
-            $.notify("An error occurred while clearing fields.", "danger");
-        }
-    }).always(function(data) {
-        // get old button icon
+                initModules();
+                $.notify("Fields cleared with success.", "success");
+            },
+            error: function() {
+                $.notify("An error occurred while clearing fields.", "danger");
+            }
+        }).always(function(data) {
+            // get old button icon
+            hideSpinner($("[id^='btn-clear-fields'] > i"), icon)
+            $("#clear-fields-modal").modal("hide");
+        });
+    }
+    else if (contentFormat == "JSON") {
+        initJSONFormEditor();
         hideSpinner($("[id^='btn-clear-fields'] > i"), icon)
         $("#clear-fields-modal").modal("hide");
-    });
+        $.notify("Fields cleared with success.", "success");
+    }
+    else $.notify("Template format not supported.", "danger");
 
 };
 
@@ -79,17 +96,24 @@ var cancel_changes = function() {
         },
         dataType: "json",
         success: function(data) {
-            $("#xsdForm").html(data.xsdForm);
+            if (contentFormat == "XSD") {
+                $("#xsdForm").html(data.xsdForm);
 
-            $('link.module').each(function(index, item) {
-                item.remove();
-            });
+                $('link.module').each(function(index, item) {
+                    item.remove();
+                });
 
-            $('script.module').each(function(index, item) {
-                item.remove();
-            });
-
-            initModules();
+                $('script.module').each(function(index, item) {
+                    item.remove();
+                });
+                initModules();
+            }
+            else {
+                if(data.content == "")
+                    editor.setValue({});
+                else
+                    editor.setValue(JSON.parse(data.content));
+            }
             $.notify("Changes canceled  with success.", "success");
         },
         error: function() {
@@ -141,7 +165,7 @@ var cancel_form = function() {
 /**
  * Display the saving confirmation popup
  */
-var saveForm = function() {
+var saveFormDialog = function() {
     $("#save-form-modal").modal("show");
 };
 
@@ -149,82 +173,91 @@ var saveForm = function() {
  * Save the form in the database
  */
 var sendSaveRequest = function() {
-    var icon = $("[id^='btn-save-form'] > i").attr("class");
-    // Show loading spinner
-    showSpinner($("[id^='btn-save-form'] > i"))
-
-    var objectID = $("#curate_data_structure_id").html();
-    $.ajax({
-        url: saveFormUrl,
-        type: 'POST',
-        data: {
-            'id': objectID
-        },
-        dataType: 'json',
-        success: function(data) {
-            $.notify(data.message, "success");
-        },
-        error: function(dataXHR) {
-            $.notify(dataXHR.responseJSON.error, "danger");
-        }
-    }).always(function(data) {
-        // get old button icon
-        hideSpinner($("[id^='btn-save-form'] > i"), icon)
-        $("#save-form-modal").modal("hide");
-    });
+    saveForm($("[id^='btn-save-form'] > i"), $("#save-form-modal"))
 };
 
 /**
- * Validate the current data to curate.
+ * AJAX call,Validate the current data to curate.
  */
-var validateXML = function() {
+var validate = function() {
     var objectID = $("#curate_data_structure_id").html();
     var icon = $(".validate > i").attr("class");
     clearPreviousWarning();
 
     // Show loading spinner
     showSpinner($(".validate > i"))
-    $.ajax({
-        url: validateFormUrl,
-        type: "POST",
-        data: {
-            'id': objectID
-        },
-        dataType: "json",
-        success: function(data) {
-            if ('errors' in data) {
-                showXMLDataValidationError(data.errors);
-            } else {
-                var useErrors = checkElementUse();
+    var errors = null;
+    if(contentFormat == "XSD") {
+        $.ajax({
+            url: validateFormUrl,
+            type: "POST",
+            data: {
+                'id': objectID
+            },
+            dataType: "json",
+            success: function(data) {
+                if ('errors' in data)
+                    showDataValidationError(errors);
+                else {
+                    var useErrors = checkElementUse();
+                    if (useErrors.length > 0) {
+                            useErrorsAndView(useErrors);
+                    } else {
+                        reviewDataDialog();
+                    }
 
-                if (useErrors.length > 0) {
-                    useErrorsAndView(useErrors);
-                } else {
-                    reviewDataDialog();
+                    // if we have warnings, we have to display it in the validation modal
+                    if ('warning' in data )
+                        displayWarningInValidModal(data.warning);
+                        //find warning tooltip to display warning in the validation modal
+                    if ( typeof findFormWarningTooltip === "function" && findFormWarningTooltip())
+                        displayWarningInValidModal(' This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
+
                 }
-
-                // if we have warnings, we have to display it in the validation modal
-                if ('warning' in data)
-                    displayWarningInValidModal(data.warning);
-                //find warning tooltip to display warning in the validation modal
-                if ( typeof findFormWarningTooltip === "function" && findFormWarningTooltip())
-                    displayWarningInValidModal(' This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
             }
-        }
-    }).always(function(data) {
-        // get old button icon
-        hideSpinner($(".validate > i"), icon)
-    });
+        }).always(function(data) {
+            // get old button icon
+            hideSpinner($(".validate > i"), icon);
+        });
+    }
+    else if(contentFormat == "JSON") {
+        errors = editor.validate();
+        if(errors.length)
+            showDataValidationError(errors);
+        else
+            reviewDataDialog();
+        hideSpinner($(".validate > i"), icon);
+    }
+    else $.notify("Template format not supported.", "danger");
 };
 
 /**
- * Shows XML validation error message.
+ * Shows validation error message.
  * @param errors
  */
-var showXMLDataValidationError = function(errors) {
-    $("#xmlErrorMessage").html(errors);
-    $("#xml-error-modal").modal("show");
-};
+var showDataValidationError = function(errors) {
+    if (contentFormat == "XSD"){
+        $("#errorMessage").html(errors);
+        $("#validation-error-modal").modal("show");
+    }
+    else if (contentFormat == "JSON") {
+        // clear validation errors
+        $("#errorMessage").empty();
+        // build the warning element
+        var node = document.createElement("div");
+        node.classList.add("alert");
+        node.classList.add("alert-danger");
+        var error_msg = "";
+        errors.forEach(function(error){
+            error_msg += '<li>' + error.path+' '+ error.message + '</li>' // build the list
+        });
+        warningMessage = '<ul>' + error_msg + '</ul>'
+        node.innerHTML = "<strong>Warning!</strong> " + warningMessage;
+        $("#errorMessage").prepend(node.cloneNode(true));
+        $("#validation-error-modal").modal("show");
+    }
+    else $.notify("Template format not supported.", "danger");
+}
 
 /**
  * Shows XML validation warning message in the modal.
@@ -314,19 +347,21 @@ var checkElementUse = function() {
 var useErrorsAndView = function(errors) {
     $("#useErrorMessage").html(errors);
     $("#use-warning-modal").modal("show");
-
 };
 
 /**
  * Dialog to redirect to review page
  */
 var reviewDataDialog = function() {
-    $("#xml-valid-modal").modal("show");
+    $("#validation-modal").modal("show");
 };
 
+/**
+ * AJAX call, Proceed To Review
+ */
 var proceedToReview = function() {
-    // Show loading spinner
-     showSpinner($(".proceed-review > i"))
+    var redirectUrl = proceedToReviewUrl.replace("curate_data_structure_id", $("#curate_data_structure_id").html());
+    saveForm($(".proceed-review > i"),$("#validation-modal"), redirectUrl);
 };
 
 /**
@@ -343,14 +378,135 @@ var toggleWarning = function() {
     }
 }
 
+/**
+ * Get template schema for the JSON forms
+ */
+getTemplateSchema = function(){
+    var templateID = $("#template_id").html();
+    $.ajax({
+        url : getTemplateUrl.replace("template_id", templateID),
+        type : "GET",
+        async: false,
+        success: function(data){
+            schema = data.content
+        },
+        error:function(data){
+            $.notify(data.responseText, "danger");
+        },
+    });
+}
+
+/**
+ * initialize JSON form editor
+ */
+initJSONFormEditor = function(content = null){
+    if (editor) editor.destroy();
+    else {
+        // Get JSON container
+        form = document.getElementById("jsonForm");
+        // Get JSON schema
+        getTemplateSchema();
+    }
+    // Create the editor
+    JSONEditor.defaults.editors.object.options.disable_properties = true;
+    editor = new JSONEditor(form,{
+        schema: JSON.parse(schema),
+        iconlib: "fontawesome5",
+        theme:  'bootstrap5'
+    });
+
+    //  Set form values
+    if (content){
+        editor.on('ready',() => {
+            editor.setValue(JSON.parse(content));
+        });
+    }
+}
+
+/**
+ * AJAX call, Save form
+ */
+saveForm = function(btnSelector,modalValidation,redirectUrl=null){
+
+    var icon = btnSelector.attr("class");
+    // Show loading spinner
+    showSpinner(btnSelector);
+    var param = { 'id': $("#curate_data_structure_id").html()}
+    if (contentFormat == "JSON") param.form_string = JSON.stringify(editor.getValue())
+
+    $.ajax({
+        url: saveFormUrl,
+        type: 'POST',
+        data: param,
+        dataType: 'json',
+        success: function(data) {
+            $.notify(data.message, "success");
+            if(redirectUrl)
+                window.location = redirectUrl
+        },
+        error: function(dataXHR) {
+            $.notify(dataXHR.responseJSON.error, "danger");
+        }
+    }).always(function(data) {
+        // get old button icon
+        hideSpinner(btnSelector, icon)
+        modalValidation.modal("hide");
+    });
+}
+
+/**
+ * Display the switching to text editor confirmation popup.
+ */
+var switchToTextEditorModal = function() {
+    $("#switch-to-text-editor").modal("show");
+}
+
+
+/**
+ * Switch the current to text editor.
+ */
+var switchEditor = function() {
+    if(contentFormat == "XSD"){
+        var redirectUrl =  openXMLFormUrl + "?id="+ $("#curate_data_structure_id").html();
+        saveForm($(".save-and-switch-to-text-editor  > i"), $(".save-and-switch-to-text-editor"), redirectUrl)
+    }
+
+    else
+        if (contentFormat == "JSON"){
+            var redirectUrl =  window.location =  openJSONFormUrl + "?id="+$("#curate_data_structure_id").html();
+            saveForm($(".save-and-switch-to-text-editor  > i"), $(".save-and-switch-to-text-editor"), redirectUrl)
+        }
+
+        else
+            $.notify("Template format not supported.", "danger");
+}
+
+/**
+ * AJAX call, download document
+ * @param document
+ */
+download = function(document){
+    let toFormat = $('#format').is(':checked');
+
+    // Download form/template
+    if (document == "form")
+        window.location = downloadDocumentUrl+"?pretty_print="+toFormat;
+    else
+        window.location = downloadTemplateUrl+"?pretty_print="+toFormat;
+};
+
 
 $(document).on('click', '.btn.clear-fields', clearFields);
 $(document).on('click', '.btn.cancel-changes', cancelChanges);
 $(document).on('click', '.btn.cancel-form', cancelForm);
-$(document).on('click', '.btn.save-form', saveForm);
-$(document).on('click', '.btn.validate', validateXML);
+$(document).on('click', '.btn.save-form', saveFormDialog);
+$(document).on('click', '.btn.validate', validate);
 $(document).on('click', '.btn.proceed-review', proceedToReview);
+$(document).on('click', '.btn.switch-to-text-editor', switchToTextEditorModal);
+$(document).on('click', '.download-document-btn', e=>download("form"));
+$(document).on('click', '.download-template-btn', e=>download("template"));
 
+$(document).on('click', '.save-and-switch-to-text-editor',switchEditor);
 $(document).on('click', '#btn-cancel-changes', cancel_changes);
 $(document).on('click', '#btn-clear-fields', clear_fields);
 $(document).on('click', '#btn-cancel-form', cancel_form);

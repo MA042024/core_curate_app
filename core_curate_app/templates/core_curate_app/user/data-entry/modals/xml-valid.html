@@ -1,7 +1,7 @@
 {% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
 {% load i18n %}
 
-{% block modal_id %}xml-valid-modal{% endblock %}
+{% block modal_id %}validation-modal{% endblock %}
 {% block modal_title %}Validation Successful{% endblock %}
 
 {% block modal_body %}
@@ -14,7 +14,7 @@ The {% trans "form_label" %} is valid. You can now proceed to the Review page.
    {% if BOOTSTRAP_VERSION|first == "4" %}data-dismiss{% elif BOOTSTRAP_VERSION|first == "5"  %}data-bs-dismiss{% endif %}="modal" href="#">
     <i class="fas fa-times"></i> Cancel
 </a>
-<a class="btn btn-primary proceed-review" href="{% url 'core_curate_view_data' data.data_structure.id %}">
-    <i class="fas fa-check"></i> Proceed to Review
+<a class="btn btn-primary proceed-review">
+    <i class="fas fa-check"></i> Save {% trans "form_label" %} and proceed to review
 </a>
 {% endblock %}

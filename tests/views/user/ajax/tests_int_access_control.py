@@ -198,8 +198,8 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             ("/xml-editor/form" in response.content.decode("utf-8"))
         )
 
-    def test_json_template_start_curate_new_returns_error_400(self):
-        """test_json_template_start_curate_new_returns_error_400
+    def test_json_template_start_curate_new_returns_http_200(self):
+        """test_json_template_start_curate_new_returns_http_200
 
         Returns:
 
@@ -214,10 +214,8 @@ class TestStartCuratePost(IntegrationBaseTestCase):
         request = self.factory.post("core_curate_start", data)
         request.user = self.user2
         response = curate_ajax._start_curate_post(request)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            "Template format not supported.", response.content.decode("utf-8")
-        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("/enter-data/" in response.content.decode("utf-8"))
 
     def test_json_template_start_curate_new_in_text_editor_returns_http_200(
         self,
@@ -254,6 +252,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "document_name": "",
             "template_format": "JSON",
             "forms": "",
+            "text_editor": "on",
             "template_id": str(self.fixture.template_json.id),
         }
         content = "{}"
@@ -336,6 +335,7 @@ class TestStartCuratePost(IntegrationBaseTestCase):
             "curate_form": "open",
             "document_name": "test_json",
             "template_format": "JSON",
+            "text_editor": "on",
             "forms": str(self.fixture.data_structure_json_2.id),
             "template_id": str(self.fixture.template_json.id),
         }
