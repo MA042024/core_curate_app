@@ -66,6 +66,10 @@ def index(request):
                 "is_raw": False,
             },
             {
+                "path": "core_main_app/common/js/tooltip.js",
+                "is_raw": False,
+            },
+            {
                 "path": "core_curate_app/user/js/select_template.raw.js",
                 "is_raw": True,
             },

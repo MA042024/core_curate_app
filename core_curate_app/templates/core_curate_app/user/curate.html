@@ -5,12 +5,16 @@
 
 <p>
     Select a template from the following table. Once you make your selection, start a new document or open an existing
-    {% trans "form_label" %} or start from an uploaded document.  It will automatically load the appropriate
+    {% trans "form_label" %} or start from an uploaded document. It will automatically load the appropriate
     {% trans "form_label" %} and display it on the next page.
 </p>
 
 <div id="template_selection">
-    <h3 class="text-center">Templates</h3>
+    <h3 class="text-center">Templates
+    <i class="btn fas fa-circle-question"
+       {% if BOOTSTRAP_VERSION|first == "4" %}data-toggle{% elif BOOTSTRAP_VERSION|first == "5"  %}data-bs-toggle{% endif %}="tooltip"
+        title="JSON Schema support can be enabled in the project settings."></i>
+    </h3>
     {% if data.templates_version_manager or data.userTemplates %}
         <table class="table fixed-table">
             <colgroup>
