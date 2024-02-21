@@ -440,9 +440,9 @@ saveForm = function(btnSelector,modalValidation,redirectUrl=null){
         data: param,
         dataType: 'json',
         success: function(data) {
-            $.notify(data.message, "success");
             if(redirectUrl)
-                window.location = redirectUrl
+                window.location = redirectUrl;
+            else $.notify(data.message, "success");
         },
         error: function(dataXHR) {
             $.notify(dataXHR.responseJSON.error, "danger");
