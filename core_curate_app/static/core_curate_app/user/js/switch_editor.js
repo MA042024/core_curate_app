@@ -13,7 +13,7 @@ var switchEditor = function() {
     $.ajax({
         url: saveFormUrl,
         type: 'POST',
-        data: { 'id': documentID, 'form_string': $(".input").text()},
+        data: { 'id': documentID, 'form_string': getContent()},
         dataType: 'json',
         success: function(data) {
             window.location = switchToFormUrl.replace("curate_data_structure_id", documentID);
