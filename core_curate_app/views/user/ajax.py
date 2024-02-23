@@ -362,12 +362,15 @@ def save_form(request):
         )
 
         if curate_data_structure.template.format == Template.XSD:
-            form_string = request.POST.get(
-                "form_string",
-                curate_user_views.render_xml(
-                    request, curate_data_structure.data_structure_element_root
-                ),
-            )
+            form_string = request.POST.get("form_string", None)
+            if not form_string:
+                form_string = (
+                    curate_user_views.render_xml(
+                        request,
+                        curate_data_structure.data_structure_element_root,
+                    ),
+                )
+
         elif curate_data_structure.template.format == Template.JSON:
             form_string = request.POST.get("form_string", "{}")
         else:
