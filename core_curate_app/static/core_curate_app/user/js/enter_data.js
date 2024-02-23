@@ -197,7 +197,7 @@ var validate = function() {
             dataType: "json",
             success: function(data) {
                 if ('errors' in data)
-                    showDataValidationError(errors);
+                    showDataValidationError(data.errors);
                 else {
                     var useErrors = checkElementUse();
                     if (useErrors.length > 0) {

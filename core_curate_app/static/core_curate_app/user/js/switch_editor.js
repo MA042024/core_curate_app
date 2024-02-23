@@ -22,7 +22,7 @@ var switchEditor = function() {
             $.notify(dataXHR.responseJSON.error, "danger");
         }
     }).always(function(data) {
-        modalValidation.modal("hide");
+        $("#switch-to-form-editor").modal("hide");
     });
 }
 
