@@ -285,6 +285,13 @@ class EnterDataView(View):
             context = self.build_context(
                 request, curate_data_structure, reload_unsaved_changes
             )
+
+            # additional style for the JSON form
+            if curate_data_structure.template.format == Template.JSON:
+                self.assets["css"].append(
+                    "core_curate_app/user/css/json_form.css"
+                )
+
             # Set page title
             context.update({"page_title": "Enter Data"})
 

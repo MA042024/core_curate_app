@@ -159,6 +159,136 @@ class TestEnterDataView(TestCase):
         # Assert
         self.assertEqual(response.status_code, 200)
 
+    @patch.object(curate_user_views, "render")
+    @patch.object(curate_user_views, "render_form")
+    @patch("core_curate_app.views.user.views.generate_root_element")
+    @patch("core_curate_app.views.user.views._get_curate_data_structure_by_id")
+    def test_enter_data_xml_includes_no_extra_css(
+        self,
+        mock_ds_get_by_id,
+        mock_generate_root_element,
+        mock_render_form,
+        mock_render,
+    ):
+        """test_enter_data_xml_includes_no_extra_css"""
+        mock_ds = MagicMock()
+        mock_ds.form_string = "test"
+        mock_ds.template = Template(format=Template.XSD)
+        mock_ds.data = None
+        mock_ds_get_by_id.return_value = mock_ds
+        request = self.factory.get("core_curate_enter_data")
+        request._messages = MagicMock()
+        request.user = self.user1
+        mock_generate_root_element.return_value = None
+        mock_render_form.return_value = None
+        expected_context = {
+            "edit": False,
+            "form": None,
+            "data_structure": mock_ds,
+            "page_title": "Enter Data",
+        }
+        # Act
+        EnterDataView.as_view()(request, curate_data_structure_id=2)
+
+        # Assert
+        mock_render.assert_called_with(
+            request,
+            "core_curate_app/user/data-entry/enter_data.html",
+            **{
+                "assets": {
+                    "js": [
+                        {
+                            "path": "core_main_app/common/js/debounce.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_main_app/common/js/elementViewport.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/enter_data.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/enter_data.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/modules.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/modules.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_main_app/common/js/XMLTree.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/autosave.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/autosave.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/buttons.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/buttons.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/choice.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/choice.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_main_app/common/js/data_detail.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "https://cdnjs.cloudflare.com/ajax/libs/json-editor/2.14.1/jsoneditor.js",
+                            "integrity": "sha512-G93wD4PAiaCg3T4BeJGXNUdwJ4jr6WL0dKUqz0UwZs0jVad7FnJ2r+SlJ50k6+ILkYcQBqt4M5YoFcBWujIH0A==",
+                            "is_external": True,
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/xml_entities_tooltip.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs4.js",
+                            "is_raw": False,
+                        },
+                    ],
+                    "css": [
+                        "core_curate_app/user/css/common.css",
+                        "core_curate_app/user/css/xsd_form.css",
+                        "core_parser_app/css/use.css",
+                    ],
+                },
+                "context": expected_context,
+                "modals": [
+                    "core_curate_app/user/data-entry/modals/cancel-changes.html",
+                    "core_curate_app/user/data-entry/modals/cancel-form.html",
+                    "core_curate_app/user/data-entry/modals/clear-fields.html",
+                    "core_main_app/common/modals/download-options.html",
+                    "core_curate_app/user/data-entry/modals/save-form.html",
+                    "core_curate_app/user/data-entry/modals/use-validation.html",
+                    "core_curate_app/user/data-entry/modals/validation-error.html",
+                    "core_curate_app/user/data-entry/modals/xml-valid.html",
+                    "core_curate_app/user/data-entry/modals/switch_to_text_editor.html",
+                ],
+            },
+        )
+
     @patch("core_curate_app.views.user.views._get_curate_data_structure_by_id")
     def test_enter_data_view_build_context_with_json_template_returns_http_200(
         self, mock_ds_get_by_id
@@ -167,6 +297,7 @@ class TestEnterDataView(TestCase):
         # Arrange
         mock_ds = MagicMock()
         mock_ds.form_string = "test"
+        mock_ds.template = Template(format=Template.JSON)
         mock_ds.data = None
         mock_ds_get_by_id.return_value = mock_ds
         request = self.factory.get("core_curate_enter_data")
@@ -176,6 +307,129 @@ class TestEnterDataView(TestCase):
         response = EnterDataView.as_view()(request, curate_data_structure_id=1)
         # Assert
         self.assertEqual(response.status_code, 200)
+
+    @patch.object(curate_user_views, "render")
+    @patch("core_curate_app.views.user.views._get_curate_data_structure_by_id")
+    def test_enter_data_json_includes_extra_css(
+        self, mock_ds_get_by_id, mock_render
+    ):
+        """test_enter_data_json_includes_extra_css"""
+        mock_ds = MagicMock()
+        mock_ds.form_string = "test"
+        mock_ds.template = Template(format=Template.JSON)
+        mock_ds.data = None
+        mock_ds_get_by_id.return_value = mock_ds
+        request = self.factory.get("core_curate_enter_data")
+        request._messages = MagicMock()
+        request.user = self.user1
+        expected_context = {
+            "edit": False,
+            "form": None,
+            "data_structure": mock_ds,
+            "page_title": "Enter Data",
+        }
+        # Act
+        EnterDataView.as_view()(request, curate_data_structure_id=1)
+
+        # Assert
+        mock_render.assert_called_with(
+            request,
+            "core_curate_app/user/data-entry/enter_data.html",
+            **{
+                "assets": {
+                    "js": [
+                        {
+                            "path": "core_main_app/common/js/debounce.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_main_app/common/js/elementViewport.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/enter_data.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/enter_data.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/modules.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/modules.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_main_app/common/js/XMLTree.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/autosave.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_parser_app/js/autosave.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/buttons.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/buttons.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_parser_app/js/choice.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/choice.raw.js",
+                            "is_raw": True,
+                        },
+                        {
+                            "path": "core_main_app/common/js/data_detail.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "https://cdnjs.cloudflare.com/ajax/libs/json-editor/2.14.1/jsoneditor.js",
+                            "integrity": "sha512-G93wD4PAiaCg3T4BeJGXNUdwJ4jr6WL0dKUqz0UwZs0jVad7FnJ2r+SlJ50k6+ILkYcQBqt4M5YoFcBWujIH0A==",
+                            "is_external": True,
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/xml_entities_tooltip.js",
+                            "is_raw": False,
+                        },
+                        {
+                            "path": "core_curate_app/user/js/xml_entities_tooltip/popover.bs4.js",
+                            "is_raw": False,
+                        },
+                    ],
+                    "css": [
+                        "core_curate_app/user/css/common.css",
+                        "core_curate_app/user/css/xsd_form.css",
+                        "core_parser_app/css/use.css",
+                        "core_curate_app/user/css/json_form.css",
+                    ],
+                },
+                "context": expected_context,
+                "modals": [
+                    "core_curate_app/user/data-entry/modals/cancel-changes.html",
+                    "core_curate_app/user/data-entry/modals/cancel-form.html",
+                    "core_curate_app/user/data-entry/modals/clear-fields.html",
+                    "core_main_app/common/modals/download-options.html",
+                    "core_curate_app/user/data-entry/modals/save-form.html",
+                    "core_curate_app/user/data-entry/modals/use-validation.html",
+                    "core_curate_app/user/data-entry/modals/validation-error.html",
+                    "core_curate_app/user/data-entry/modals/xml-valid.html",
+                    "core_curate_app/user/data-entry/modals/switch_to_text_editor.html",
+                ],
+            },
+        )
 
 
 class TestViewDataViewInit(TestCase):
