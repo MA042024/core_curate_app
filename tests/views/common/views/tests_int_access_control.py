@@ -1,5 +1,6 @@
 """ Test access to views from `views.common.views`.
 """
+import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -423,6 +424,29 @@ class TestDataStructureJSONEditorView(IntegrationBaseTestCase):
         request.user = self.user1
         response = DataStructureJSONEditor.as_view()(request)
         self.assertEqual(response.status_code, 400)
+
+    def test_user_save_invalid_json_content_returns_error(self):
+        """test_user_save_invalid_json_content_returns_error
+
+        Returns:
+
+        """
+        data = {
+            "content": json.dumps({"$schema": "mock_schema"}),
+            "action": "save",
+            "document_id": str(self.fixture.data_structure_json_1.id),
+            "id": str(self.fixture.data_structure_json_1.id),
+        }
+        request = self.factory.post(
+            "core_curate_app_json_text_editor_view", data
+        )
+        setattr(request, "session", "session")
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+        request.user = self.user1
+        self.assertEqual(
+            DataStructureJSONEditor.as_view()(request).status_code, 400
+        )
 
     @patch("core_main_app.utils.file.get_byte_size_from_string")
     def test_json_content_too_big_returns_error(self, mock_get_byte_size):

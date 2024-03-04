@@ -20,6 +20,7 @@ from core_curate_app.components.curate_data_structure.models import (
 from core_curate_app.permissions import rights as rights
 from core_curate_app.utils.parser import get_parser
 from core_curate_app.views.user import views as curate_user_views
+from core_main_app.commons.exceptions import JSONError
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
 from core_main_app.components.lock import api as lock_api
@@ -446,6 +447,15 @@ def validate_form(request):
             )
             if errors is not None:
                 response_dict["errors"] = errors
+        elif template.format == Template.JSON:
+            try:
+                main_json_utils.validate_json_data(
+                    curate_data_structure.form_string, template.content
+                )
+            except JSONError as json_error:
+                response_dict["errors"] = [
+                    escape(str(message)) for message in json_error.message_list
+                ]
         else:
             return HttpResponseBadRequest("Template format not supported.")
 

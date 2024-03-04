@@ -1,5 +1,6 @@
 """ Unit tests for views from `views.user.ajax`.
 """
+import json
 from unittest import TestCase
 from unittest.mock import patch, Mock, MagicMock
 
@@ -11,7 +12,7 @@ from core_curate_app.components.curate_data_structure.models import (
 )
 from core_curate_app.views.user import ajax as curate_user_ajax
 from core_curate_app.views.user import views as curate_user_views
-from core_main_app.commons.exceptions import DoesNotExist
+from core_main_app.commons.exceptions import DoesNotExist, JSONError
 from core_main_app.components.template.models import Template
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 
@@ -646,6 +647,7 @@ class TestValidateFormView(TestCase):
     ):
         """test_validate_form_return_http_bad_request_when_template_is_not_supported"""
         mock_template = _get_json_template()
+        mock_template.format = "mock_unsupported_format"
         mock_curate_data_structure_api.return_value = MagicMock(
             template=mock_template
         )
@@ -682,6 +684,92 @@ class TestValidateFormView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("errors", response.content.decode())
+
+    @patch.object(curate_user_ajax, "main_json_utils")
+    @patch("core_main_app.components.template.api.get_by_id")
+    @patch.object(curate_user_ajax, "curate_data_structure_api")
+    def test_validate_json_form_calls_validate_json_data(
+        self,
+        mock_curate_data_structure_api,
+        mock_template_get_by_id,
+        mock_json_utils,
+    ):
+        """test_validate_json_form_calls_validate_json_data"""
+        mock_template = _get_json_template()
+        mock_curate_data_structure = MagicMock(
+            template=mock_template, form_string=json.dumps({"root": "value"})
+        )
+        mock_curate_data_structure_api.get_by_id.return_value = (
+            mock_curate_data_structure
+        )
+        mock_template_get_by_id.return_value = mock_template
+
+        curate_user_ajax.validate_form(
+            self.request,
+        )
+
+        mock_json_utils.validate_json_data.assert_called_with(
+            mock_curate_data_structure.form_string, mock_template.content
+        )
+
+    @patch.object(curate_user_ajax, "main_json_utils")
+    @patch("core_main_app.components.template.api.get_by_id")
+    @patch.object(curate_user_ajax, "curate_data_structure_api")
+    def test_invalid_json_form_returns_errors(
+        self,
+        mock_curate_data_structure_api,
+        mock_template_get_by_id,
+        mock_json_utils,
+    ):
+        """test_invalid_json_form_returns_errors"""
+        mock_template = _get_json_template()
+        mock_curate_data_structure = MagicMock(
+            template=mock_template, form_string=json.dumps({"root": "value"})
+        )
+        mock_curate_data_structure_api.get_by_id.return_value = (
+            mock_curate_data_structure
+        )
+        mock_template_get_by_id.return_value = mock_template
+        mock_json_errors = ["error1", "error2"]
+        mock_json_utils.validate_json_data.side_effect = JSONError(
+            mock_json_errors
+        )
+
+        response = curate_user_ajax.validate_form(
+            self.request,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content), {"errors": mock_json_errors}
+        )
+
+    @patch.object(curate_user_ajax, "main_json_utils")
+    @patch("core_main_app.components.template.api.get_by_id")
+    @patch.object(curate_user_ajax, "curate_data_structure_api")
+    def test_valid_json_form_returns_empty(
+        self,
+        mock_curate_data_structure_api,
+        mock_template_get_by_id,
+        mock_json_utils,
+    ):
+        """test_invalid_json_form_returns_errors"""
+        mock_template = _get_json_template()
+        mock_curate_data_structure = MagicMock(
+            template=mock_template, form_string=json.dumps({"root": "value"})
+        )
+        mock_curate_data_structure_api.get_by_id.return_value = (
+            mock_curate_data_structure
+        )
+        mock_template_get_by_id.return_value = mock_template
+        mock_json_utils.validate_json_data.return_value = None
+
+        response = curate_user_ajax.validate_form(
+            self.request,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), {})
 
 
 class TestSaveDataView(TestCase):

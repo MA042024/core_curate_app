@@ -177,86 +177,99 @@ var sendSaveRequest = function() {
 };
 
 /**
- * AJAX call,Validate the current data to curate.
+ * AJAX call, validate the current data to curate.
  */
 var validate = function() {
-    var objectID = $("#curate_data_structure_id").html();
-    var icon = $(".validate > i").attr("class");
+    let objectID = $("#curate_data_structure_id").html();
+    let $validateButton = $(".validate > i");
+    let validateButtonIcon = $validateButton.attr("class");
+
+    showSpinner($validateButton);
     clearPreviousWarning();
 
-    // Show loading spinner
-    showSpinner($(".validate > i"))
-    var errors = null;
-    if(contentFormat == "XSD") {
-        $.ajax({
-            url: validateFormUrl,
-            type: "POST",
-            data: {
-                'id': objectID
-            },
-            dataType: "json",
-            success: function(data) {
-                if ('errors' in data)
-                    showDataValidationError(data.errors);
-                else {
-                    var useErrors = checkElementUse();
-                    if (useErrors.length > 0) {
-                            useErrorsAndView(useErrors);
-                    } else {
-                        reviewDataDialog();
-                    }
+    $.ajax({
+        url: validateFormUrl,
+        type: "POST",
+        data: {
+            "id": objectID
+        },
+        dataType: "json",
+        success: function (data) {
+            if ("errors" in data) {
+                showDataValidationError(data.errors);
+            } else {
+                let useErrors = checkElementUse();
+                if (contentFormat === "XSD" && useErrors.length > 0)
+                    useErrorsAndView(useErrors);
+                else reviewDataDialog();
 
-                    // if we have warnings, we have to display it in the validation modal
-                    if ('warning' in data )
-                        displayWarningInValidModal(data.warning);
-                        //find warning tooltip to display warning in the validation modal
-                    if ( typeof findFormWarningTooltip === "function" && findFormWarningTooltip())
-                        displayWarningInValidModal(' This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue.');
+                // If we have warnings, we have to display it in the validation modal
+                if ("warning" in data)
+                    displayWarningInValidModal(data.warning);
 
-                }
+                // Find warning tooltip to display warning in the validation modal
+                if (typeof findFormWarningTooltip === "function" && findFormWarningTooltip())
+                    displayWarningInValidModal(
+                        "This form may contain predefined XML entities. These entities will be automatically escaped if you want to continue."
+                    );
             }
-        }).always(function(data) {
-            // get old button icon
-            hideSpinner($(".validate > i"), icon);
-        });
-    }
-    else if(contentFormat == "JSON") {
-        errors = editor.validate();
-        if(errors.length)
-            showDataValidationError(errors);
-        else
-            reviewDataDialog();
-        hideSpinner($(".validate > i"), icon);
-    }
-    else $.notify("Template format not supported.", "danger");
+        }
+    }).always(function(data) {
+        hideSpinner($validateButton, validateButtonIcon);
+    });
 };
+
+/**
+ * Format a list of error message to output HTML ul/li list.
+ *
+ * @param errorList
+ * @returns {string}
+ */
+function buildMessageFromList(errorList) {
+    let node = document.createElement("ul");
+    node.innerHTML = errorList.map((item) => {return `<li>${item}</li>`}).join("");
+
+    // Display the list of item nicely.
+    node.style.padding = "revert";
+    node.style.margin = "0";
+    node.style.listStyle = "initial";
+
+    return node.outerHTML;
+}
+
+/**
+ * Build an error message depending on the data passed.
+ *
+ * @param errorObject
+ * @returns {string}
+ */
+function buildErrorMessage(errorObject) {
+    if (typeof errorObject === "string") {
+        return errorObject;
+    } else if (Array.isArray(errorObject)) {
+        return buildMessageFromList(errorObject);
+    } else {
+        return "Cannot display error: format not supported!";
+    }
+}
 
 /**
  * Shows validation error message.
  * @param errors
  */
 var showDataValidationError = function(errors) {
-    if (contentFormat == "XSD"){
-        $("#errorMessage").html(errors);
-        $("#validation-error-modal").modal("show");
-    }
-    else if (contentFormat == "JSON") {
-        // clear validation errors
-        $("#errorMessage").empty();
-        // build the warning element
-        var node = document.createElement("div");
-        node.classList.add("alert");
-        node.classList.add("alert-danger");
-        var error_msg = "";
-        errors.forEach(function(error){
-            error_msg += '<li>' + error.path+' '+ error.message + '</li>' // build the list
-        });
-        warningMessage = '<ul>' + error_msg + '</ul>'
-        node.innerHTML = "<strong>Warning!</strong> " + warningMessage;
-        $("#errorMessage").prepend(node.cloneNode(true));
-        $("#validation-error-modal").modal("show");
-    }
-    else $.notify("Template format not supported.", "danger");
+    let $errorMessage = $("#errorMessage");
+    $errorMessage.empty();  // Clear validation errors.
+
+    // Build the error element.
+    let node = document.createElement("div");
+    node.classList.add("alert");
+    node.classList.add("alert-danger");
+    node.innerHTML = `<strong>Error!</strong> ${buildErrorMessage(errors)}`;
+
+    // Attach the element to the modal and display the modal.
+    $errorMessage.prepend(node.cloneNode(true));
+    $("#validation-error-modal").modal("show");
 }
 
 /**
@@ -264,10 +277,10 @@ var showDataValidationError = function(errors) {
  * @param warningMessage
  */
 var displayWarningInValidModal = function(warningMessage) {
-    var modalContainerSelector = $(".warning-modal-container");
+    let modalContainerSelector = $(".warning-modal-container");
 
     // build the warning element
-    var node = document.createElement("div");
+    let node = document.createElement("div");
     node.classList.add("alert");
     node.classList.add("alert-warning");
     node.classList.add("alert-warning-xml");
@@ -275,11 +288,13 @@ var displayWarningInValidModal = function(warningMessage) {
 
     clearPreviousWarning();
 
-    // if there are multiple modal with warning container we have to fill all there modal's container
+    // if there are multiple modal with warning container we have to fill all there
+    // modal's container.
     if (modalContainerSelector.length && modalContainerSelector.length > 0) {
-
-        for (var index = 0; index < modalContainerSelector.length; ++index) {
-            modalContainerSelector[index].prepend(node.cloneNode(true)); // need to call clone function otherwise prepend will perform a move operation
+        for (let index = 0; index < modalContainerSelector.length; ++index) {
+            // need to call clone function otherwise prepend will perform a move
+            // operation.
+            modalContainerSelector[index].prepend(node.cloneNode(true));
         }
 
     }

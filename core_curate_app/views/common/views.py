@@ -23,6 +23,7 @@ from core_curate_app.views.user.views import _get_curate_data_structure_by_id
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons.exceptions import (
     DoesNotExist,
+    JSONError,
 )
 from core_main_app.components.data import api as data_api
 from core_main_app.components.data.models import Data
@@ -236,6 +237,15 @@ class DataStructureMixin:
             return HttpResponseForbidden(html_escape(str(ace)))
         except DoesNotExist as dne:
             return HttpResponseBadRequest(html_escape(str(dne)))
+        except JSONError as json_error:
+            return HttpResponseBadRequest(
+                json.dumps(
+                    [
+                        html_escape(str(message))
+                        for message in json_error.message_list
+                    ]
+                )
+            )
         except Exception as e:
             return HttpResponseBadRequest(html_escape(str(e)))
 
