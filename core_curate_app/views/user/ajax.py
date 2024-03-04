@@ -28,6 +28,7 @@ from core_main_app.components.template.models import Template
 from core_main_app.utils import decorators
 from core_main_app.utils import xml as main_xml_utils
 from core_main_app.utils import json_utils as main_json_utils
+from core_main_app.utils.json_utils import format_content_json
 from core_main_app.utils.labels import get_data_label, get_form_label
 from core_main_app.views.common import views as main_common_views
 from core_parser_app.components.data_structure_element import (
@@ -363,14 +364,19 @@ def save_form(request):
 
         if curate_data_structure.template.format == Template.XSD:
             form_string = request.POST.get("form_string", None)
-            if not form_string:
+            if form_string is None:
                 form_string = curate_user_views.render_xml(
                     request,
                     curate_data_structure.data_structure_element_root,
                 )
+            else:
+                # check if form string is well formed
+                main_xml_utils.format_content_xml(form_string)
 
         elif curate_data_structure.template.format == Template.JSON:
             form_string = request.POST.get("form_string", "{}")
+            # check if form string is well formed
+            format_content_json(form_string)
         else:
             return HttpResponseBadRequest("Template format not supported.")
 
@@ -394,7 +400,7 @@ def save_form(request):
         )
         logger.error("%s: %s", error_message, str(exception))
         return HttpResponseBadRequest(
-            json.dumps({"error": error_message}),
+            json.dumps({"error": error_message, "details": str(exception)}),
             content_type="application/json",
         )
 

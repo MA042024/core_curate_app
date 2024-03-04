@@ -389,6 +389,39 @@ class TestSaveFormView(TestCase):
             "saved with success." in response.content.decode("utf-8")
         )
 
+    @patch.object(curate_user_ajax, "curate_data_structure_api")
+    def test_save_form_with_well_formed_content_returns_http_200(
+        self, mock_curate_data_structure_api
+    ):
+        """test_save_form_with_well_formed_content_returns_http_200"""
+        mock_curate_data_structure = CurateDataStructure(
+            form_string="text", template=Template(format=Template.XSD)
+        )
+        mock_curate_data_structure_api.get_by_id.return_value = (
+            mock_curate_data_structure
+        )
+        self.request.POST = {"id": 1, "form_string": "<text></text>"}
+        response = curate_user_ajax.save_form(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(curate_user_ajax, "curate_data_structure_api")
+    def test_save_form_with_not_well_formed_content_returns_error(
+        self, mock_curate_data_structure_api
+    ):
+        """test_save_form_with_not_well_formed_content_returns_error"""
+        mock_curate_data_structure = CurateDataStructure(
+            form_string="text", template=Template(format=Template.XSD)
+        )
+        mock_curate_data_structure_api.get_by_id.return_value = (
+            mock_curate_data_structure
+        )
+        self.request.POST = {"id": 1, "form_string": "</text>"}
+        response = curate_user_ajax.save_form(self.request)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(
+            "Content is not well formatted XML." in response.content.decode()
+        )
+
 
 class TestGenerateChoiceView(TestCase):
     """Unit tests for the `generate_choice` method."""

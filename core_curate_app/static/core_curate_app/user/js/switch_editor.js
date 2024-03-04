@@ -20,6 +20,10 @@ var switchEditor = function() {
         },
         error: function(dataXHR) {
             $.notify(dataXHR.responseJSON.error, "danger");
+            if( "details" in dataXHR.responseJSON){
+                jqError.html('<i class="fas fa-exclamation-triangle"></i> '+ dataXHR.responseJSON.details);
+                jqError.show();
+            }
         }
     }).always(function(data) {
         $("#switch-to-form-editor").modal("hide");
