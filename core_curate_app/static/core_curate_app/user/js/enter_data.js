@@ -415,6 +415,7 @@ getTemplateSchema = function(){
  * initialize JSON form editor
  */
 initJSONFormEditor = function(content = null){
+    displaySpinner($(".spinner"));
     if (editor) editor.destroy();
     else {
         // Get JSON container
@@ -430,12 +431,13 @@ initJSONFormEditor = function(content = null){
         theme:  'bootstrap5'
     });
 
-    //  Set form values
-    if (content){
-        editor.on('ready',() => {
-            editor.setValue(JSON.parse(content));
-        });
-    }
+    editor.on('ready',() => {
+        removeSpinner($(".spinner"));
+        if (content) editor.setValue(JSON.parse(content));
+
+    });
+
+
 }
 
 /**
