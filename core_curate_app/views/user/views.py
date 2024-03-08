@@ -172,6 +172,7 @@ class EnterDataView(View):
                 "core_curate_app/user/css/common.css",
                 "core_curate_app/user/css/xsd_form.css",
                 "core_parser_app/css/use.css",
+                "core_main_app/common/modals/download.css",
             ],
         }
 
@@ -376,7 +377,10 @@ class ViewDataView(View):
                     "is_raw": False,
                 },
             ],
-            "css": ["core_main_app/common/css/XMLTree.css"],
+            "css": [
+                "core_main_app/common/css/XMLTree.css",
+                "core_main_app/common/modals/download.css",
+            ],
         }
 
         self.modals = [
