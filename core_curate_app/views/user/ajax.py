@@ -450,7 +450,10 @@ def validate_form(request):
         elif template.format == Template.JSON:
             try:
                 main_json_utils.validate_json_data(
-                    curate_data_structure.form_string, template.content
+                    request.POST["form_string"]
+                    if "form_string" in request.POST
+                    else curate_data_structure.form_string,
+                    template.content,
                 )
             except JSONError as json_error:
                 response_dict["errors"] = [

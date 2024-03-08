@@ -187,12 +187,16 @@ var validate = function() {
     showSpinner($validateButton);
     clearPreviousWarning();
 
+    let validateData = {
+        "id": objectID
+    }
+    if (contentFormat === "JSON")
+        validateData.form_string = JSON.stringify(editor.getValue())
+
     $.ajax({
         url: validateFormUrl,
         type: "POST",
-        data: {
-            "id": objectID
-        },
+        data: validateData,
         dataType: "json",
         success: function (data) {
             if ("errors" in data) {
