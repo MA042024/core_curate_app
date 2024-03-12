@@ -1,1 +1,1 @@
-core-file-preview-app==2.8.*
+core-file-preview-app==2.9.*
