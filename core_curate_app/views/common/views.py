@@ -227,7 +227,7 @@ class DataStructureMixin:
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                get_data_label().capitalize() + " saved with success.",
+                get_data_label().capitalize() + " saved.",
             )
             return HttpResponse(
                 json.dumps({"url": reverse("core_curate_index")}),

@@ -50,7 +50,7 @@ var clear_fields = function() {
                 });
 
                 initModules();
-                $.notify("Fields cleared with success.", "success");
+                $.notify("Fields cleared.", "success");
             },
             error: function() {
                 $.notify("An error occurred while clearing fields.", "danger");
@@ -65,7 +65,7 @@ var clear_fields = function() {
         initJSONFormEditor();
         hideSpinner($("[id^='btn-clear-fields'] > i"), icon)
         $("#clear-fields-modal").modal("hide");
-        $.notify("Fields cleared with success.", "success");
+        $.notify("Fields cleared.", "success");
     }
     else $.notify("Template format not supported.", "danger");
 
@@ -114,7 +114,7 @@ var cancel_changes = function() {
                 else
                     editor.setValue(JSON.parse(data.content));
             }
-            $.notify("Changes canceled  with success.", "success");
+            $.notify("Changes canceled .", "success");
         },
         error: function() {
             $.notify("An error occurred while canceling changes.", "danger");

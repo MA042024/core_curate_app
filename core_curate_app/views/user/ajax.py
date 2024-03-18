@@ -325,7 +325,7 @@ def cancel_form(request):
         messages.add_message(
             request,
             messages.SUCCESS,
-            get_form_label().capitalize() + " deleted with success.",
+            get_form_label().capitalize() + " deleted.",
         )
 
         return HttpResponse(json.dumps({}), content_type="application/json")
@@ -388,11 +388,7 @@ def save_form(request):
         curate_data_structure_api.upsert(curate_data_structure, request.user)
 
         return HttpResponse(
-            json.dumps(
-                {
-                    "message": f"{get_form_label().capitalize()} saved with success."
-                }
-            ),
+            json.dumps({"message": f"{get_form_label().capitalize()} saved."}),
             content_type="application/json",
         )
     except Exception as exception:
@@ -539,7 +535,7 @@ def save_data(request):
         messages.add_message(
             request,
             messages.SUCCESS,
-            get_data_label().capitalize() + " saved with success.",
+            get_data_label().capitalize() + " saved.",
         )
     except Exception as exception:
         return HttpResponseBadRequest(
@@ -630,7 +626,7 @@ def _start_curate_post(request):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                get_data_label().capitalize() + " saved with success.",
+                get_data_label().capitalize() + " saved.",
             )
             url = reverse("core_main_app_data_detail") + f"?id={str(data.id)}"
         else:

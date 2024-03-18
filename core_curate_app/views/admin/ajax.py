@@ -15,7 +15,7 @@ import core_main_app.components.data.api as data_api
 
 from core_main_app.commons.exceptions import DoesNotExist
 
-from core_main_app.utils.labels import get_data_label
+from core_main_app.utils.labels import get_data_label, get_form_label
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 
@@ -41,7 +41,7 @@ def delete_record_drafts(request, pk):
 
         message = Message(
             messages.SUCCESS,
-            "Drafts deleted with success",
+            get_form_label() + " deleted.",
         )
     except DoesNotExist:
         message = Message(

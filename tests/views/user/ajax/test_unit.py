@@ -386,9 +386,7 @@ class TestSaveFormView(TestCase):
 
         response = curate_user_ajax.save_form(self.request)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            "saved with success." in response.content.decode("utf-8")
-        )
+        self.assertTrue("saved." in response.content.decode("utf-8"))
 
     @patch.object(curate_user_ajax, "curate_data_structure_api")
     def test_save_form_with_well_formed_content_returns_http_200(
