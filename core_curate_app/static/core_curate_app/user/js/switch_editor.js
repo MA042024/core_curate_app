@@ -21,7 +21,7 @@ var switchEditor = function() {
         error: function(dataXHR) {
             $.notify(dataXHR.responseJSON.error, "danger");
             if( "details" in dataXHR.responseJSON){
-                jqError.html('<i class="fas fa-exclamation-triangle"></i> '+ dataXHR.responseJSON.details);
+                $("#error_message").html('<i class="fas fa-exclamation-triangle"></i> '+ dataXHR.responseJSON.details);
                 jqError.show();
             }
         }
