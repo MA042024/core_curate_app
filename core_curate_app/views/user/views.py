@@ -385,7 +385,7 @@ class ViewDataView(View):
 
         self.modals = [
             "core_curate_app/user/data-review/modals/save-error.html",
-            "core_curate_app/user/data-entry/download-options.html",
+            "core_curate_app/user/data-entry/modals/download-options.html",
         ]
 
         if "core_file_preview_app" in settings.INSTALLED_APPS:
