@@ -1,7 +1,7 @@
 {% load i18n %}
 <form id="form_select_template">
 	<input type="radio" id="curate_form_new" name="curate_form" value="new">
-	<label for="curate_form_new" class="pop_curate_label">Create a new document:</label>
+	<label for="curate_form_new" class="pop_curate_label">Create a new Record:</label>
 	{{new_form}}
 
 	<input type="radio" id="curate_form_open" name="curate_form" value="open">
@@ -9,7 +9,7 @@
 	{{open_form}}
 
 	<input type="radio" id="curate_form_upload" name="curate_form" value="upload">
-	<label for="curate_form_upload" class="pop_curate_label">Upload document:</label>
+	<label for="curate_form_upload" class="pop_curate_label">Upload Record:</label>
 	{{upload_form}}
 
 	{{hidden_form}}
