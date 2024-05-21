@@ -202,12 +202,12 @@ class EnterDataView(View):
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
             "core_curate_app/user/data-entry/modals/cancel-form.html",
             "core_curate_app/user/data-entry/modals/clear-fields.html",
-            "core_curate_app/user/data-entry/modals/download-options.html",
             "core_curate_app/user/data-entry/modals/save-form.html",
             "core_curate_app/user/data-entry/modals/use-validation.html",
             "core_curate_app/user/data-entry/modals/validation-error.html",
             "core_curate_app/user/data-entry/modals/xml-valid.html",
             "core_curate_app/user/data-entry/modals/switch_to_text_editor.html",
+            "core_curate_app/user/data-entry/modals/download-options.html",
         ]
 
     def build_context(
