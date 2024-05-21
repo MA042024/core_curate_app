@@ -202,7 +202,7 @@ class EnterDataView(View):
             "core_curate_app/user/data-entry/modals/cancel-changes.html",
             "core_curate_app/user/data-entry/modals/cancel-form.html",
             "core_curate_app/user/data-entry/modals/clear-fields.html",
-            "core_main_app/common/modals/download-options.html",
+            "core_curate_app/user/data-entry/modals/download-options.html",
             "core_curate_app/user/data-entry/modals/save-form.html",
             "core_curate_app/user/data-entry/modals/use-validation.html",
             "core_curate_app/user/data-entry/modals/validation-error.html",
@@ -385,7 +385,7 @@ class ViewDataView(View):
 
         self.modals = [
             "core_curate_app/user/data-review/modals/save-error.html",
-            "core_main_app/common/modals/download-options.html",
+            "core_curate_app/user/data-entry/download-options.html",
         ]
 
         if "core_file_preview_app" in settings.INSTALLED_APPS:
