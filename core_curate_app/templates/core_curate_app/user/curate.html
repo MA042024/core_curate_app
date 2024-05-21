@@ -1,16 +1,16 @@
 {% load static %}
 {% load i18n %}
 
-<div class="title-page">Select Template</div>
+<div class="title-page">Select Test</div>
 
 <p>
-    Select a template from the following table. Once you make your selection, start a new document or open an existing
-    {% trans "form_label" %} or start from an uploaded document. It will automatically load the appropriate
+    Select a performance test from the following list Once you make your selection, start a new record or open an existing
+    {% trans "form_label" %} or start from an uploaded record. It will automatically load the appropriate
     {% trans "form_label" %} and display it on the next page.
 </p>
 
 <div id="template_selection">
-    <h3 class="text-center">Templates
+    <h3 class="text-center">Tests
     <i class="btn fas fa-circle-question"
        {% if BOOTSTRAP_VERSION|first == "4" %}data-toggle{% elif BOOTSTRAP_VERSION|first == "5"  %}data-bs-toggle{% endif %}="tooltip"
         title="JSON Schema support can be enabled in the project settings."></i>
@@ -26,7 +26,7 @@
             {% include 'core_curate_app/user/list/list.html' with object_list=data.userTemplates owner=request.user object_type='Template' %}
         </table>
     {% else %}
-        <p class="text-center">No template uploaded yet.</p>
+        <p class="text-center">No test uploaded yet.</p>
     {% endif %}
 </div>
 
