@@ -18,8 +18,8 @@
     {% if data.templates_version_manager or data.userTemplates %}
         <table class="table fixed-table">
             <colgroup>
-                <col class="col-width-75">
-                <col class="col-width-25">
+                <col class="col-width-50">
+                <col class="col-width-50">
             </colgroup>
             {% include 'core_main_app/user/template/list_header.html' with object_type='Template' %}
             {% include 'core_curate_app/user/list/list.html' with object_list=data.templates_version_manager owner='Global' object_type='Template' %}
