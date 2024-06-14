@@ -10,6 +10,9 @@ from django.urls import reverse
 from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
 
+from django.shortcuts import redirect
+from django.http import JsonResponse
+
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 import core_curate_app.views.user.forms as users_forms
 from core_curate_app.common import exceptions as exceptions
@@ -45,6 +48,67 @@ logger = logging.getLogger(__name__)
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
 
+@decorators.permission_required(
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
+    raise_exception=True,
+)
+def save_xml_data(request):
+    if request.method == 'POST':
+        try:
+            # Extract XML data from the request
+            xml_data = request.POST.get("xml_data")
+            title = request.POST.get("title")
+            template_id = request.POST.get("template_id")
+
+            # Check if the necessary data is present
+            if not xml_data or not title or not template_id:
+                return HttpResponseBadRequest("Missing required data")
+
+            # Your XML processing logic here
+            form_string = xml_data
+
+            # Create or update the Data object
+            data_id = request.POST.get("data_id")  # If data_id is present, it's an update, otherwise, it's new data
+            if data_id:
+                # Update existing data
+                data = Data.objects.get(pk=data_id)
+            else:
+                # Create new data
+                data = Data()
+
+            # Set data attributes
+            data.content = form_string
+            data.title = title
+            data.template = template_api.get_by_id(template_id, request=request)
+            data.user_id = str(request.user.id)
+
+            # Save the data
+            data = data_api.upsert(data, request)
+
+            data.title = f"{title}_AMUID{data.pk}"
+            data = data_api.upsert(data, request)  
+                            
+            # Delete the curate data structure
+            curate_data_structure_id = request.POST.get("id")
+            if curate_data_structure_id:
+                curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id, request.user)
+                curate_data_structure_api.delete(curate_data_structure, request.user)
+
+                # Unlock from database if necessary
+                if curate_data_structure.data is not None:
+                    lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+
+            # Add success message
+            # messages.add_message(request, messages.SUCCESS, "Data saved.")
+        
+            # Return the data ID as JSON response
+            return JsonResponse({"data_id": str(data.id)})
+            
+        except Exception as exception:
+            return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
+    else:
+        return HttpResponseBadRequest("Invalid request method")
 
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
