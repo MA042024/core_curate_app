@@ -38,7 +38,6 @@ from core_parser_app.components.data_structure_element import (
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
-from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -46,60 +45,64 @@ logger = logging.getLogger(__name__)
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
 
-@login_required
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
     raise_exception=True,
 )
 def save_xml_data(request):
-    """Save XML data."""
-    try:
-        # Extract XML data from the request
-        xml_data = request.POST.get("xml_data")
+    if request.method == 'POST':
+        try:
+            # Extract XML data from the request
+            xml_data = request.POST.get("xml_data")
+            title = request.POST.get("title")
+            template_id = request.POST.get("template_id")
 
-        # Your XML processing logic here
-        # For example, if you need to validate or manipulate the XML data, do it here
+            # Check if the necessary data is present
+            if not xml_data or not title or not template_id:
+                return HttpResponseBadRequest("Missing required data")
 
-        # Assuming xml_data is ready to be saved as content
-        form_string = xml_data
+            # Your XML processing logic here
+            form_string = xml_data
 
-        # Create or update the Data object
-        data_id = request.POST.get("data_id")  # If data_id is present, it's an update, otherwise, it's a new data
-        if data_id:
-            # Update existing data
-            data = Data.objects.get(pk=data_id)
-        else:
-            # Create new data
-            data = Data()
+            # Create or update the Data object
+            data_id = request.POST.get("data_id")  # If data_id is present, it's an update, otherwise, it's new data
+            if data_id:
+                # Update existing data
+                data = Data.objects.get(pk=data_id)
+            else:
+                # Create new data
+                data = Data()
 
-        # Set data attributes
-        data.content = form_string
-        data.title = request.POST.get("title")
-        data.template = template_api.get_by_id(request.POST.get("template_id"), request=request)
-        data.user_id = str(request.user.id)
+            # Set data attributes
+            data.content = form_string
+            data.title = title
+            data.template = template_api.get_by_id(template_id, request=request)
+            data.user_id = str(request.user.id)
 
-        # Save the data
-        data = data_api.upsert(data, request)
+            # Save the data
+            data = data_api.upsert(data, request)
 
-        # Delete the curate data structure
-        curate_data_structure_id = request.POST.get("id")
-        curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id, request.user)
-        curate_data_structure_api.delete(curate_data_structure, request.user)
+            # Delete the curate data structure
+            curate_data_structure_id = request.POST.get("id")
+            if curate_data_structure_id:
+                curate_data_structure = curate_data_structure_api.get_by_id(curate_data_structure_id, request.user)
+                curate_data_structure_api.delete(curate_data_structure, request.user)
 
-        # Unlock from database if necessary
-        if curate_data_structure.data is not None:
-            lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
+                # Unlock from database if necessary
+                if curate_data_structure.data is not None:
+                    lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
 
-        # Add success message
-        messages.add_message(request, messages.SUCCESS, "Data saved.")
+            # Add success message
+            messages.add_message(request, messages.SUCCESS, "Data saved.")
 
-        # Return the data ID as JSON response
-        return JsonResponse({"data_id": str(data.id)})
-        
-    except Exception as exception:
-        # Return a bad request response with the error message
-        return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
+            # Return the data ID as JSON response
+            return JsonResponse({"data_id": str(data.id)})
+
+        except Exception as exception:
+            return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
+    else:
+        return HttpResponseBadRequest("Invalid request method")
 
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
