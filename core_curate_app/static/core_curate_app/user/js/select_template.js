@@ -223,9 +223,10 @@ document.addEventListener("DOMContentLoaded", function() {
         // Get the XML string and name from session storage
         var xmlString = sessionStorage.getItem('xmlData');
         var name = sessionStorage.getItem('name');
-
+	console.log(xmlString);
+	console.log(name);
         // Automatically press the "Select Test" button next to templateID=1
-        document.querySelector('td[templateID="1"] + td .set-template').click();
+        document.querySelector('td[templateid="1"] + td .set-template').click();
 
         // Wait for the modal to appear
         setTimeout(() => {
