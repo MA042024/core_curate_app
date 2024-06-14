@@ -38,6 +38,7 @@ from core_parser_app.components.data_structure_element import (
 from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ logger = logging.getLogger(__name__)
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
 
-
+@login_required
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
     permission=rights.CURATE_ACCESS,
