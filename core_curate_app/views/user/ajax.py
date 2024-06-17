@@ -96,6 +96,9 @@ def save_xml_data(request):
 
             # Add success message
             messages.add_message(request, messages.SUCCESS, "Data saved.")
+        
+            # Return the data ID as JSON response
+            return JsonResponse({"data_id": str(data.id)})
             
         except Exception as exception:
             return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
