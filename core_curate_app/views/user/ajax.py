@@ -96,10 +96,7 @@ def save_xml_data(request):
 
             # Add success message
             messages.add_message(request, messages.SUCCESS, "Data saved.")
-
-            # Redirect to /dashboard/records
-            return redirect('/dashboard/records')
-
+            
         except Exception as exception:
             return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
     else:
