@@ -9,6 +9,7 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
+from django.shortcuts import redirect
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 import core_curate_app.views.user.forms as users_forms
@@ -51,6 +52,7 @@ logger = logging.getLogger(__name__)
     raise_exception=True,
 )
 def save_xml_data(request):
+    return redirect('/explore/keyword/')
     if request.method == 'POST':
         try:
             # Extract XML data from the request
