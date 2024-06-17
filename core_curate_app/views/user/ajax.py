@@ -51,6 +51,9 @@ logger = logging.getLogger(__name__)
     raise_exception=True,
 )
 def save_xml_data(request):
+    # Redirect to /explore/keyword/
+    return redirect('/explore/keyword/')
+
     if request.method == 'POST':
         try:
             # Extract XML data from the request
@@ -96,8 +99,8 @@ def save_xml_data(request):
             # Add success message
             messages.add_message(request, messages.SUCCESS, "Data saved.")
 
-            # Return the data ID as JSON response
-            return JsonResponse({"data_id": str(data.id)})
+            # Redirect to /dashboard/records
+            return redirect('/dashboard/records')
 
         except Exception as exception:
             return HttpResponseBadRequest(str(exception).replace('"', "'"), content_type="application/javascript")
