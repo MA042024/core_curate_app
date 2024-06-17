@@ -9,7 +9,9 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
+
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 import core_curate_app.components.curate_data_structure.api as curate_data_structure_api
 import core_curate_app.views.user.forms as users_forms
