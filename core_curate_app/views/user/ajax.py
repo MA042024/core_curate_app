@@ -97,7 +97,7 @@ def save_xml_data(request):
                     lock_api.remove_lock_on_object(curate_data_structure.data, request.user)
 
             # Add success message
-            messages.add_message(request, messages.SUCCESS, "Data saved.")
+            # messages.add_message(request, messages.SUCCESS, "Data saved.")
         
             # Return the data ID as JSON response
             return JsonResponse({"data_id": str(data.id)})
