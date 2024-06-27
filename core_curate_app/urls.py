@@ -21,11 +21,11 @@ urlpatterns = [
     ),
     # FIXME: url to allow reopening a form with unsaved changes
     #  (may be temporary until curate workflow redesign)
-    #re_path(
-    #    r"^enter-data/(?P<curate_data_structure_id>\w+)/(?P<reload_unsaved_changes>\w+)$",
-    #    user_views.EnterDataView.as_view(),
-    #    name="core_curate_enter_data",
-    #),
+    re_path(
+        r"^enter-data/(?P<curate_data_structure_id>\w+)/(?P<reload_unsaved_changes>\w+)$",
+        user_views.EnterDataView.as_view(),
+        name="core_curate_enter_data",
+    ),
     re_path(
         r"^view-data/(?P<curate_data_structure_id>\w+)$",
         user_views.ViewDataView.as_view(),
