@@ -86,7 +86,7 @@ def save_xml_data(request):
             # Save the data
             data = data_api.upsert(data, request)
 
-            data.title = f"{title}-UID{data.pk}"
+            data.title = f"{title}_AMUID{data.pk}"
             data = data_api.upsert(data, request)  
                             
             # Delete the curate data structure
