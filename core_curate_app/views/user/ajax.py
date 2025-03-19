@@ -9,7 +9,7 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.html import escape
 from lxml.etree import XMLSyntaxError
-
+import xmlschema
 from django.shortcuts import redirect
 from django.http import JsonResponse
 
@@ -42,8 +42,10 @@ from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
-logger = logging.getLogger(__name__)
+from core_curate_app.pythoncodes.xmlprocessing import process_xml_final, process_xml_final_R, validate_record
+schema_cache = {}
 
+logger = logging.getLogger(__name__)
 
 # FIXME: delete_branch not deleting all elements
 # FIXME: generate element not testing max occurrences
@@ -65,8 +67,6 @@ def save_xml_data(request):
             if not xml_data or not title or not template_id:
                 return HttpResponseBadRequest("Missing required data")
 
-            form_string = xml_data
-
             # Create or update the Data object
             data_id = request.POST.get("data_id")  # If data_id is present, it's an update, otherwise, it's new data
             if data_id:
@@ -74,17 +74,17 @@ def save_xml_data(request):
                 data = Data.objects.get(pk=data_id)
             else:
                 # Create new data
-                data = Data()
-                data.user_id = str(request.user.id)
+                #data = Data()
+                #data.user_id = str(request.user.id)
+                data = Data(user_id=str(request.user.id))
 
             # Set data attributes
-            data.content = form_string
+            data.content = xml_data
             data.title = title
             data.template = template_api.get_by_id(template_id, request=request)
 
             # Save the data
             data = data_api.upsert(data, request)
-
             data.title = f"{title}_AMUID{data.pk}"
             data = data_api.upsert(data, request)  
                             
@@ -100,7 +100,7 @@ def save_xml_data(request):
 
             # Add success message
             # messages.add_message(request, messages.SUCCESS, "Data saved.")
-        
+            
             # Return the data ID as JSON response
             return JsonResponse({"data_id": str(data.id)})
             
@@ -114,50 +114,80 @@ def save_xml_data(request):
     permission=rights.CURATE_ACCESS,
     raise_exception=True,
 )
-def validate_record(request):
+def extractxml(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("Invalid request method.")
+
+    if 'excelFile' not in request.FILES:
+        return JsonResponse({"error": "No file uploaded"}, status=400)
+
+    excel_file = request.FILES['excelFile']
+    sheet = request.POST.get('sheet')
+
+    if not sheet:
+        return JsonResponse({"error": "No sheet selected"}, status=400)
+
+    try:
+        if sheet == 'Rows':
+            xml_dict = process_xml_final_R(excel_file)
+        elif sheet == 'Columns':
+            xml_dict = process_xml_final(excel_file)
+        else:
+            return JsonResponse({"error": "Failed: No such sheet exists, please check you file."}, status=400)
+
+        excel_file.close()
+        
+        return JsonResponse(xml_dict)
+    
+    except Exception as e:
+        if 'excel_file' in locals():
+            excel_file.close()
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@decorators.permission_required(
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
+    raise_exception=True,
+)
+def validaterecord(request):
     if request.method != 'POST':
         return HttpResponseBadRequest("Invalid request method.")
 
     response_dict = {}
     try:
-        # Retrieve XML content from request
         xml_content = request.POST.get("xml_dt", "").strip()
         if not xml_content:
             return HttpResponseBadRequest("Missing XML data.")
 
-        # Retrieve template ID from request
         template_id = request.POST.get("template_id", "").strip()
         if not template_id:
             return HttpResponseBadRequest("Missing template ID.")
 
-        # Fetch the template using the given ID
         template = template_api.get_by_id(template_id, request=request)
         if template.format != "XSD":
             return HttpResponseBadRequest("Provided template is not an XSD format.")
 
-        # Build XML and XSD trees
-        xml_tree = XSDTree.build_tree(xml_content)
-        xsd_tree = XSDTree.build_tree(template.content)
+#        schema = xmlschema.XMLSchema(template.content)
+        if template_id not in schema_cache:
+            schema_cache[template_id] = xmlschema.XMLSchema(template.content)
+        schema = schema_cache[template_id]
 
-        # Validate XML against the XSD
-        errors = main_xml_utils.validate_xml_data(xsd_tree, xml_tree, request=request)
-
-        if errors:
-            response_dict["errors"] = errors if isinstance(errors, list) else [errors]
-        else:
+        validation_result = validate_record(xml_content, schema)
+        
+        if validation_result == "VALID":
             response_dict["message"] = "VALID"
-
+        else:
+            response_dict["errors"] = [validation_result]
+        
     except XMLSyntaxError as xml_syntax_error:
         response_dict["errors"] = [f"XML Syntax Error: {str(xml_syntax_error)}"]
-    except exceptions.XMLError as xml_error:
+    except xmlschema.XMLSchemaValidationError as xml_error:
         response_dict["errors"] = [f"XML Validation Error: {str(xml_error)}"]
-    except exceptions.XSDError as xsd_error:
-        response_dict["errors"] = [f"XSD Error: {str(xsd_error)}"]
     except Exception as e:
         response_dict["errors"] = [f"Unexpected Error: {str(e)}"]
-
+    
     return JsonResponse(response_dict)
-
 
 @decorators.permission_required(
     content_type=rights.CURATE_CONTENT_TYPE,
