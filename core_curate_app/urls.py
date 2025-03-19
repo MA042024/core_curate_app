@@ -88,7 +88,8 @@ urlpatterns = [
     re_path(r"^save-form$", user_ajax.save_form, name="core_curate_save_form"),
     re_path(r"^save-data$", user_ajax.save_data, name="core_curate_save_data"),
     re_path(r'^save-xml-data/$', user_ajax.save_xml_data, name='core_curate_save_xml_data'),
-    re_path(r'^validate-record/$', user_ajax.validate_record, name='core_curate_validate_record'),
+    re_path(r'^validate-record/$', user_ajax.validaterecord, name='core_curate_validate_record'),
+    re_path(r'^extractxml/$', user_ajax.extractxml, name='core_curate_extract_xml'),
     re_path(
         r"^validate-form$",
         user_ajax.validate_form,
