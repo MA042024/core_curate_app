@@ -42,6 +42,8 @@ from core_parser_app.tools.parser.parser import remove_child_element
 from core_parser_app.tools.parser.renderer.list import ListRenderer
 from xml_utils.xsd_tree.xsd_tree import XSDTree
 
+from core_curate_app.pythoncodes.xmlprocessing import process_xml_final
+
 logger = logging.getLogger(__name__)
 
 
@@ -157,6 +159,27 @@ def validate_record(request):
         response_dict["errors"] = [f"Unexpected Error: {str(e)}"]
 
     return JsonResponse(response_dict)
+
+@decorators.permission_required(
+    content_type=rights.CURATE_CONTENT_TYPE,
+    permission=rights.CURATE_ACCESS,
+    raise_exception=True,
+)
+def extractxml(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("Invalid request method.")
+
+    if 'excelFile' not in request.FILES:
+        return JsonResponse({"error": "No file uploaded"}, status=400)
+
+    excel_file = request.FILES['excelFile']
+    
+    try:
+        xml_dict = process_xml_final(excel_file)
+        return JsonResponse(xml_dict)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @decorators.permission_required(
