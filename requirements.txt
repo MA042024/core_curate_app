@@ -1,2 +1,6 @@
 Django
 django-simple-menu
+pandas
+xmlschema
+lxml
+openpyxl
