@@ -1,0 +1,2569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+  <!-- ===================================================================== -->
+  <!-- ======         Created by Mohammad Abbas - August 2024         ====== -->
+  <!-- ===================================================================== -->
+  <!-- ======                Main Node: Marshall Test                 ====== -->
+  <!-- ===================================================================== -->
+  <xsd:element name="MarshallExp" type="MarshallExperiment" />
+  <!-- ===================================================================== -->
+  <!-- ======                Branches and Sub-branches                ====== -->
+  <!-- ===================================================================== -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MarshallExperiment                                                   -->
+  <!--  This set of lines below provides the definition for the top-level    -->
+  <!--  element type within the data structure hierarchy. Essentially, it    -->
+  <!--  outlines the roster of its sub-elements, which manifest as distinct  -->
+  <!--  sets of arranged data.                                               -->
+  <xsd:complexType name="MarshallExperiment">
+    <xsd:sequence>
+      <xsd:element name="DataSource" type="DataSourceType" />
+      <xsd:element name="Mixture" type="MixtureType" />
+      <xsd:element name="MarshallTestResults" type="MarshallTestResultsType" />
+      <xsd:element name="Notes" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The content of the text note concerning the experiment in general.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The content of the text note concerning the experiment in general.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  DataSourceType                                                       -->
+  <!--  The "DataSourceType" sub-element type defines the metadata of the    -->
+  <!--  measurement data. It includes the measurement identifier and the     -->
+  <!--  corresponding source details.                                        -->
+  <xsd:complexType name="DataSourceType">
+    <xsd:sequence>
+      <xsd:element name="MeasurementCampaignID">
+        <xsd:annotation>
+          <xsd:documentation>Denotes a unique alpha-numeric identifier (key) for a measurement campaign within the organization reporting the data. It is formatted as an alpha-numeric string.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>Denotes a unique alpha-numeric identifier (key) for a measurement campaign within the organization reporting the data. It is formatted as an alpha-numeric string (e.g., A3-021).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="OrganizationName">
+        <xsd:annotation>
+          <xsd:documentation>Name of the organization where the data were reported (Company, Institute, Laboratory, etc).</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>Name of the organization where the data were reported (Company, Institute, Laboratory, etc). Use a string value (e.g., XYZ Corporation).
+            </tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="LocationCountry">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the country where the work was performed and/or the location of the corresponding organization.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>Indicates the country where the work was performed and/or the location of the corresponding organization. Use a string value (e.g., Germany).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation>Year when the work referenced by the data was completed.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>Year when the work referenced by the data was completed. Use a four-digit integer (e.g., 2010).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DataRecord" type="DataRecordType" minOccurs="0" />
+      <xsd:element name="Notes" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The content of the text note concerning the data source.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The content of the text note concerning the data source.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  DataRecordType                                                       -->
+  <!--  The "DataRecordType" sub-element type defines the structure for      -->
+  <!--  the bibliographic record related to the data (if available or        -->
+  <!--  disclosed). It can represent either a complete record, whether it    -->
+  <!--  includes a DOI not, or exclusively a DOI.                            -->
+  <xsd:complexType name="DataRecordType">
+    <xsd:annotation>
+      <xsd:documentation>Record information about the document in which the data are reported. This feature variable is structured and has two possible mutually exclusive values: "CompleteDataRecord" or "DOIdentifier".</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="CompleteDataRecord" type="CompleteDataRecordType" minOccurs="0"/>
+      <xsd:element name="DOIdentifier" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DOI code assigned to the document in which the data are reported, serving as the sole bibliographic information.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The DOI code assigned to the document in which the data are reported, serving as the sole bibliographic information (e.g., 10.1016/j.resconrec.2007.02.002).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  CompleteDataRecord                                                   -->
+  <!--  The "CompleteDataRecord" sub-element type defines the detailed       -->
+  <!--  bibliographic record of the data.                                    -->
+  <xsd:complexType name="CompleteDataRecordType">
+    <xsd:annotation>
+      <xsd:documentation>Complete bibliographic information about the document in which the data are reported. This feature variable is structured and has six possible mutually exclusive values: "ArticleInJournal", "ArticleInConferenceProceedings", "BookPublication", "PublishedReport", "UnpublishedReport", or "OtherBibliographic".</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="ArticleInJournal" type="ArticleInJournaleType" />
+      <xsd:element name="ArticleInConferenceProceedings" type="ArticleInConferenceProceedingsType" />
+      <xsd:element name="BookPublication" type="BookPublicationType" />
+      <xsd:element name="PublishedReport" type="PublishedReportType" />
+      <xsd:element name="UnpublishedReport" type="UnPublishedReportType" />
+      <xsd:element name="OtherBibliographic" type="OtherRecordsType" />
+    </xsd:choice>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  ArticleInJournaleType                                                -->
+  <!--  The "ArticleInJournaleType" sub-element type defines the structure   -->
+  <!--  of a bibliographic record for a journal article.                     -->
+  <xsd:complexType name="ArticleInJournaleType">
+    <xsd:sequence>
+      <xsd:element name="FirstAuthor" type="xsd:string" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>The full name of the first author of the journal article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of the first author of the journal article in which the data are reported (e.g., Huang, Y.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Co-Authors" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>The full name of a co-author of the journal article in which the data are reported. Multiple instances can be generated to include more than one co-author.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of a co-author of the journal article in which the data are reported. Multiple instances can be generated to include more than one co-author (e.g., Huang, Y.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ArticleTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation> The title of the journal article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The title of the journal article in which the data are reported (e.g., A review of the use of recycled solid waste materials in asphalt pavements).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="JournalTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The title of the journal in which the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The title of the journal in which the article reporting the data was published (e.g., Resources, Conservation and Recycling).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="JournalVolumeNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The volume number of the journal where the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The volume number of the journal where the article reporting the data was published (e.g, 52).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="JournalIssueNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The issue number of the journal where the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The issue number of the journal where the article reporting the data was published (e.g, 1).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ArticleStartingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The starting page of the article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The starting page of the article in which the data are reported (e.g., 58).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ArticleEndingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The ending page of the article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The ending page of the article in which the data are reported (e.g., 73).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ArticleNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The article number in the journal in which the data are reported, applicable if the corresponding journal uses article numbers instead of pages.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The article number in the journal in which the data are reported, applicable if the corresponding journal uses article numbers instead of pages (013202).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation>The year when the article was published in print form.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The year when the article was published in printed form (e.g., 2007).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Publisher" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the publisher of the journal in which the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the publisher of the journal in which the article reporting the data was published (e.g., Elsevier).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DOI" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DOI code assigned to the journal article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The DOI code assigned to the journal article in which the data are reported (e.g., 10.1016/j.resconrec.2007.02.002).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ISSN" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The International Standard Serial Number of the journal in which the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The International Standard Serial Number (ISSN) of the journal in which the data-reporting article was published. The print ISSN precedes a forward slash, followed by the online ISSN (e.g., 0921-3449/1879-0658).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  ArticleInConferenceProceedingsType                                   -->
+  <!--  The "ConfProceedsArticleType" sub-element type defines the           -->
+  <!--  structure of a bibliographic record for a conference proceedings     -->
+  <!--  article.                                                             -->
+  <xsd:complexType name="ArticleInConferenceProceedingsType">
+    <xsd:sequence>
+      <xsd:element name="FirstAuthor" type="xsd:string" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>The full name of the first author of the proceedings article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of the first author of the proceedings article in which the data are reported (e.g., Huang, Y.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Co-Authors" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>The full name of a co-author of the conference proceedings article in which the data are reported. Multiple instances can be generated to include more than one co-author.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of a co-author of the conference proceedings article in which the data are reported. Multiple instances can be generated to include more than one co-author (e.g., Huang, Y.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ArticleTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The title of the conference proceedings article in which the data is reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The title of the conference proceedings article in which the data is reported (e.g., Micromechanical Surface Investigation of Bio-modified RAP Binder).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The title of the conference in which the article reporting the data was presented.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The title of the conference in which the article reporting the data was presented (e.g., 5th International Symposium on Asphalt Pavements &amp; Environment (APE)).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceCity" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The name of the city where the conference was held.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The name of the city where the conference was held (e.g., Padova).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceCountry" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The name of the country where the conference was held.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The name of the country where the conference was held (e.g., Italy).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceProceedingsTitle" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The title of the conference proceedings in which the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The title of the conference proceedings in which the article reporting the data was published (e.g., Sustainable Pavements and Environmentally Friendly Technologies).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceProceedingsVolumeNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The number of the volume of the conference proceedings if available.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The number of the volume of the conference proceedings if available (e.g., 48).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceProceedingsStartingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The starting page of the conference proceedings article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The starting page of the conference proceedings article in which the data are reported (e.g., 14).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ConferenceProceedingsEndingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The ending page of the conference proceedings article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The ending page of the conference proceedings article in which the data are reported (e.g., 22).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation> The year when the conference proceedings article was published in print form.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The year when the conference proceedings article was published in print form (e.g., 2020).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Publisher" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the publisher of the conference proceedings in which the article reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the publisher of the conference proceedings in which the article reporting the data was published (e.g., Springer Cham).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DOI" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DOI code assigned to the conference proceedings article in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The DOI code assigned to the conference proceedings article in which the data are reported (e.g., 10.1007/978-3-030-29779-4_2)</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  BookPublicationType                                                  -->
+  <!--  The "BookPublicationType" sub-element type defines the structure     -->
+  <!--  of a bibliographic record for a book.                                -->
+  <xsd:complexType name="BookPublicationType">
+    <xsd:sequence>
+      <xsd:element name="FirstAuthor" type="xsd:string" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>The full name of the first author of the book (or book chapter) in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of the first author of the book (or book chapter) in which the data are reported (e.g., G.Speight, J.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Co-Authors" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>The full name of a co-author of the book (or book chapter) in which the data are reported. Multiple instances can be generated to include more than one co-author.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of a co-author of the book (or book chapter) in which the data are reported. Multiple instances can be generated to include more than one co-author (e.g., G.Speight, J.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BookTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation> The title of the book in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The title of the book in which the data are reported (e.g., Asphalt Materials Science and Technology).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BookChapterTitle" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The title of the chapter of the book in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The title of the chapter of the book in which the data are reported (e.g., Rubber modified bitumen).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ChapterNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The number of the chapter of the book in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The number of the chapter of the book in which the data are reported (e.g., 4).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Editors" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The name of the Editors of the book, if the case applies.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the Editors of the book, if the case applies (e.g., Tony McNally).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="EditionNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The edition number of the book in which the chapter reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The edition number of the book in which the chapter reporting the data was published (e.g., 1).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ChapterStartingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The starting page of the book chapter in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The starting page of the book chapter in which the data are reported (e.g., 72).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ChapterEndingPage" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The ending page of the book chapter in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The ending page of the book chapter in which the data are reported (e.g., 97).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation> The year when the conference proceedings article was published in print form.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The year when the conference proceedings article was published in print form (e.g., 2011).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Publisher" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the publisher of the book in which the chapter reporting the data was published.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the publisher of the book in which the chapter reporting the data was published (e.g., Woodhead).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DOI" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DOI code assigned to the book chapter in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The DOI code assigned to the book chapter in which the data are reported (e.g., 10.1533/9780857093721.1.72).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ISBN" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The International Standard Book Number of the book in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The International Standard Book Number of the book in which the data are reported (e.g., 978-0-85709-048-5).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  PublishedReportType                                                  -->
+  <!--  The "PublishedReportType" sub-element type defines the structure     -->
+  <!--  of a bibliographic record for a published report.                    -->
+  <xsd:complexType name="PublishedReportType">
+    <xsd:sequence>
+      <xsd:element name="FirstAuthor" type="xsd:string" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation> The full name of the first author of the published report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The full name of the first author of the published report in which the data are reported (e.g., Poulikakos, L.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Co-Authors" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>The full name of a co-author of the published report in which the data are reported. Multiple instances can be generated to include more than one co-author.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of a co-author of the published report in which the data are reported. Multiple instances can be generated to include more than one co-author (e.g., Poulikakos, L. ).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReportTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation> The title of the published report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The title of the published report in which the data are reported (e.g., Recycled Ashpalt in Pavements).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReportNumber" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The alphanumeric identifier of the published report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The alphanumeric identifier of the published report in which the data are reported (e.g., R2024_043).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation> The year when the published report reporting the data was published in print or digital form, depending on the case.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The year when the published report reporting the data was published in print or digital form, depending on the case (e.g., 2017).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Publisher" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The name of the publisher or Organization that published the report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The name of the publisher or Organization that published the report in which the data are reported (e.g., Asphalt Institute)</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DOI" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DOI code assigned to the publsihed report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The DOI code assigned to the publsihed report in which the data are reported (e.g., 10.1533/9780857093721.1.72).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="URL" type="xsd:anyURI" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The Uniform Resource Locator of the published report.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The Uniform Resource Locator of the published report (e.g., https://www.wsdot.wa.gov/research/reports/fullreports/116.1.pdf).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  UnPublishedReportType                                                -->
+  <!--  The "UnPublishedReportType" sub-element type defines the structure   -->
+  <!--  of a bibliographic record for an unpublished report.                 -->
+  <xsd:complexType name="UnPublishedReportType">
+    <xsd:sequence>
+      <xsd:element name="FirstAuthor" type="xsd:string" minOccurs="0" maxOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation> The full name of the first author of the unpublished report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The full name of the first author of the unpublished report in which the data are reported (e.g., Poulikakos, L.).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Co-Authors" type="xsd:string" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>The full name of a co-author of the unpublished report in which the data are reported. Multiple instances can be generated to include more than one co-author.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The full name of a co-author of the unpublished report in which the data are reported. Multiple instances can be generated to include more than one co-author (e.g., Poulikakos, L. ).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReportTitle" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation> The title of the unpublished report in which the data are reported.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The title of the unpublished report in which the data are reported (e.g., Recycled Ashpalt in Pavements).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Year" type="xsd:gYear">
+        <xsd:annotation>
+          <xsd:documentation> The year when the unpublished report reporting the data was first available in print or digital form, depending on the case.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The year when the unpublished report reporting the data was first available in print or digital form, depending on the case (e.g., 2015).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="URL" type="xsd:anyURI" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The Uniform Resource Locator of the unpublished report.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The Uniform Resource Locator of the unpublished report (e.g., https://www.wsdot.wa.gov/research/reports/fullreports/116.1.pdf).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  OtherRecordsType                                                     -->
+  <!--  The "OtherRecordsType" sub-element type defines the structure        -->
+  <!--  of irregular bibliographic record.                                   -->
+  <xsd:complexType name="OtherRecordsType">
+    <xsd:sequence>
+      <xsd:element name="Information" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Information describing the data source.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>Information describing the data source in text format (e.g., Data in the laboratory).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixtureType                                                          -->
+  <!--  The "MixtureType" sub-element type defines the detailed              -->
+  <!--  information concerning the mixutre design of the specimen.           -->
+  <xsd:complexType name="MixtureType">
+    <xsd:sequence>
+      <xsd:element name="MixtureIdentifiers" type="MixtureIdentifiersType" minOccurs="0" />
+      <xsd:element name="MixtureRecipe" type="MixtureRecipeType" minOccurs="0" />
+      <xsd:element name="MixtureComponentProperties" type="MixtureComponentPropertiesType" minOccurs="0" />
+      <xsd:element name="RecoveredMaterials" type="RecoveredMaterialsType" minOccurs="0" />
+      <xsd:element name="Mixing" type="MixingType" minOccurs="0" />
+      <xsd:element name="Notes" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The content of the text note concerning the mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The content of the text note concerning the mixture.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixtureIdentifiersType                                               -->
+  <!--  The "MixtureIdentifiersType" sub-element type specifes the specifc   -->
+  <!--  identifiers of the mixtures.                                         -->
+  <xsd:complexType name="MixtureIdentifiersType">
+    <xsd:annotation>
+      <xsd:documentation>The identifiers for the mixture, binder, and the laboratory reporting document</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="MixtureID" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The local identifier used for the mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The local identifier used for the mixture (e.g., B-102).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MixtureType">
+        <xsd:annotation>
+          <xsd:documentation>The mixture type.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The mixture type (e.g., AC B-32).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixtureRecipeType                                                    -->
+  <!--  The "MixtureRecipeType" sub-element type defines the mass            -->
+  <!--  percentage composition of the bituminous mixture and the size        -->
+  <!--  distribution of the aggregates matrix.                               -->
+  <xsd:complexType name="MixtureRecipeType">
+    <xsd:annotation>
+      <xsd:documentation>The mixture component materials and their proportions as planned in the recipe.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The mixture component materials and their proportions as planned in the recipe.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Composition" type="CompositionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage by mass of the components of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage by mass of the components of the bituminous mixture.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MixtureMaximumDensity" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the maximum density of the bituminous specimen, expressed in Mg/m^3 (e.g., 2.48).</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the maximum density of the bituminous specimen, expressed in Mg/m^3 (e.g., 2.48).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  CompositionType                                                      -->
+  <!--  The "CompositionType" sub-element type defines the mass percentage   -->
+  <!--  composition of the bituminous mixture.                               -->
+  <xsd:complexType name="CompositionType">
+    <xsd:sequence>
+      <xsd:element name="AggregatesDistribution" type="GrainSizeDistributionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The distribution of grain sizes by mass for the aggregates.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The distribution of grain sizes by mass for the aggregates.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="VirginFiller" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The percentage by mass of the virgin filler to the total mass of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>  The percentage by mass of the virgin filler to the total mass of the bituminous mixture(e.g., 3.2).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RecoveredFiller" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The percentage by mass of the recovered filler to the total mass of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>  The percentage by mass of the recovered filler to the total mass of the bituminous mixture(e.g., 1.2).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReclaimedAsphalt" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The percentage by mass of the reclaimed asphalt to the total mass of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The percentage by mass of the reclaimed asphalt to the total mass of the bituminous mixture (e.g., 4.6).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Binder" minOccurs="0">
+          <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="TargetBinderGrade" type="xsd:string" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The target binder grade, as reported in the form X/Y-Z or any other format.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The target binder grade, as reported in the form X/Y-Z or any other format (e.g., 50/75-60).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="BinderContent" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage by mass of the binder, including that extracted from the reclaimed asphalt, to the total mass of the bituminous mixture.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage by mass of the binder, including that extracted from the reclaimed asphalt, to the total mass of the bituminous mixture (e.g., 4.1).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  PercentageType                                                       -->
+  <!--  The "PercentageType" sub-element type defines a data structure       -->
+  <!--  for representing values as percentages.                              -->
+  <xsd:simpleType name="PercentageType">
+    <xsd:restriction base="xsd:float">
+      <xsd:minInclusive value="0" />
+      <xsd:maxInclusive value="100" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  PositiveNumberType                                                   -->
+  <!--  The "PositiveNumberType" sub-element type defines a data structure   -->
+  <!--  for representing values as percentages.                              -->
+  <xsd:simpleType name="PositiveNumberType">
+    <xsd:restriction base="xsd:float">
+      <xsd:minInclusive value="0" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  GrainSizeDistributionType                                            -->
+  <!--  The "GrainSizeDistributionType" sub-element type defines the size    -->
+  <!--  distribution of the aggregates matrix within the bituminous          -->
+  <!--  mixture.                                                             -->
+  <xsd:complexType name="GrainSizeDistributionType">
+    <xsd:annotation>
+      <xsd:documentation>The sieve analysis or distribution of grain sizes by mass in the aggregates matrix, including both the size range and distribution percentages.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The sieve analysis or distribution of grain sizes by mass in the aggregates matrix, including both the size range and distribution percentages.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Point" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Size" type="xsd:string" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The nominal size of the sieve in millimeters.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The nominal size of the sieve in millimeters (e.g., 5.6).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PercentageDistribution" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage distribution by mass for particles passing the specified size.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage distribution by mass for particles passing the specified size (e.g., 70.4).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixtureComponentPropertiesType                                       -->
+  <!--  The 'MixtureComponentPropertiesType' sub-element type defines the    -->
+  <!--  properties of the components of the bituminous mix, such as          -->
+  <!--  their nature.                                                        -->
+  <xsd:complexType name="MixtureComponentPropertiesType">
+    <xsd:sequence>
+      <xsd:element name="VirginAggregates" type="AggregateType" minOccurs="0" />
+      <xsd:element name="Filler" type="FillerType" minOccurs="0" />
+      <xsd:element name="VirginBinder" type="BinderType" minOccurs="0" />
+      <xsd:element name="Additive" type="AdditiveType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="ReclaimedAsphalt" type="ReclaimedAsphaltType" minOccurs="0" />
+      <xsd:element name="PreMixingBinderBlend" type="BinderType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The properties of the binder blend that contains the virgin binder, the reclaimed binder and the additives.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The properties of the binder blend that contains the virgin binder, the reclaimed binder and the additives.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OtherMaterials" type="OtherComponentType" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  AggregateType                                                        -->
+  <!--  The 'AggregateType' sub-element type defines the origin and the      -->
+  <!--  Los Angeles test results, in addition to any other information       -->
+  <!--  about the aggregates.                                                -->
+  <xsd:complexType name="AggregateType">
+    <xsd:sequence>
+      <xsd:element name="GrainSizeDistribution" type="GrainSizeDistributionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The distribution of grain sizes by mass for the aggregates.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The distribution of grain sizes by mass for the aggregates.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Nature" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The nature of the aggregates in the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The nature of the aggregates in the bituminous mixture (e.g., Granite).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LosAngelesTestResult" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of wear calculated during the Los Angeles Abrasion Test according to EN 1097-2, expressed as a percentage of the original weight of the sample.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of wear calculated during the Los Angeles Abrasion Test according to EN 1097-2, expressed as a percentage of the original weight of the sample (e.g., 25).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FlakinessIndex" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The flakiness index of aggregates, expressed as a percentage, which is measured according to EN 933-3.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The flakiness index of aggregates, expressed as a percentage, which is measured according to EN 933-3 (e.g., 22).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ShapeIndex" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The shape index of aggregates according to EN 933-4, expressed as a percentage.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The shape index of aggregates according to EN 933-4, expressed as a percentage (e.g., 30).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FlowCoefficient" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the flow coefficient of the aggregate according to EN 933-6, expressed in seconds.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the flow coefficient of the aggregate according to EN 933-6, expressed in seconds (e.g., 40). </tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="NordicAbrasionValue" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the Nordic abrasion according to EN 1097-9, expressed in percentage.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the Nordic abrasion according to EN 1097-9, expressed in percentage (e.g., 45).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RoundedAndCrushed" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of semi-crushed, totally crushed, semi-rounded and totally rounded aggregate particles according to EN 933-5.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of semi-crushed, totally crushed, semi-rounded and totally rounded aggregate particles according to EN 933-5.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="SemiCrushedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the semi-crushed coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the semi-crushed coarse aggregate particles according to EN 12697-11 (e.g., 27.5).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TotallyCrushedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the totally crushed coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the totally crushed coarse aggregate particles according to EN 12697-11 (e.g., 53.4).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SemiRoundedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the semi-rounded coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the semi-rounded coarse aggregate particles according to EN 12697-11 (e.g., 26.8).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TotallyRoundedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the totally rounded coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the totally rounded coarse aggregate particles according to EN 12697-11 (e.g., 40.6).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BitumenCoverageDegree" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The average proportion of the surface area of the aggregate particles that are covered with bitumen according to EN 12697-11.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The average proportion of the surface area of the aggreagte particles that are covered with bitumen according to EN 12697-11.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="BitumenCoverageDegreeValue" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the average proportion of the surface area of the aggregate particles that are covered with bitumen according to EN 12697-11, expressed as a percentage.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the average proportion of the surface area of the aggreagte particles that are covered with bitumen according to EN 12697-11, expressed as a percentage (e.g., 45).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="BitumenCoverageDegreeMethod" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The method of measurement of the degree of bitumen coverage according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The method of measurement of the degree of bitumen coverage according to EN 12697-11. The available choices are "Rolling Bottle Test", "Static Test" and "Boiling Water Stripping Test" (e.g., Static Test).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Rolling Bottle Test" />
+                  <xsd:enumeration value="Static Test" />
+                  <xsd:enumeration value="Boiling Water Stripping Test" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  FillerType                                                           -->
+  <!--  The 'FillerType' sub-element type defines the nature of the          -->
+  <!--  filler, in addition to some other information about the fillers.     -->
+  <xsd:complexType name="FillerType">
+    <xsd:sequence>
+      <xsd:element name="Nature" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The nature of the filler in the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The nature of the filler in the bituminous mixture (e.g., Limestone powder).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="StiffeningEffect" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the stiffening effect of filler aggregate when mixed with bitumen, measured in Degrees Celsius, according to EN 13179-1.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the stiffening effect of filler aggregate when mixed with bitumen, measured in Degrees Celsius, according to EN 13179-1 (e.g., 20).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ParticleDensity" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the particle density of the filler according to EN 1097-7, expressed in Mg/m^3.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the particle density of the filler according to EN 1097-7, expressed in Mg/m^3 (e.g., 2.753).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="WaterSusceptibility" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the water susceptibility of fillers for bituminous mixtures, expressed in percentage, according to EN 1744-4.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the water susceptibility of fillers for bituminous mixtures, expressed in percentage, according to EN 1744-4 (e.g., 25).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  BinderType                                                           -->
+  <!--  The 'BinderType' sub-element type defines the detailed information   -->
+  <!--  about the binders.                                                   -->
+  <xsd:complexType name="BinderType">
+    <xsd:sequence>
+      <xsd:element name="Penetration" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter (e.g., 55).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SofteningPoint" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The temperature at which the binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The temperature at which the binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius (e.g., 45).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Viscosities" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="KinematicViscosity" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the kinematic viscosity of the binder according to EN 12595, measured in square millimeter per second.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the kinematic viscosity of the binder according to EN 12595, measured in square millimeter per second (e.g., 30).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="DynamicViscosity" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the dynamic viscosity of the binder according to EN 12596, measured in Pascal-second. </xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the dynamic viscosity of the binder according to EN 12596, measured in Pascal-second (e.g., 11).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="RotationalDynamicViscosity" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the rotational dynamic viscosity of the binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second. </xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the rotational dynamic viscosity of the binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second (e.g., 8).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BTSV" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Temperature" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius (e.g., 65).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PhaseAngle" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees (e.g., 42).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="MSCRT" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="AveragePercentRecovery100Pa" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the average percentage recovery at 100 Pa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the average percentage recovery at 100 Pa (e.g., 40.5).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AveragePercentRecovery3200Pa" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the average percentage recovery at 3200 Pa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the average percentage recovery at 3200 Pa (e.g., 64.7).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the percentage difference in recovery between 100 Pa and 3200 Pa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the percentage difference in recovery between 100 Pa and 3200 Pa (e.g., 10.8).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="NonrecoverableCreepCompliance100Pa" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa (e.g., 0.084).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="NonrecoverableCreepCompliance3200Pa" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa (e.g., 0.343).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa (e.g., 16.1).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="NonstandardStress" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="SpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal (e.g., 10000).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="AveragePercentRecoverySpecifiedStress" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the average percentage recovery at the specified stress.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the average percentage recovery at the specified stress (e.g., 59.5).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in recovery between 3200 Pa and the specified stress.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in recovery between 3200 Pa and the specified stress (e.g., 15.7).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepComplianceSpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa (e.g., 0.227).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress (e.g., 16.1).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="FraassBreakingPoint" type="xsd:float" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius (e.g., -20).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AgingResistance" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The results of the Rolling Thin Film Oven Test (RTFOT) according to EN 12607-1.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The results of the Rolling Thin Film Oven Test (RTFOT) according to EN 12607-1.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="MassLoss" type="xsd:float" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The mass loss according to EN 12607-1, expressed as a negative percentage. A positive value represents a gain.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The mass loss according to EN 12607-1, expressed as a negative percentage. A positive value represents a gain (e.g., -1.05).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="RetainedPenetration" type="xsd:float" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The increase in penetration according to EN 12607-1 and EN 1426, expressed as a percentage.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The increase in penetration according to EN 12607-1 and EN 1426, expressed as a percentage (e.g., 75.07).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SofteningPointIncrease" type="xsd:float" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The absolute increase in softening point, according to EN 12607-1 and EN 1427, is measured in degrees Celsius. A negative value represents a decrease.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The absolute increase in softening point according to EN 12607-1 and EN 1427, measured in Degrees Celsius. A negative value represents a decrease (e.g., 5.02).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ElasticRecovery" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the elastic recovery of the binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the elastic recovery of the binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage (e.g., 50).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CohesionEnergy" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres (e.g., 0.9).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Solubility" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the percentage of mass of the soluble material to the total mass according to EN 12592.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the percentage of mass of the soluble material to the total mass according to EN 12592 (e.g., 7.6).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  ReclaimedAsphaltType                                                 -->
+  <!--  The 'ReclaimedAsphaltType' sub-element type defines the information  -->
+  <!--  about the reclaimed asphalt as well as the reclaimed binder.         -->
+  <xsd:complexType name="ReclaimedAsphaltType">
+    <xsd:sequence>
+      <xsd:element name="GrainSizeDistribution" type="GrainSizeDistributionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The distribution of grain sizes by mass for the reclaimed aggregates.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The distribution of grain sizes by mass for the reclaimed aggregates.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Nature" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The nature of the aggregates in the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The nature of the aggregates in the bituminous mixture (e.g., Granite).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LosAngelesTestResult" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of wear calculated during the Los Angeles Abrasion Test, expressed as a percentage of the original weight of the sample. It is used to assess the hardness or resistance of aggregates to fragmentation.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of wear calculated during the Los Angeles Abrasion Test, expressed as a percentage of the original weight of the sample. It is used to assess the hardness or resistance of aggregates to fragmentation (e.g., 25).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FlakinessIndex" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The flakiness index of the reclaimed aggregates, expressed as a percentage, which is used to assess their angularity and particle shape.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The flakiness index of the reclaimed aggregates, expressed as a percentage, which is used to assess their angularity and particle shape (e.g., 22).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ShapeIndex" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The shape index of the reclaimed aggregates according to EN 933-4, expressed as a percentage.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The shape index of the reclaimed aggregates according to EN 933-4, expressed as a percentage (e.g., 30).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FlowCoefficient" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the flow coefficient of the reclaimed aggregate according to EN 933-6, expressed in seconds.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the flow coefficient of the reclaimed aggregate according to EN 933-6, expressed in seconds (e.g., 40). </tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="NordicAbrasionValue" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the Nordic abrasion according to EN 1097-9, expressed in percentage.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the Nordic abrasion according to EN 1097-9, expressed in percentage (e.g., 45).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RoundedAndCrushed" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of semi-crushed, totally crushed, semi-rounded and totally rounded reclaimed aggregate particles according to EN 933-5.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of semi-crushed, totally crushed, semi-rounded and totally rounded reclaimed aggregate particles according to EN 933-5.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="SemiCrushedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the semi-crushed coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the semi-crushed coarse aggregate particles according to EN 12697-11 (e.g., 27.5).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TotallyCrushedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the totally crushed coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the totally crushed coarse aggregate particles according to EN 12697-11 (e.g., 53.4).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SemiRoundedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the semi-rounded coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the semi-rounded coarse aggregate particles according to EN 12697-11 (e.g., 26.8).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TotallyRoundedParticles" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage of the totally rounded coarse aggregate particles according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage of the totally rounded coarse aggregate particles according to EN 12697-11 (e.g., 40.6).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReclaimedAsphaltBinder" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="BinderContent" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage by mass of the binder in the reclaimed asphalt.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage by mass of the binder in the reclaimed asphalt (e.g., 6.3).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Penetration" type="xsd:string" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter (e.g., 55).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SofteningPoint" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The temperature at which the reclaimed binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The temperature at which the reclaimed binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius (e.g., 45).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Viscosities" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="KinematicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of kinematic viscosity of the reclaimed binder according to EN 12595, measured in square millimeter per second.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of kinematic viscosity of the reclaimed binder according to EN 12595, measured in square millimeter per second (e.g., 30).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="DynamicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the dynamic viscosity of the reclaimed binder according to EN 12596, measured in Pascal-second.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the dynamic viscosity of the reclaimed binder according to EN 12596, measured in Pascal-second (e.g., 11).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RotationalDynamicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the rotational dynamic viscosity of the reclaimed binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second. </xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the rotational dynamic viscosity of the reclaimed binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second (e.g., 8).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="BTSV" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Temperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius (e.g., 65).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="PhaseAngle" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees (e.g., 42).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="MSCRT" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="AveragePercentRecovery100Pa" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the average percentage recovery at 100 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the average percentage recovery at 100 Pa (e.g., 40.5).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="AveragePercentRecovery3200Pa" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the average percentage recovery at 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the average percentage recovery at 3200 Pa (e.g., 64.7).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in recovery between 100 Pa and 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in recovery between 100 Pa and 3200 Pa (e.g., 10.8).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliance100Pa" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa (e.g., 0.084).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliance3200Pa" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa (e.g., 0.343).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa (e.g., 16.1).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonstandardStress" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="SpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal (e.g., 10000).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="AveragePercentRecoverySpecifiedStress" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the average percentage recovery at the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the average percentage recovery at the specified stress (e.g., 59.5).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the percentage difference in recovery between 3200 Pa and the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the percentage difference in recovery between 3200 Pa and the specified stress (e.g., 15.7).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="NonrecoverableCreepComplianceSpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa (e.g., 0.227).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress (e.g., 16.1).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="FraassBreakingPoint" type="xsd:float" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius (e.g., -20).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ElasticRecovery" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the elastic recovery of the reclaimed binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the elastic recovery of the reclaimed binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage (e.g., 50).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CohesionEnergy" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres (e.g., 0.9).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Solubility" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the percentage of mass of the soluble material to the total mass according to EN 12592.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the percentage of mass of the soluble material to the total mass according to EN 12592 (e.g., 7.6).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BitumenCoverageDegree" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The average proportion of the surface area of the reclaimed aggregate particles that are covered with bitumen according to EN 12697-11.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The average proportion of the surface area of the reclaimed aggreagte particles that are covered with bitumen according to EN 12697-11.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="BitumenCoverageDegreeValue" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the average proportion of the surface area of the reclaimed aggregate particles that are covered with bitumen according to EN 12697-11, expressed as a percentage.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the average proportion of the surface area of the reclaimed aggreagte particles that are covered with bitumen according to EN 12697-11, expressed as a percentage (e.g., 45).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="BitumenCoverageDegreeMethod" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The method of measurement of the degree of bitumen coverage according to EN 12697-11.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The method of measurement of the degree of bitumen coverage according to EN 12697-11. The available choices are "Rolling Bottle Test", "Static Test" and "Boiling Water Stripping Test" (e.g., Static Test).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Rolling Bottle Test" />
+                  <xsd:enumeration value="Static Test" />
+                  <xsd:enumeration value="Boiling Water Stripping Test" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  OtherComponentType                                                   -->
+  <!--  The 'OtherComponentType' sub-element type defines the properties of  -->
+  <!--  a non-standard material added to the mixture, if any.                -->
+  <xsd:complexType name="OtherComponentType">
+    <xsd:sequence>
+      <xsd:element name="Name" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the non-standard mixture component added to the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the non-standard mixture component added to the bituminous mixture (e.g., Copper slag).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  AdditiveType                                                         -->
+  <!--  The 'AdditiveType' sub-element type defines the type and percentage  -->
+  <!--  by mass of the admixtures, in addition to any other information      -->
+  <!--  about the additives.                                                 -->
+  <xsd:complexType name="AdditiveType">
+    <xsd:sequence>
+      <xsd:element name="Type" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The type of the additive.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The type of the additive (e.g., Recycling agent).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PercentageMass" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation> The percentage by mass of this additive to the total mass of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip> The percentage by mass of this additive to the total mass of the bituminous mixture (e.g., 1.1).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  AdditionalPropertiesType                                             -->
+  <!--  The "AdditionalPropertiesType" sub-element type is used to define    -->
+  <!--  any additional properties of the considered raw material.            -->
+  <xsd:complexType name="AdditionalPropertiesType">
+    <xsd:annotation>
+      <xsd:documentation>The name, value, and unit of measurement for any additional properties of the used material.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The name, value, and unit of measurement for any additional properties of the used material.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Property" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the additional property of the considered raw material.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the additional property of the considered raw material (e.g., Micro-Deval test).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Value" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the additional property of the considered raw material.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the additional property of the considered raw material (e.g., 16).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Unit" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The unit of measurement of the additional property of the considered raw material.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The unit of measurement of the additional property of the considered raw material (e.g., percentage).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixingType                                                           -->
+  <!--  The "MixingType" sub-element type defines the detailed information   -->
+  <!--  concerning the mixing properties.                                    -->
+  <xsd:complexType name="MixingType">
+    <xsd:sequence>
+      <xsd:element name="MixingMethod">
+        <xsd:annotation>
+          <xsd:documentation>The name of the mixing method used, which could be laboratory hand mixing, laboratory mechanical mixing, or plant mixing.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of the mixing method used, which could be laboratory hand mixing, laboratory mechanical mixing, or plant mechanical mixing (e.g., Laboratory mechanical mixing).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Laboratory hand mixing" />
+            <xsd:enumeration value="Laboratory mechanical mixing" />
+            <xsd:enumeration value="Plant mixing" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="TypeofMixer" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The type of the mechanical mixer used.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The type of the mechanical mixer used (e.g., Countertop mixer).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MixingSequence" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The mixing sequence followed during the mixing process of the bituminous mixture.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The mixing sequence followed during the mixing process of the bituminous mixture (e.g. aggregates &gt; binder &gt; additive).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MixtureTemperature" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the mixture temperature in Degrees Celsius.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the mixture temperature in Degrees Celsius (e.g., 150).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ReclaimedAsphaltTemperature" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The temperature at which the reclaimed asphalt was heated before mixing, measured in Degrees Celsius.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The temperature at which the reclaimed asphalt was heated before mixing, measured in degrees Celsius (e.g., 120).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MixingDuration" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The duration of mixing in minutes.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The duration of mixing in minutes (e.g., 5).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OtherMixingProperty" type="OtherMixingPropertyType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  OtherMixingComponentType                                             -->
+  <!--  The "OtherMixingPropertyType" sub-element type is used to define     -->
+  <!--  any other non-standard property of the mixing process.               -->
+  <xsd:complexType name="OtherMixingPropertyType">
+    <xsd:annotation>
+      <xsd:documentation>The name, value, and unit of measurement for any other non-standard property in the mixing design process.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The name, value, and unit of measurement for any other non-standard property in the mixing design process.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Name" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of a non-standard property in the mixing design process.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The name of a non-standard property in the mixing design process (e.g., Fibres percentage).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Value" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the non-standard property in the mixing design process.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the non-standard property in the mixing design process (e.g., 0.042).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Unit" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The unit of measurement for the non-standard property in the mixing design process.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The unit of measurement for the non-standard property in the mixing design process (e.g., Mass-%).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  RecoveredMixtureType                                                 -->
+  <!--  The "RecoveredMixtureType" sub-element type defines the detailed     -->
+  <!--  information concerning the recovered aggregates and binder.          -->
+  <xsd:complexType name="RecoveredMaterialsType">
+    <xsd:annotation>
+      <xsd:documentation>The properties of the materials after recovering from the mixture.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The properties of the materials after recovering from the mixture.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Aggregates" type="AggregateType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The properties of the recovered aggregates.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The properties of the recovered aggregates.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Binder" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The properties of the recovered binder.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The properties of the recovered binder.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="BinderContent" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The percentage by mass of the binder in the asphalt.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The percentage by mass of the binder in the asphalt (e.g., 6.3).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Penetration" type="xsd:string" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The measured penetration of a standard needle at 25 Degrees Celsius according to EN 1426, expressed in tenths of a millimeter (e.g., 55).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SofteningPoint" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The temperature at which the recovered binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The temperature at which the recovered binder begins to soften and lose its rigidity according to EN 1427, measured in Degrees Celsius (e.g., 45).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Viscosities" minOccurs="0">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="KinematicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of kinematic viscosity of the recovered binder according to EN 12595, measured in square millimeter per second.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of kinematic viscosity of the recovered binder according to EN 12595, measured in square millimeter per second (e.g., 30).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="DynamicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the dynamic viscosity of the recovered binder according to EN 12596, measured in Pascal-second. </xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the dynamic viscosity of the recovered binder according to EN 12596, measured in Pascal-second (e.g., 11).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RotationalDynamicViscosity" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the rotational dynamic viscosity of the recovered binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second. </xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the rotational dynamic viscosity of the recovered binder using a rotating spindle apparatus according to EN 13302, measured in Pascal-second (e.g., 8).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="BTSV" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The results of the Binder Fast Characterization Test (BTSV) according to EN 17643.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="Temperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the Binder Fast Characterization Test (BTSV) temperature, which is determined using the Dynamic Shear Rheometer (DSR), measured in Degrees Celsius (e.g., 65).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="PhaseAngle" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the Binder Fast Characterization Test (BTSV) phase angle, which is determined using the Dynamic Shear Rheometer (DSR), measured in Angle Degrees (e.g., 42).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="MSCRT" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The results of the Multiple Stress Creep and Recovery Test (MSCRT) according to EN 16659.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="AveragePercentRecovery100Pa" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the average percentage recovery at 100 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the average percentage recovery at 100 Pa (e.g., 40.5).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="AveragePercentRecovery3200Pa" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the average percentage recovery at 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the average percentage recovery at 3200 Pa (e.g., 64.7).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in recovery between 100 Pa and 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in recovery between 100 Pa and 3200 Pa (e.g., 10.8).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliance100Pa" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-recoverable creep compliance at 100 Pa, expressed in 1/kPa (e.g., 0.084).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliance3200Pa" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the non-recoverable creep compliance at 3200 Pa, expressed in 1/kPa (e.g., 0.343).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The value of the percentage difference in non-recoverable creep compliance between 100 Pa and 3200 Pa (e.g., 16.1).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="NonstandardStress" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="SpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the non-standard specified stress, other than 100 Pa and 3200 Pa, expressed in Pascal (e.g., 10000).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="AveragePercentRecoverySpecifiedStress" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the average percentage recovery at the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the average percentage recovery at the specified stress (e.g., 59.5).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="RecoveryPercentageDifference" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the percentage difference in recovery between 3200 Pa and the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the percentage difference in recovery between 3200 Pa and the specified stress (e.g., 15.7).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="NonrecoverableCreepComplianceSpecifiedStress" type="PositiveNumberType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the non-recoverable creep compliance at the specified stress, expressed in 1/kPa (e.g., 0.227).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="NonrecoverableCreepCompliancePercentageDifference" type="PercentageType" minOccurs="0">
+                          <xsd:annotation>
+                            <xsd:documentation>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress.</xsd:documentation>
+                            <xsd:appinfo>
+                              <tooltip>The value of the percentage difference in non-recoverable creep compliance between 3200 Pa and the specified stress (e.g., 16.1).</tooltip>
+                            </xsd:appinfo>
+                          </xsd:annotation>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="FraassBreakingPoint" type="xsd:float" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the Fraass breaking point according to EN 12593, at which a film of bituminous binder of a specified and uniform thickness will break under defined loading conditions, measured in Degrees Celsius (e.g., -20).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AgingResistance" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The results of the Rolling Thin Film Oven Test (RTFOT) according to EN 12607-1.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The results of the Rolling Thin Film Oven Test (RTFOT) according to EN 12607-1.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="MassLoss" type="xsd:float" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The mass loss according to EN 12607-1, expressed as a negative percentage. A positive value represents a gain.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The mass loss according to EN 12607-1, expressed as a negative percentage. A positive value represents a gain (e.g., -1.05).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="RetainedPenetration" type="xsd:float" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The increase in penetration according to EN 12607-1 and EN 1426, expressed as a percentage.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The increase in penetration according to EN 12607-1 and EN 1426, expressed as a percentage (e.g., 75.07).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="SofteningPointIncrease" type="xsd:float" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The absolute increase in softening point, according to EN 12607-1 and EN 1427, is measured in degrees Celsius. A negative value represents a decrease.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The absolute increase in softening point according to EN 12607-1 and EN 1427, measured in Degrees Celsius. A negative value represents a decrease (e.g., 5.02).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ElasticRecovery" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the elastic recovery of the recovered binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the elastic recovery of the recovered binder according to EN 13398 at 25 Degrees Celsius, expressed as a percentage (e.g., 50).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CohesionEnergy" type="PositiveNumberType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of cohesion energy of the bitumen obtained from the force ductility method according to EN 13589 at 5 Degrees Celsius, measured in joules per square centimetres (e.g., 0.9).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Solubility" type="PercentageType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The value of the percentage of mass of the soluble material to the total mass according to EN 12592.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The value of the percentage of mass of the soluble material to the total mass according to EN 12592 (e.g., 7.6).</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AdditionalProperties" type="AdditionalPropertiesType" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MarshallTestResultsType                                              -->
+  <!--  The "MarshallTestResultsType" sub-element type defines the detailed  -->
+  <!--  information concerning the properties of the specimen and the        -->
+  <!--  test results.                                                        -->
+  <xsd:complexType name="MarshallTestResultsType">
+    <xsd:sequence>
+      <xsd:element name="MarshallSampleProperties" type="MarshallSamplePropertiesType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The properties of the sample used in the Marshall test, according to EN 12697-34.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The properties of the sample used in the Marshall test, according to EN 12697-34.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MarshallResults" type="MarshallResultsType">
+        <xsd:annotation>
+          <xsd:documentation>The results of the Marshall test.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The results of the Marshall test.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Notes" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The content of the text note concerning the test setup and results.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The content of the text note concerning the text setup and results.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MasrhallSamplePropertiesType                                         -->
+  <!--  The "MarshallSamplePropertiesType" sub-element type defines the      -->
+  <!--  detailed information concerning the properties of the specimen prior -->
+  <!--  to the experiment.                                                   -->
+  <xsd:complexType name="MarshallSamplePropertiesType">
+    <xsd:sequence>
+      <xsd:element name="SamplePreparation" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:choice>
+              <xsd:element name="PavementCoring" >
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="Type" type="xsd:string" fixed="Pavement Coring" minOccurs="0"/>
+                    <xsd:element name="Coring" type="CoringType" minOccurs="0">
+                      <xsd:annotation>
+                        <xsd:documentation>The date and location of coring and paving, if known.</xsd:documentation>
+                        <xsd:appinfo>
+                          <tooltip>The date and location of coring and paving, if known.</tooltip>
+                       </xsd:appinfo>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="LooseMixture" >
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="Type" type="xsd:string" fixed="Loose Mixture" minOccurs="0"/>
+                    <xsd:element name="Compaction" type="CompactionPropertiesType" minOccurs="0">
+                      <xsd:annotation>
+                        <xsd:documentation>The compaction properties of of the specimen, according to EN 12697-30.</xsd:documentation>
+                        <xsd:appinfo>
+                          <tooltip>The compaction properties of of the specimen, according to EN 12697-30.</tooltip>
+                        </xsd:appinfo>
+                      </xsd:annotation>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+           </xsd:choice>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="MixtureAging" type="MixtureAgingType" minOccurs="0"/>
+      <xsd:element name="StorageConditions" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The storage conditions under which the sample was kept.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The storage conditions under which the sample was kept (e.g., Stored at 25 degrees Celsius for 10 days).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  CoringType                                                           -->
+  <!--  The "CoringType" sub-element type is used to define pavement coring  -->
+  <!--  propetries of the specimen.                                          -->
+  <xsd:complexType name="CoringType">
+    <xsd:sequence>
+      <xsd:element name="PavingDate" type="xsd:date" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The date the pavement from which the sample was cored was paved."</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The date the pavement from which the sample was cored was paved. The format used is YYYY-MM-DD (e.g., 2011-06-12).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CoringDate" type="xsd:date" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The date when the specimen was cored from the pavement.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The date when the specimen was cored from the pavement. The format used is YYYY-MM-DD (e.g., 2021-08-31).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CoringLocation" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The location where the specimen was cored from the pavement.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The location where the specimen was cored from the pavement (e.g., Berlin).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  CompactionPropertiesType                                             -->
+  <!--  The "CompactionPropertiesType" sub-element type is used to define    -->
+  <!--  the compaction propetries of the specimen.                           -->
+  <xsd:complexType name="CompactionPropertiesType">
+    <xsd:sequence>
+      <xsd:element name="CompactionTemperature" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The temperature at which the specimen is compacted, measured in Degrees Celsius.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The temperature at which the specimen is compacted, measured in Degrees Celsius (e.g., 180).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BlowsNumber" type="xsd:positiveInteger" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The number of blows per side.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The number of blows per side (e.g., 50).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MixtureAgingType                                                     -->
+  <!--  The 'MixtureAgingType' sub-element type defines the age of the       -->
+  <!--  mixture prior to compaction.                                         -->
+  <xsd:complexType name="MixtureAgingType">
+    <xsd:sequence> 
+      <xsd:element name="LooseMixture" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The aging of loose mixture according to Method A in EN 12697-52.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The aging of loose mixture according to Method A in EN 12697-52.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ShortTerm" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The mixture short-term aging according to Procedure A.1 in EN 12697-52.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The mixture short-term aging according to Procedure A.1 in EN 12697-52.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="MixtureAgingDuration" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The period the mixture was aged before compaction according to Procedure A.1, expressed in hours.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The period the mixture was short-term aged before compaction according to Procedure A.1, expressed in hours (e.g., 4).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="MixtureAgingTemperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The temperature at which the mixture was aged before compaction according to Procedure A.1, measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The temperature at which the mixture was aged before compaction according to Procedure A.1, measured in Degrees Celsius (e.g., 140).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="LongTerm" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The mixture long-term aging according to Procedure A.2 in EN 12697-52.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The mixture long-term aging according to Procedure A.2 in EN 12697-52.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="MixtureAgingDuration" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The period the mixture was aged before compaction according to Procedure A.2, expressed in hours.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The period the mixture was aged before compaction according to Procedure A.2, expressed in hours (e.g., 120).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="MixtureAgingTemperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The temperature at which the mixture was aged before compaction according to Procedure A.2, measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The temperature at which the mixture was aged before compaction according to Procedure A.2, measured in Degrees Celsius (e.g., 150).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CompactedSpecimen" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The aging of compacted specimens from bituminous mixtures according to Method B in EN 12697-52.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The aging of compacted specimens from bituminous mixtures according to Method B EN 12697-52.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ProcedureB1" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The mixture aging according to Procedure B.1 in EN 12697-52.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The mixture aging according to Procedure B.1 in EN 12697-52.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="MixtureAgingDuration" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The period the mixture was aged according to Procedure B.1, expressed in hours.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The period the mixture was aged according to Procedure B.1, expressed in hours (e.g., 80).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="MixtureAgingTemperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The temperature at which the mixture was aged according to Procedure B.1, measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The temperature at which the mixture was aged according to Procedure B.1, measured in Degrees Celsius (e.g., 140).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ProcedureB2" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>The mixture aging according to Procedure B.2 in EN 12697-52.</xsd:documentation>
+                <xsd:appinfo>
+                  <tooltip>The mixture aging according to Procedure B.2 in EN 12697-52.</tooltip>
+                </xsd:appinfo>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="MixtureAgingDuration" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The period the mixture was aged according to Procedure B.2, expressed in hours.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The period the mixture was aged according to Procedure B.2, expressed in hours (e.g., 160).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="MixtureAgingTemperature" type="PositiveNumberType" minOccurs="0">
+                    <xsd:annotation>
+                      <xsd:documentation>The temperature at which the mixture was aged according to Procedure B.2, measured in Degrees Celsius.</xsd:documentation>
+                      <xsd:appinfo>
+                        <tooltip>The temperature at which the mixture was aged according to Procedure B.2, measured in Degrees Celsius (e.g., 140).</tooltip>
+                      </xsd:appinfo>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  MarshallResultsType                                                  -->
+  <!--  The "MarshallResultsType" sub-element type defines the final results -->
+  <!--  of the Marshall test.                                                -->
+  <xsd:complexType name="MarshallResultsType">
+    <xsd:annotation>
+      <xsd:documentation>The results of the Marshall test based on EN 12697-34:2020.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The results of the Marshall test based on EN 12697-34:2020.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Stability" type="PositiveNumberType">
+        <xsd:annotation>
+          <xsd:documentation>The maximum load, expressed in kilonewtons kN.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The maximum load, expressed in kilonewtons kN (e.g., 9.1).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Flow" type="PositiveNumberType">
+        <xsd:annotation>
+          <xsd:documentation>The deformation in millimetres (mm), at maximum load minus the nominal deformation obtained by extrapolation of the tangent of the graph of load against deformation back to zero load, according to EN 12697-34.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The deformation in millimetres (mm), at maximum load minus the nominal deformation obtained by extrapolation of the tangent of the graph of load against deformation back to zero load, according to EN 12697-34 (e.g., 3.2).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TangentialFlow" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The nominal deformation, expressed in mm. It is obtained by extrapolation of the tangent of the graph of the load as a function of the deformation in continuation up to the stability load, minus the nominal deformation obtained by extrapolating the tangent back to the zero load, according to EN 12697-34.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The nominal deformation, expressed in mm. It is obtained by extrapolation of the tangent of the graph of the load as a function of the deformation in continuation up to the stability load, minus the nominal deformation obtained by extrapolating the tangent back to the zero load, according to EN 12697-34 (e.g., 1.9).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TotalFlow" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The deformation at maximum load, expressed in mm.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The deformation at maximum load, expressed in mm (e.g., 2.8).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MarshallQuotient" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The ratio of the stability to the flow, expressed in kilonewtons kN per millimetres mm.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The ratio of the stability to the flow, expressed in kilonewtons kN per millimetres mm (e.g., 2.691).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BulkDensity" type="BulkDensityType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The mass per unit volume, including air voids, of the test specimen at a specified test temperature, prior to testing and after compaction.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The mass per unit volume, including air voids, of the test specimen at a specified test temperature, prior to testing and after compaction.</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="Voids" type="VoidsType" minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  BulkDensityType                                                      -->
+  <!--  The 'BulkDensityType' sub-element type defines the mass per unit     -->
+  <!--  volume, including air voids, of a specimen at a specified            -->
+  <!--  temperature. It comprises the value and the method of measurement    -->
+  <!--  employed.                                                            -->
+  <xsd:complexType name="BulkDensityType">
+    <xsd:annotation>
+      <xsd:documentation>The value and method of measurement for the bulk density of the specimen according to EN 12697-6.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Value" type="PositiveNumberType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The value of the bulk density of the bituminous specimen.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The value of the bulk density of the bituminous specimen, expressed in Mg/m^3 (e.g., 2.326).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MethodofMeasurement" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The method of measurement of the bulk density of the bituminous specimen.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The method of measurement of the bulk density of the bituminous specimen. The available choices are "Bulk density - dry", "Bulk density - saturated surface dry (SSD)", "Bulk density - sealed specimen", "Bulk density by dimensions" and "Bulk density by Gamma-rays" (e.g., Bulk density - sealed specimen).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Bulk density - dry" />
+            <xsd:enumeration value="Bulk density - saturated surface dry (SSD)" />
+            <xsd:enumeration value="Bulk density - sealed specimen" />
+            <xsd:enumeration value="Bulk density by dimensions" />
+            <xsd:enumeration value="Bulk density by Gamma-rays" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <!--  VoidsType                                                            -->
+  <!--  The 'VoidsType' sub-element type defines the percentage of voids     -->
+  <!--  in the specimen, including air voids, voids in the mineral           -->
+  <!--  aggregate, and voids filled with bitumen.                            -->
+  <xsd:complexType name="VoidsType">
+    <xsd:annotation>
+      <xsd:documentation>The percentage of voids in the bituminous sample.</xsd:documentation>
+      <xsd:appinfo>
+        <tooltip>The percentage of voids in the bituminous sample.</tooltip>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="AirVoids" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of air voids in the bituminous sample.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of air voids in the bituminous sample (e.g., 4.6).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MineralAggregateVoids" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of voids in the mineral aggregate (VMA) in the bituminous sample.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of voids in the mineral aggregate (VMA) in the bituminous sample (e.g., 16.2).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="VoidsFilledWithBitumen" type="PercentageType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The percentage of voids filled with bitumen in the bituminous sample.</xsd:documentation>
+          <xsd:appinfo>
+            <tooltip>The percentage of voids filled with bitumen in the bituminous sample (e.g., 71.6).</tooltip>
+          </xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+</xsd:schema>
