@@ -129,7 +129,11 @@ def seperate_semicolons(xml_s, elements):
             opening, content, closing = match
             child_ele = re.findall(r'<(.*?)>(.*?)</\1>', content)
             split_val = {child[0]: child[1].split(';') for child in child_ele if ';' in child[1]}
-            num_ele = min(len(values) for values in split_val.values())
+            valid_values = [values for values in split_val.values() if values]
+            if valid_values:
+                num_ele = min(len(values) for values in valid_values)
+            else:
+                continue
             new_eles = []
             for i in range(num_ele):
                 new_ele = f'<{ele}>'
